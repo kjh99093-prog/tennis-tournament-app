@@ -1,0 +1,8 @@
+{
+  "name": "AuraTennis Tournament Navigator",
+  "description": "Comprehensive tournament discovery, scheduling, and match preparation app for Canadian and US competitive tennis players with official data source directory and bilingual support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
