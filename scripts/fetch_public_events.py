@@ -1,110 +1,96 @@
+#!/usr/bin/env python3
+"""Fetch actual tournament cards from the Tennis Canada calendar.
+
+Only event-like cards with a date range and Canadian location are accepted.
+Unknown fields remain blank. Generic navigation links are never treated as events.
+"""
+import json
+import re
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import urljoin
+
+import requests
+from bs4 import BeautifulSoup
+
+SOURCE_NAME = "Tennis Canada"
+SOURCE_URL = "https://www.tenniscanada.com/tournaments/"
+OUTPUT_PATH = Path("public/data/tournaments.json")
+
+DATE_RANGE_RE = re.compile(
+    r"\b(20\d{2}-\d{2}-\d{2})\s*(?:to|–|-)\s*(20\d{2}-\d{2}-\d{2})\b",
+    re.IGNORECASE,
+)
+LOCATION_RE = re.compile(
+    r"\b([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÿ'. -]+),\s*"
+    r"(BC|AB|SK|MB|ON|QC|NB|NS|PE|NL|YT|NT|NU)\b"
+)
+AGE_RE = re.compile(r"\bU(?:10|12|14|16|18)\b|\b\d{2}\+\b|\bRising Stars\b", re.I)
+EXCLUDED_TITLE_RE = re.compile(
+    r"^(tennis 101|progressive tennis|tennis courts and surfaces|"
+    r"tennis points and rules|tennis shot playbook|tennis equipment|"
+    r"get on court|coach|junior|adult|masters tennis|resources|subscribe|"
+    r"contact us|privacy policy|about tennis canada|careers)$",
+    re.I,
+)
+
+PROVINCE_NAMES = {
+    "BC": "British Columbia", "AB": "Alberta", "SK": "Saskatchewan",
+    "MB": "Manitoba", "ON": "Ontario", "QC": "Quebec",
+    "NB": "New Brunswick", "NS": "Nova Scotia",
+    "PE": "Prince Edward Island", "NL": "Newfoundland and Labrador",
+    "YT": "Yukon", "NT": "Northwest Territories", "NU": "Nunavut",
+}
+
+
+def clean_text(value):
+    return re.sub(r"\s+", " ", value or "").strip()
+
+
+def parse_event_from_heading(heading):
+    title = clean_text(heading.get_text(" ", strip=True))
+    if not title or EXCLUDED_TITLE_RE.match(title):
+        return None
+
+    # Find the smallest ancestor that appears to contain one event.
+    candidate = heading
+    card_text = ""
+    for _ in range(6):
+        if candidate.parent is None:
+            break
+        candidate = candidate.parent
+        text = clean_text(candidate.get_text(" ", strip=True))
+        if DATE_RANGE_RE.search(text) and LOCATION_RE.search(text):
+            if len(DATE_RANGE_RE.findall(text)) == 1:
+                card_text = text
+                break
+
+    if not card_text:
+        return None
 
     date_match = DATE_RANGE_RE.search(card_text)
     location_match = LOCATION_RE.search(card_text)
     if not date_match or not location_match:
         return None
 
-    # Avoid accepting a whole page/container that contains multiple tournaments.
-    # A card with another date range is likely too broad to identify one event.
-    if len(DATE_RANGE_RE.findall(card_text)) != 1:
-        return None
-
-    # Prefer a link directly on the heading or within the event card. If the source
-    # does not provide a dedicated event URL, link to the official calendar instead.
     link = heading if heading.name == "a" else heading.find("a", href=True)
     if not link:
         link = heading.find_parent("a", href=True)
     if not link:
         link = candidate.find("a", href=True)
 
-    official_url = urljoin(page_url, link["href"]) if link and link.get("href") else page_url
+    official_url = urljoin(SOURCE_URL, link["href"]) if link and link.get("href") else SOURCE_URL
     if not official_url.startswith("https://www.tenniscanada.com/"):
-        # Do not mislabel external links as Tennis Canada event detail pages.
-        official_url = page_url
+        official_url = SOURCE_URL
 
-    # Extract only divisions that are visibly present in the event card.
-    divisions = sorted({clean_text(m.group(0)).upper() for m in AGE_RE.finditer(card_text)})
-
-    # Infer category only when the card explicitly indicates it.
+    divisions = sorted({m.group(0).upper() for m in AGE_RE.finditer(card_text)})
     lowered = card_text.lower()
     if "adult" in lowered or re.search(r"\b18\+\b", lowered) or "masters" in lowered:
         category = "adult"
-    elif divisions or "junior" in lowered or "u10" in lowered or "u12" in lowered:
+    elif divisions or "junior" in lowered:
         category = "junior"
     else:
         category = ""
 
+    title_slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")[:70]
     province = location_match.group(2)
-    province_names = {
-        "BC": "British Columbia", "AB": "Alberta", "SK": "Saskatchewan",
-        "MB": "Manitoba", "ON": "Ontario", "QC": "Quebec",
-        "NB": "New Brunswick", "NS": "Nova Scotia",
-        "PE": "Prince Edward Island", "NL": "Newfoundland and Labrador",
-        "YT": "Yukon", "NT": "Northwest Territories", "NU": "Nunavut",
-    }
-
-    return {
-        "id": f"tennis-canada-{date_match.group(1)}-{re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')[:70]}",
-        "title": title,
-        "officialUrl": official_url,
-        "sourceId": "tennis-canada",
-        "sourceName": SOURCE_NAME,
-        "startDate": date_match.group(1),
-        "endDate": date_match.group(2),
-        "entryDeadline": "",
-        "venueName": "",
-        "city": clean_text(location_match.group(1)),
-        "province": province,
-        "provinceName": province_names.get(province, ""),
-        "country": "Canada",
-        "ageDivisions": divisions,
-        "category": category,
-        "entryFee": "",
-    }
-
-
-def main():
-    response = requests.get(
-        SOURCE_URL,
-        timeout=30,
-        headers={"User-Agent": "AURA-Tournament-Calendar/1.0 (public event listings)"},
-    )
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    events_by_key = {}
-    for heading in soup.find_all(["h2", "h3", "h4"]):
-        event = parse_event_from_heading(heading, SOURCE_URL)
-        if not event:
-            continue
-        key = (event["title"].casefold(), event["startDate"], event["city"].casefold())
-        events_by_key[key] = event
-
-    events = sorted(
-        events_by_key.values(),
-        key=lambda item: (item["startDate"] or "9999-99-99", item["title"].casefold()),
-    )
-
-    output = {
-        "updatedAt": datetime.now(timezone.utc).isoformat(),
-        "sources": [{
-            "name": SOURCE_NAME,
-            "url": SOURCE_URL,
-            "status": "success" if events else "no_events_found",
-            "eventsCount": len(events),
-        }],
-        "events": events,
-    }
-
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"{SOURCE_NAME}: {len(events)} dated tournament cards saved to {OUTPUT_PATH}")
-    if not events:
-        raise SystemExit(
-            "No tournament cards matched the expected date/location format. "
-            "The site markup may have changed; refusing to save generic navigation links."
-        )
-
-
-if __name__ == "__main__":
-    main()
