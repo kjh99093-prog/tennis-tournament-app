@@ -25,6 +25,10 @@ jobs:
       - name: Fetch public tournament listings
         run: python scripts/fetch_public_events.py
 
+      - name: Show collection results
+        run: |
+          python -c "import json; d=json.load(open('public/data/tournaments.json')); print('Total links:', len(d['events'])); [print(s['name'], s['status'], len(s['events'])) for s in d['sources']]"
+
       - name: Save updated JSON
         run: |
           git config user.name "github-actions[bot]"
