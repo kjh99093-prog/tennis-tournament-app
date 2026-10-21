@@ -1,142 +1,118 @@
+
 import json
 import re
 from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
-from urllib.error import HTTPError, URLError
+from urllib.parse import urljoin
 from urllib.request import Request, urlopen
+from html.parser import HTMLParser
 
-SOURCES = [
-    {
-        "name": "Tennis Canada",
-        "url": "https://tc.tournamentsoftware.com/tournaments",
-        "source_id": "tc-tournament-software",
-    },
-    {
-        "name": "USTA",
-        "url": "https://playtennis.usta.com/Tournaments",
-        "source_id": "usta-playtennis",
-    },
-    {
-        "name": "ITF",
-        "url": "https://www.itftennis.com/en/tournament/",
-        "source_id": "itf-tennis",
-    },
-    {
-        "name": "UTR",
-        "url": "https://app.utrsports.net/events",
-        "source_id": "utr-sports",
-    },
-]
+SOURCE_URL = "https://www.tenniscanada.com/tournaments/"
+SOURCE_ID = "tennis-canada"
 
+class PageParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links = []
+        self.current_href = None
+        self.current_text = []
 
-def fetch_public_page(url):
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "a" and attrs.get("href"):
+            self.current_href = attrs["href"]
+            self.current_text = []
+
+    def handle_data(self, data):
+        if self.current_href is not None:
+            self.current_text.append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.current_href is not None:
+            title = " ".join(" ".join(self.current_text).split())
+            if title:
+                self.links.append((title, self.current_href))
+            self.current_href = None
+            self.current_text = []
+
+def fetch_html(url):
     request = Request(
         url,
-        headers={"User-Agent": "AURA-Tournament-Directory/1.0"},
+        headers={"User-Agent": "Mozilla/5.0 AURA-Tournament-Directory"}
     )
-    with urlopen(request, timeout=25) as response:
-        content_type = response.headers.get("Content-Type", "")
-        if "text/html" not in content_type.lower():
-            return None
+    with urlopen(request, timeout=30) as response:
         return response.read().decode("utf-8", errors="replace")
 
-
-def collect_source(source):
-    try:
-        html = fetch_public_page(source["url"])
-        if not html:
-            return {
-                **source,
-                "status": "unavailable",
-                "events": [],
-            }
-
-        # Only collect event links that are visibly present in the
-        # publicly accessible HTML. Do not invent event information.
-        links = re.findall(
-            r'<a\b[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a>',
-            html,
-            flags=re.IGNORECASE | re.DOTALL,
-        )
-
-        events = []
-        seen = set()
-
-        for href, raw_title in links:
-            title = unescape(re.sub(r"<[^>]+>", " ", raw_title))
-            title = " ".join(title.split())
-
-            if not title or len(title) < 4:
-                continue
-
-            if not href.startswith("http"):
-                if href.startswith("/"):
-                    from urllib.parse import urljoin
-                    href = urljoin(source["url"], href)
-                else:
-                    continue
-
-            if href in seen:
-                continue
-            seen.add(href)
-
-            events.append({
-                "title": title,
-                "officialUrl": href,
-                "sourceId": source["source_id"],
-                "startDate": "",
-                "endDate": "",
-                "entryDeadline": "",
-                "venueName": "",
-                "city": "",
-                "country": "",
-                "entryFee": "",
-            })
-
-        return {
-            **source,
-            "status": "success" if events else "no_events_found",
-            "events": events,
-        }
-
-    except (HTTPError, URLError, TimeoutError, OSError, ValueError) as error:
-        print(f"Could not read {source['name']}: {error}")
-        return {
-            **source,
-            "status": "unavailable",
-            "events": [],
-        }
-
-
 def main():
-    results = [collect_source(source) for source in SOURCES]
+    html = fetch_html(SOURCE_URL)
+    parser = PageParser()
+    parser.feed(html)
+
+    events = []
+    seen = set()
+
+    for title, href in parser.links:
+        full_url = urljoin(SOURCE_URL, unescape(href))
+
+        # Keep only links that appear to identify individual tournaments.
+        if "tenniscanada.com" not in full_url.lower():
+            continue
+
+        if "/tournaments" in full_url.lower():
+            continue
+
+        if full_url in seen:
+            continue
+
+        # Avoid navigation, social links and generic calls to action.
+        if len(title) < 5:
+            continue
+
+        if title.lower() in {
+            "read more", "learn more", "view more",
+            "show results", "open filters"
+        }:
+            continue
+
+        seen.add(full_url)
+        events.append({
+            "title": title,
+            "officialUrl": full_url,
+            "sourceId": SOURCE_ID,
+            "sourceName": "Tennis Canada",
+            "startDate": "",
+            "endDate": "",
+            "entryDeadline": "",
+            "venueName": "",
+            "city": "",
+            "country": "Canada",
+            "ageDivisions": [],
+            "entryFee": ""
+        })
 
     output = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
-        "sources": results,
-        "events": [
-            event
-            for source in results
-            for event in source["events"]
-        ],
+        "sources": [{
+            "name": "Tennis Canada",
+            "url": SOURCE_URL,
+            "status": "success" if events else "no_events_found",
+            "eventsCount": len(events)
+        }],
+        "events": events
     }
 
     output_path = Path("public/data/tournaments.json")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
         json.dumps(output, ensure_ascii=False, indent=2),
-        encoding="utf-8",
+        encoding="utf-8"
     )
 
-    for source in results:
-        print(
-            f"{source['name']}: {source['status']} "
-            f"({len(source['events'])} links)"
-        )
-
-    print(f"Saved {len(output['events'])} links to {output_path}")
-
+    print("Source:", SOURCE_URL)
+    print("Status:", output["sources"][0]["status"])
+    print("Collected links:", len(events))
+    print("Output:", output_path)
 
 if __name__ == "__main__":
     main()
