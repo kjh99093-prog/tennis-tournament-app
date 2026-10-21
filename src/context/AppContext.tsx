@@ -179,6 +179,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [activeModalTournament, setActiveModalTournament] = useState<Tournament | null>(null);
+  const [tournaments, setTournaments] = useState<Tournament[]>(SAMPLE_TOURNAMENTS);
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function loadTournaments() {
+    try {
+      const response = await fetch('/data/tournaments.json');
+
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      console.log(
+        'AURA tournament JSON loaded:',
+        Array.isArray(data.events) ? data.events.length : 0
+      );
+    } catch (error) {
+      console.error('Could not load tournament JSON:', error);
+    }
+  }
+
+  loadTournaments();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<'All' | 'Canada' | 'United States'>('All');
   const [selectedSurface, setSelectedSurface] = useState<string>('All');
@@ -322,7 +352,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addNote,
         updateNote,
         deleteNote,
-        tournaments: SAMPLE_TOURNAMENTS,
+        tournaments,
         activeModalTournament,
         openTournamentModal,
         closeTournamentModal,
