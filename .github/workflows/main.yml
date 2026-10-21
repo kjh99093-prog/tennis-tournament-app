@@ -1,0 +1,19 @@
+name: AURA Tournament Data Update
+
+on:
+  schedule:
+    - cron: '0 16 1,15 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-tournaments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Report scheduled update
+        run: echo "AURA tournament update workflow started."
