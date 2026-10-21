@@ -1,118 +1,110 @@
 
-import json
-import re
-from datetime import datetime, timezone
-from html import unescape
-from pathlib import Path
-from urllib.parse import urljoin
-from urllib.request import Request, urlopen
-from html.parser import HTMLParser
+    date_match = DATE_RANGE_RE.search(card_text)
+    location_match = LOCATION_RE.search(card_text)
+    if not date_match or not location_match:
+        return None
 
-SOURCE_URL = "https://www.tenniscanada.com/tournaments/"
-SOURCE_ID = "tennis-canada"
+    # Avoid accepting a whole page/container that contains multiple tournaments.
+    # A card with another date range is likely too broad to identify one event.
+    if len(DATE_RANGE_RE.findall(card_text)) != 1:
+        return None
 
-class PageParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.links = []
-        self.current_href = None
-        self.current_text = []
+    # Prefer a link directly on the heading or within the event card. If the source
+    # does not provide a dedicated event URL, link to the official calendar instead.
+    link = heading if heading.name == "a" else heading.find("a", href=True)
+    if not link:
+        link = heading.find_parent("a", href=True)
+    if not link:
+        link = candidate.find("a", href=True)
 
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        if tag == "a" and attrs.get("href"):
-            self.current_href = attrs["href"]
-            self.current_text = []
+    official_url = urljoin(page_url, link["href"]) if link and link.get("href") else page_url
+    if not official_url.startswith("https://www.tenniscanada.com/"):
+        # Do not mislabel external links as Tennis Canada event detail pages.
+        official_url = page_url
 
-    def handle_data(self, data):
-        if self.current_href is not None:
-            self.current_text.append(data)
+    # Extract only divisions that are visibly present in the event card.
+    divisions = sorted({clean_text(m.group(0)).upper() for m in AGE_RE.finditer(card_text)})
 
-    def handle_endtag(self, tag):
-        if tag == "a" and self.current_href is not None:
-            title = " ".join(" ".join(self.current_text).split())
-            if title:
-                self.links.append((title, self.current_href))
-            self.current_href = None
-            self.current_text = []
+    # Infer category only when the card explicitly indicates it.
+    lowered = card_text.lower()
+    if "adult" in lowered or re.search(r"\b18\+\b", lowered) or "masters" in lowered:
+        category = "adult"
+    elif divisions or "junior" in lowered or "u10" in lowered or "u12" in lowered:
+        category = "junior"
+    else:
+        category = ""
 
-def fetch_html(url):
-    request = Request(
-        url,
-        headers={"User-Agent": "Mozilla/5.0 AURA-Tournament-Directory"}
-    )
-    with urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8", errors="replace")
+    province = location_match.group(2)
+    province_names = {
+        "BC": "British Columbia", "AB": "Alberta", "SK": "Saskatchewan",
+        "MB": "Manitoba", "ON": "Ontario", "QC": "Quebec",
+        "NB": "New Brunswick", "NS": "Nova Scotia",
+        "PE": "Prince Edward Island", "NL": "Newfoundland and Labrador",
+        "YT": "Yukon", "NT": "Northwest Territories", "NU": "Nunavut",
+    }
+
+    return {
+        "id": f"tennis-canada-{date_match.group(1)}-{re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')[:70]}",
+        "title": title,
+        "officialUrl": official_url,
+        "sourceId": "tennis-canada",
+        "sourceName": SOURCE_NAME,
+        "startDate": date_match.group(1),
+        "endDate": date_match.group(2),
+        "entryDeadline": "",
+        "venueName": "",
+        "city": clean_text(location_match.group(1)),
+        "province": province,
+        "provinceName": province_names.get(province, ""),
+        "country": "Canada",
+        "ageDivisions": divisions,
+        "category": category,
+        "entryFee": "",
+    }
+
 
 def main():
-    html = fetch_html(SOURCE_URL)
-    parser = PageParser()
-    parser.feed(html)
+    response = requests.get(
+        SOURCE_URL,
+        timeout=30,
+        headers={"User-Agent": "AURA-Tournament-Calendar/1.0 (public event listings)"},
+    )
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    events = []
-    seen = set()
-
-    for title, href in parser.links:
-        full_url = urljoin(SOURCE_URL, unescape(href))
-
-        # Keep only links that appear to identify individual tournaments.
-        if "tenniscanada.com" not in full_url.lower():
+    events_by_key = {}
+    for heading in soup.find_all(["h2", "h3", "h4"]):
+        event = parse_event_from_heading(heading, SOURCE_URL)
+        if not event:
             continue
+        key = (event["title"].casefold(), event["startDate"], event["city"].casefold())
+        events_by_key[key] = event
 
-        if "/tournaments" in full_url.lower():
-            continue
-
-        if full_url in seen:
-            continue
-
-        # Avoid navigation, social links and generic calls to action.
-        if len(title) < 5:
-            continue
-
-        if title.lower() in {
-            "read more", "learn more", "view more",
-            "show results", "open filters"
-        }:
-            continue
-
-        seen.add(full_url)
-        events.append({
-            "title": title,
-            "officialUrl": full_url,
-            "sourceId": SOURCE_ID,
-            "sourceName": "Tennis Canada",
-            "startDate": "",
-            "endDate": "",
-            "entryDeadline": "",
-            "venueName": "",
-            "city": "",
-            "country": "Canada",
-            "ageDivisions": [],
-            "entryFee": ""
-        })
+    events = sorted(
+        events_by_key.values(),
+        key=lambda item: (item["startDate"] or "9999-99-99", item["title"].casefold()),
+    )
 
     output = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
         "sources": [{
-            "name": "Tennis Canada",
+            "name": SOURCE_NAME,
             "url": SOURCE_URL,
             "status": "success" if events else "no_events_found",
-            "eventsCount": len(events)
+            "eventsCount": len(events),
         }],
-        "events": events
+        "events": events,
     }
 
-    output_path = Path("public/data/tournaments.json")
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(output, ensure_ascii=False, indent=2),
-        encoding="utf-8"
-    )
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PATH.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"{SOURCE_NAME}: {len(events)} dated tournament cards saved to {OUTPUT_PATH}")
+    if not events:
+        raise SystemExit(
+            "No tournament cards matched the expected date/location format. "
+            "The site markup may have changed; refusing to save generic navigation links."
+        )
 
-    print("Source:", SOURCE_URL)
-    print("Status:", output["sources"][0]["status"])
-    print("Collected links:", len(events))
-    print("Output:", output_path)
 
 if __name__ == "__main__":
     main()
