@@ -25,9 +25,10 @@ jobs:
       - name: Fetch public tournament listings
         run: python scripts/fetch_public_events.py
 
+     
       - name: Show collection results
         run: |
-          python -c "import json; d=json.load(open('public/data/tournaments.json')); print('Total links:', len(d['events'])); [print(s['name'], s['status'], len(s['events'])) for s in d['sources']]"
+          python -c "import json; d=json.load(open('public/data/tournaments.json')); print('Total links:', len(d.get('events', []))); [print(s.get('name', s.get('sourceName', 'Unknown')), s.get('status', 'unknown'), s.get('eventsCount', len(s.get('events', [])))) for s in d.get('sources', [])]"
 
       - name: Save updated JSON
         run: |
