@@ -1,3 +1,4 @@
+
 name: AURA Tournament Data Update
 
 on:
@@ -11,9 +12,27 @@ permissions:
 jobs:
   update-tournaments:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Report scheduled update
-        run: echo "AURA tournament update workflow started."
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch public tournament listings
+        run: python scripts/fetch_public_events.py
+
+      - name: Save updated JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/tournaments.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update public tournament listings"
+            git push
+          else
+            echo "No changes to tournament data."
+          fi
