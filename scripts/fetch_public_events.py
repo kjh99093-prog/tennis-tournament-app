@@ -1,103 +1,96 @@
+#!/usr/bin/env python3
+"""Fetch public tennis tournament listings for AURA.
+
+Sources:
+- Tennis Canada tournament calendar (Canada-wide; includes province, age and event tags)
+- USTA tournament listings (US; best-effort extraction from public listing pages)
+
+Only save events when a real title and a verifiable date range are found.
+Fields not exposed by a source remain empty. If a source fails, keep its previous
+events from public/data/tournaments.json rather than replacing them with nothing.
+"""
+import json
+import re
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import urljoin, urlparse
+
+import requests
+from bs4 import BeautifulSoup
+
+OUTPUT_PATH = Path("public/data/tournaments.json")
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+)
+HEADERS = {"User-Agent": USER_AGENT, "Accept-Language": "en-CA,en;q=0.9"}
+TIMEOUT = 30
+
+CANADA_NAME = "Tennis Canada"
+CANADA_URL = "https://www.tenniscanada.com/tournaments"
+TOURNAMENT_SOFTWARE_URL = "https://tc.tournamentsoftware.com/find"
+USTA_NAME = "USTA Tournaments"
+USTA_URLS = [
+    "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+    "https://playtennis.usta.com/tournaments",
+]
+
+PROVINCE_CODES = {
+    "Alberta": "AB", "British Columbia": "BC", "Manitoba": "MB",
+    "New Brunswick": "NB", "Newfoundland and Labrador": "NL",
+    "Northwest Territories": "NT", "Nova Scotia": "NS",
+    "Nunavut": "NU", "Ontario": "ON", "Prince Edward Island": "PE",
+    "Quebec": "QC", "Saskatchewan": "SK", "Yukon": "YT",
+}
+CODE_TO_PROVINCE = {v: k for k, v in PROVINCE_CODES.items()}
+DATE_ISO_RANGE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\s*(?:to|[-–—])\s*(20\d{2}-\d{2}-\d{2})\b", re.I)
+DATE_ISO_SINGLE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
+DATE_MONTH_RANGE = re.compile(
+    r"\b(January|February|March|April|May|June|July|August|September|October|November|December)"
+    r"\s+(\d{1,2})(?:\s*[-–]\s*(\d{1,2}))?,?\s+(20\d{2})\b", re.I
+)
+AGE_RE = re.compile(r"\bU(?:8|9|10|12|14|16|18)\b|\b(?:18|30|35|40|45|50|55|60|65|70|75|80|85)\+\b|Rising Stars", re.I)
+PROVINCE_SUFFIX_RE = re.compile(r",\s*(BC|AB|SK|MB|ON|QC|NB|NS|PE|NL|YT|NT|NU)\b", re.I)
 
 
-def main():
-    previous = load_previous()
-    old_events = previous.get("events", [])
-    old_sources = {s.get("name"): s for s in previous.get("sources", []) if isinstance(s, dict)}
-    source_results = []
-    all_events = []
-    source_specs = [
-        (CANADA_NAME, CANADA_URL, "canada_calendar"),
-        ("Tennis Canada Tournament Software", TOURNAMENT_SOFTWARE_URL, "canada_ts"),
-    ]
-
-    soup, error = fetch_html(CANADA_URL)
-    if soup is not None:
-        found = parse_canada_calendar(soup)
-        # Some page versions expose links to Tournament Software; keep those official URLs.
-        all_events.extend(found)
-        source_results.append({"name": CANADA_NAME, "url": CANADA_URL, "status": "success" if found else "no-events",
-                               "eventsCount": len(found), "note": "" if found else "Page loaded but no dated tournament cards were parsed."})
-        print(f"[Canada calendar] parsed {len(found)} events")
-    else:
-        old = [e for e in old_events if e.get("sourceId") == "tennis-canada"]
-        all_events.extend(old)
-        source_results.append({"name": CANADA_NAME, "url": CANADA_URL, "status": "error",
-                               "eventsCount": len(old), "note": f"Fetch failed; retained {len(old)} previous events. {error}"})
-
-    # Tournament Software is a separate real source. Avoid discarding existing records on a parse failure.
-    soup, error = fetch_html(TOURNAMENT_SOFTWARE_URL)
-    if soup is not None:
-        found = parse_tournamentsoftware(soup)
-        all_events.extend(found)
-        source_results.append({"name": "Tennis Canada Tournament Software", "url": TOURNAMENT_SOFTWARE_URL,
-                               "status": "success" if found else "no-events", "eventsCount": len(found),
-                               "note": "" if found else "Page loaded but no dated results were parsed; check the site's current markup."})
-        print(f"[Tournament Software] parsed {len(found)} events")
-    else:
-        old = [e for e in old_events if e.get("sourceId") == "tennis-canada-tournamentsoftware"]
-        all_events.extend(old)
-        source_results.append({"name": "Tennis Canada Tournament Software", "url": TOURNAMENT_SOFTWARE_URL,
-                               "status": "error", "eventsCount": len(old),
-                               "note": f"Fetch failed; retained {len(old)} previous events. {error}"})
-
-    usta_found_any = False
-    usta_errors = []
-    for url in USTA_URLS:
-        soup, error = fetch_html(url)
-        if soup is None:
-            usta_errors.append(error or "Fetch failed")
-            continue
-        found = parse_usta(soup, url)
-        if found:
-            usta_found_any = True
-            all_events.extend(found)
-            print(f"[USTA] parsed {len(found)} events from {url}")
-            # Stop after first URL that provides actual events to reduce duplicate records.
-            break
-
-    if usta_found_any:
-        usta_events = [e for e in all_events if e.get("sourceId") == "usta"]
-        source_results.append({"name": USTA_NAME, "url": USTA_URLS[0], "status": "success",
-                               "eventsCount": len(usta_events), "note": ""})
-    else:
-        old = [e for e in old_events if e.get("sourceId") == "usta"]
-        all_events.extend(old)
-        source_results.append({"name": USTA_NAME, "url": USTA_URLS[0], "status": "error" if usta_errors else "no-events",
-                               "eventsCount": len(old),
-                               "note": "No dated tournament cards were parsed. The USTA page may render data with JavaScript; previous USTA events were retained. " +
-                                       (usta_errors[0] if usta_errors else "")})
-
-    all_events = dedupe(all_events)
-    # Do not replace a source's previous events with an empty result if a page loaded but parser failed.
-    # For any source with no new parsed results, retain its previous events.
-    successful_source_ids = set()
-    for source in source_results:
-        if source["status"] == "success":
-            if source["name"] == CANADA_NAME:
-                successful_source_ids.add("tennis-canada")
-            elif source["name"] == "Tennis Canada Tournament Software":
-                successful_source_ids.add("tennis-canada-tournamentsoftware")
-            elif source["name"] == USTA_NAME:
-                successful_source_ids.add("usta")
-    if old_events:
-        for event in old_events:
-            sid = event.get("sourceId", "")
-            if sid not in successful_source_ids and sid not in {e.get("sourceId") for e in all_events}:
-                all_events.append(event)
-        all_events = dedupe(all_events)
-
-    output = {
-        "updatedAt": datetime.now(timezone.utc).isoformat(),
-        "sources": source_results,
-        "events": sorted(all_events, key=lambda e: (e.get("startDate") or "9999-99-99", e.get("country", ""), e.get("title", ""))),
-    }
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Wrote {len(output['events'])} unique events to {OUTPUT_PATH}")
-    for source in source_results:
-        print(f" - {source['name']}: {source['status']} ({source['eventsCount']})")
+def clean(value):
+    return re.sub(r"\s+", " ", value or "").strip()
 
 
-if __name__ == "__main__":
-    main()
+def fetch_html(url):
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
+        response.raise_for_status()
+        return BeautifulSoup(response.text, "html.parser"), None
+    except requests.RequestException as exc:
+        print(f"[ERROR] {url}: {exc}")
+        return None, str(exc)
+
+
+def extract_dates(text):
+    text = clean(text)
+    match = DATE_ISO_RANGE.search(text)
+    if match:
+        return match.group(1), match.group(2)
+    # Parse common USTA card dates such as "October 23 - 25, 2026".
+    month_match = DATE_MONTH_RANGE.search(text)
+    if month_match:
+        from datetime import date
+        from calendar import month_name
+        month = list(month_name).index(month_match.group(1).capitalize())
+        year = int(month_match.group(4))
+        start_day = int(month_match.group(2))
+        end_day = int(month_match.group(3) or start_day)
+        try:
+            return date(year, month, start_day).isoformat(), date(year, month, end_day).isoformat()
+        except ValueError:
+            pass
+    singles = DATE_ISO_SINGLE.findall(text)
+    if singles:
+        return singles[0], singles[-1]
+    return "", ""
+
+
+def get_province(text):
+    match = PROVINCE_SUFFIX_RE.search(text or "")
+    return match.group(1).upper() if match else ""
