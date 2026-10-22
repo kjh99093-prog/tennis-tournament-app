@@ -31,7 +31,7 @@ jobs:
      
       - name: Show collection results
         run: |
-          python -c "import json; d=json.load(open('public/data/tournaments.json')); print('Total links:', len(d.get('events', []))); [print(s.get('name', s.get('sourceName', 'Unknown')), s.get('status', 'unknown'), s.get('eventsCount', len(s.get('events', [])))) for s in d.get('sources', [])]"
+          python -c "import json; d=json.load(open('public/data/tournaments.json')); print('Valid tournaments:', len(d.get('events', []))); [print(s.get('name','Unknown'), s.get('status','unknown'), s.get('eventsCount',0)) for s in d.get('sources', [])]"
 
       - name: Save updated JSON
         run: |
