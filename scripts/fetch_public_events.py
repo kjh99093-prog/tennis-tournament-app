@@ -1,4 +1,15 @@
 
+def load_previous():
+    """Load previously saved tournament data, if available."""
+    try:
+        data = json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            return data
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Could not read previous tournament data: {exc}")
+
+    return {"events": [], "sources": []}
+
 
 def main():
     previous = load_previous()
