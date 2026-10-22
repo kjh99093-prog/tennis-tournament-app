@@ -1,4 +1,4 @@
-
+import json
 def load_previous():
     """Load previously saved tournament data, if available."""
     try:
