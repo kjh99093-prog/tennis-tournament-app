@@ -1,11 +1,33 @@
 {
-  "updatedAt": "2026-10-22T00:16:28.020301+00:00",
+  "updatedAt": "2026-10-23T00:14:22.479526+00:00",
   "sources": [
     {
       "name": "Tennis Canada",
       "url": "https://www.tenniscanada.com/tournaments/",
       "status": "success",
-      "eventsCount": 20
+      "eventsCount": 20,
+      "note": ""
+    },
+    {
+      "name": "Tennis Canada Tournament Software",
+      "url": "https://tc.tournamentsoftware.com/find",
+      "status": "no-events",
+      "eventsCount": 0,
+      "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
+    },
+    {
+      "name": "USTA Tournaments",
+      "url": "https://playtennis.usta.com/Tournaments",
+      "status": "no-events",
+      "eventsCount": 0,
+      "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
+    },
+    {
+      "name": "USTA Tournaments",
+      "url": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+      "status": "no-events",
+      "eventsCount": 0,
+      "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
     }
   ],
   "events": [
@@ -18,13 +40,54 @@
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Vaughan",
+      "city": "th Vaughan",
       "province": "ON",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "U16"
       ],
-      "tags": "Singles Male Female U16 3.5 Star",
+      "tags": "SmartVMC Racquetsports ACE U16 Provincial Circuit Plus Oct 22nd-25th Vaughan, ON 2026-10-22 to 2026-10-25 Singles Male Female U16 3.5 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "2026 October WTN Singles and Doubles",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=BBC5498B-2CE2-487C-AC43-579751F54347",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "October WTN Singles and Doubles Fredericton",
+      "province": "NB",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [],
+      "tags": "2026 October WTN Singles and Doubles Fredericton, NB 2026-10-23 to 2026-10-25 Singles Doubles Mixed doubles 18+",
+      "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "Burlington Hall U14 Provincial Circuit U10 Rising Stars Oct 23rd-25th",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=C78282BD-3CC6-42C1-A6EB-EBB515A85920",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "th Burlington",
+      "province": "ON",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "RISING STARS",
+        "U10",
+        "U14"
+      ],
+      "tags": "Burlington Hall U14 Provincial Circuit U10 Rising Stars Oct 23rd-25th Burlington, ON 2026-10-23 to 2026-10-25 Singles Male Female U10 U14 Rising Stars 3 Star",
       "category": "junior",
       "entryFee": ""
     },
@@ -37,92 +100,17 @@
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Hamilton",
+      "city": "th Hamilton",
       "province": "ON",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "RISING STARS",
         "U10",
-        "U16"
+        "U16",
+        "U9"
       ],
-      "tags": "Singles Male Female Mixed doubles U10 U16 Rising Stars 2 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "WEEK 43 IQ U14 2 STAR 2026",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=DEF05F5C-78AF-44E5-B844-1B292CA448E2",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-23",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Edmonton",
-      "province": "AB",
-      "country": "Canada",
-      "ageDivisions": [
-        "U14"
-      ],
-      "tags": "Singles Male Female U14 2 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "The Tennis School U12 Transition Tour Oct 23rd-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=07CF48BC-DBBF-4EE4-9556-1813FD59B071",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-23",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Mississauga",
-      "province": "ON",
-      "country": "Canada",
-      "ageDivisions": [
-        "U12"
-      ],
-      "tags": "Singles Male Female U12 2 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "PRC - Eglinton Flats U12 U14 Provincial Circuit Oct 23rd-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=63B05F0B-BFD4-4798-B4BC-6357E25022D8",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-23",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "York",
-      "province": "ON",
-      "country": "Canada",
-      "ageDivisions": [
-        "U12",
-        "U14"
-      ],
-      "tags": "Singles Male Female U12 U14 3 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "Orange Lion Sports Youth Tennis Series Global Elite Series – Vancouver (TBC 3.5Star -U14 (Oct 23-25)",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=F136DC10-3651-4A40-80B1-18DCBAB8EADA",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-23",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Richmond",
-      "province": "BC",
-      "country": "Canada",
-      "ageDivisions": [
-        "U14"
-      ],
-      "tags": "Singles Male Female U14 3.5 Star",
+      "tags": "Hamilton Smash U16 Transition Tour & U9 Rising Stars Oct 23rd-25th Hamilton, ON 2026-10-23 to 2026-10-25 Singles Male Female Mixed doubles U10 U16 Rising Stars 2 Star",
       "category": "junior",
       "entryFee": ""
     },
@@ -137,51 +125,14 @@
       "venueName": "",
       "city": "Kamloops",
       "province": "BC",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "U12",
         "U16",
         "U18"
       ],
-      "tags": "Singles Male Female U12 U16 U18 3.5 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "SmartVMC Racquetsports ACE Midnight Madness Open 350 Oct 23rd-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=88F678F3-B0C1-4AD0-B88E-40BE2B1A9357",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-23",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Vaughan",
-      "province": "ON",
-      "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Singles Male Female 18+ Open 350",
-      "category": "adult",
-      "entryFee": ""
-    },
-    {
-      "title": "Burlington Hall U14 Provincial Circuit U10 Rising Stars Oct 23rd-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=C78282BD-3CC6-42C1-A6EB-EBB515A85920",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-23",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Burlington",
-      "province": "ON",
-      "country": "Canada",
-      "ageDivisions": [
-        "RISING STARS",
-        "U10",
-        "U14"
-      ],
-      "tags": "Singles Male Female U10 U14 Rising Stars 3 Star",
+      "tags": "Kamloops Fall 3.5Star- U12, U16 and U18 (Oct 23-25) Kamloops, BC 2026-10-23 to 2026-10-25 Singles Male Female U12 U16 U18 3.5 Star",
       "category": "junior",
       "entryFee": ""
     },
@@ -194,31 +145,35 @@
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Vineland Station",
+      "city": "th Vineland Station",
       "province": "ON",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "U12"
       ],
-      "tags": "Singles Male Female U12 3 Star",
+      "tags": "NAT U12 Provincial Circuit Oct 23rd-25th Vineland Station, ON 2026-10-23 to 2026-10-25 Singles Male Female U12 3 Star",
       "category": "junior",
       "entryFee": ""
     },
     {
-      "title": "2026 October WTN Singles and Doubles",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=BBC5498B-2CE2-487C-AC43-579751F54347",
+      "title": "Orange Lion Sports Youth Tennis Series Global Elite Series – Vancouver (TBC 3.5Star -U14 (Oct 23-25)",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=F136DC10-3651-4A40-80B1-18DCBAB8EADA",
       "sourceId": "tennis-canada",
       "sourceName": "Tennis Canada",
       "startDate": "2026-10-23",
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Fredericton",
-      "province": "NB",
+      "city": "Richmond",
+      "province": "BC",
+      "state": "",
       "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Singles Doubles Mixed doubles 18+",
-      "category": "adult",
+      "ageDivisions": [
+        "U14"
+      ],
+      "tags": "Orange Lion Sports Youth Tennis Series Global Elite Series – Vancouver (TBC 3.5Star -U14 (Oct 23-25) Richmond, BC 2026-10-23 to 2026-10-25 Singles Male Female U14 3.5 Star",
+      "category": "junior",
       "entryFee": ""
     },
     {
@@ -230,73 +185,95 @@
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Brampton",
+      "city": "th Brampton",
       "province": "ON",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "RISING STARS",
-        "U10"
+        "U10",
+        "U9"
       ],
-      "tags": "Singles Male Female Mixed doubles U10 Rising Stars",
+      "tags": "PRC - Brampton U9 U10 Rising Stars Oct 23rd-25th Brampton, ON 2026-10-23 to 2026-10-25 Singles Male Female Mixed doubles U10 Rising Stars",
       "category": "junior",
       "entryFee": ""
     },
     {
-      "title": "Hamilton Junior Smash U10 Rookie Oct 24th-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=32F36C55-1EAD-4D88-8ED4-B47285ED6983",
+      "title": "PRC - Eglinton Flats U12 U14 Provincial Circuit Oct 23rd-25th",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=63B05F0B-BFD4-4798-B4BC-6357E25022D8",
       "sourceId": "tennis-canada",
       "sourceName": "Tennis Canada",
-      "startDate": "2026-10-24",
+      "startDate": "2026-10-23",
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Hamilton",
+      "city": "th York",
       "province": "ON",
-      "country": "Canada",
-      "ageDivisions": [
-        "U10"
-      ],
-      "tags": "Singles Male Female U10 Rookie",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "TTC-Langley BS10 Rising Stars (Oct 24)",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=4FA7EBEF-2D65-4DCD-89BE-44B0251FCAC1",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-24",
-      "endDate": "2026-10-24",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Langley",
-      "province": "BC",
-      "country": "Canada",
-      "ageDivisions": [
-        "RISING STARS",
-        "U10"
-      ],
-      "tags": "Singles Male U10 Rising Stars",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "Great West Fall 2Star - B12 and B14 (Oct 24-25)",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=1DA59238-35B3-4729-A84E-6C2D2C528E50",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-24",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Abbotsford",
-      "province": "BC",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "U12",
         "U14"
       ],
-      "tags": "Singles Male U12 U14 2 Star",
+      "tags": "PRC - Eglinton Flats U12 U14 Provincial Circuit Oct 23rd-25th York, ON 2026-10-23 to 2026-10-25 Singles Male Female U12 U14 3 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "SmartVMC Racquetsports ACE Midnight Madness Open 350 Oct 23rd-25th",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=88F678F3-B0C1-4AD0-B88E-40BE2B1A9357",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "th Vaughan",
+      "province": "ON",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [],
+      "tags": "SmartVMC Racquetsports ACE Midnight Madness Open 350 Oct 23rd-25th Vaughan, ON 2026-10-23 to 2026-10-25 Singles Male Female 18+ Open 350",
+      "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "The Tennis School U12 Transition Tour Oct 23rd-25th",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=07CF48BC-DBBF-4EE4-9556-1813FD59B071",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "th Mississauga",
+      "province": "ON",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U12"
+      ],
+      "tags": "The Tennis School U12 Transition Tour Oct 23rd-25th Mississauga, ON 2026-10-23 to 2026-10-25 Singles Male Female U12 2 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "WEEK 43 IQ U14 2 STAR 2026",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=DEF05F5C-78AF-44E5-B844-1B292CA448E2",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "Edmonton",
+      "province": "AB",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U14"
+      ],
+      "tags": "WEEK 43 IQ U14 2 STAR 2026 Edmonton, AB 2026-10-23 to 2026-10-25 Singles Male Female U14 2 Star",
       "category": "junior",
       "entryFee": ""
     },
@@ -311,10 +288,113 @@
       "venueName": "",
       "city": "Bedford",
       "province": "NS",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [],
-      "tags": "Singles Doubles Mixed doubles 18+",
+      "tags": "2026 TNS Fall League (SATC) Bedford, NS 2026-10-24 to 2026-12-13 Singles Doubles Mixed doubles 18+",
       "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "CANCELLED NAT U14 Rookie Oct 24th",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=0C8AE41B-03AA-4180-B541-0EB546B45F1F",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-24",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "th Vineland Station",
+      "province": "ON",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U14"
+      ],
+      "tags": "CANCELLED NAT U14 Rookie Oct 24th Vineland Station, ON 2026-10-24 to 2026-10-24 Singles Male Female U14 Rookie",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "Great West Fall 2Star - B12 and B14 (Oct 24-25)",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=1DA59238-35B3-4729-A84E-6C2D2C528E50",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "Abbotsford",
+      "province": "BC",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U12",
+        "U14"
+      ],
+      "tags": "Great West Fall 2Star - B12 and B14 (Oct 24-25) Abbotsford, BC 2026-10-24 to 2026-10-25 Singles Male U12 U14 2 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "Hamilton Junior Smash U10 Rookie Oct 24th-25th",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=32F36C55-1EAD-4D88-8ED4-B47285ED6983",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "th Hamilton",
+      "province": "ON",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U10"
+      ],
+      "tags": "Hamilton Junior Smash U10 Rookie Oct 24th-25th Hamilton, ON 2026-10-24 to 2026-10-25 Singles Male Female U10 Rookie",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "TOURNOI 18 ANS - OCT - Carrefour Multisports",
+      "officialUrl": "https://tq.tournamentsoftware.com/sport/tournament.aspx?id=6FB3C2C1-A12C-4E74-BFA1-E2263B617DE8",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "ANS - OCT - Carrefour Multisports Laval",
+      "province": "QC",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U18"
+      ],
+      "tags": "TOURNOI 18 ANS - OCT - Carrefour Multisports Laval, QC 2026-10-24 to 2026-10-25 Singles Male Female U18 3 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "TTC-Langley BS10 Rising Stars (Oct 24)",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=4FA7EBEF-2D65-4DCD-89BE-44B0251FCAC1",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-24",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "Langley",
+      "province": "BC",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "RISING STARS",
+        "U10"
+      ],
+      "tags": "TTC-Langley BS10 Rising Stars (Oct 24) Langley, BC 2026-10-24 to 2026-10-24 Singles Male U10 Rising Stars",
+      "category": "junior",
       "entryFee": ""
     },
     {
@@ -328,11 +408,12 @@
       "venueName": "",
       "city": "Surrey",
       "province": "BC",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "U12"
       ],
-      "tags": "Singles Male Female U12 2 Star",
+      "tags": "TTC-Surrey Fall 2Star - U12 (Oct 24-25) Surrey, BC 2026-10-24 to 2026-10-25 Singles Male Female U12 2 Star",
       "category": "junior",
       "entryFee": ""
     },
@@ -345,52 +426,15 @@
       "endDate": "2026-10-24",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Boucherville",
+      "city": "ANS - OCT - Sani Sport Boucherville Boucherville",
       "province": "QC",
+      "state": "",
       "country": "Canada",
       "ageDivisions": [
         "RISING STARS",
         "U10"
       ],
-      "tags": "Singles Mixed doubles U10 Rising Stars",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "CANCELLED NAT U14 Rookie Oct 24th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=0C8AE41B-03AA-4180-B541-0EB546B45F1F",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-24",
-      "endDate": "2026-10-24",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Vineland Station",
-      "province": "ON",
-      "country": "Canada",
-      "ageDivisions": [
-        "U14"
-      ],
-      "tags": "Singles Male Female U14 Rookie",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "TOURNOI 18 ANS - OCT - Carrefour Multisports",
-      "officialUrl": "https://tq.tournamentsoftware.com/sport/tournament.aspx?id=6FB3C2C1-A12C-4E74-BFA1-E2263B617DE8",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-24",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Laval",
-      "province": "QC",
-      "country": "Canada",
-      "ageDivisions": [
-        "U18"
-      ],
-      "tags": "Singles Male Female U18 3 Star",
+      "tags": "ÉTOILES MONTANTES 9 ANS - OCT - Sani Sport Boucherville Boucherville, QC 2026-10-24 to 2026-10-24 Singles Mixed doubles U10 Rising Stars",
       "category": "junior",
       "entryFee": ""
     }
