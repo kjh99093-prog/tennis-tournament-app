@@ -209,7 +209,7 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
               </div>
             </div>
           )}
-        </div>
+        </div>}
 
         {/* Category: Age & Level Badges + Divisions */}
         <div className="flex items-center gap-1.5 mt-2 flex-wrap">
