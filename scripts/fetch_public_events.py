@@ -24,9 +24,11 @@ CANADA_URL = "https://www.tenniscanada.com/tournaments/"
 TC_SOFTWARE_URL = "https://tc.tournamentsoftware.com/find"
 UTR_URL = "https://app.utrsports.net/events"
 USTA_URLS = [
+    # National tournament discovery/search (official, filterable national index).
     "https://playtennis.usta.com/Tournaments",
+    # National USTA tournament listing, which is server-rendered for crawlers.
     "https://playtennis.usta.com/competitions/USTA/Tournaments/",
-    # USTA legacy searchable schedule; official page includes a server-rendered search/results table.
+    # Legacy advanced search route retained as a fallback.
     "https://tdndownload.usta.com/tournaments/Schedule/Search.aspx",
 ]
 ITF_URLS = [
@@ -209,31 +211,47 @@ def main():
         *[(url, "ITF Tournament Calendar", "itf", "United States") for url in ITF_URLS],
     ]
     successful_ids = set()
-    usta_done = False
-    itf_success = False
+    # Collect from every official USTA/ITF route instead of stopping at the first
+    # page that returns results; national and junior/pro calendars are different
+    # collections and should be merged before deduplication.
+    grouped = {}
     for url, name, source_id, country in sources:
-        if source_id == "usta" and usta_done:
-            continue
-        if source_id == "itf" and itf_success:
-            continue
         soup, error = fetch_html(url)
         found = parse_cards(soup, source_id, name, country, url) if soup else []
+        bucket = grouped.setdefault(source_id, {"found": [], "errors": [], "urls": [], "names": []})
+        bucket["urls"].append(url)
+        bucket["names"].append(name)
+        if found:
+            bucket["found"].extend(found)
+            print(f"[{name}] parsed {len(found)} events")
+        else:
+            bucket["errors"].append(error or "Page loaded but no dated tournament cards matched the parser.")
+            print(f"[{name}] no dated events parsed")
+    for source_id, bucket in grouped.items():
+        found = dedupe(bucket["found"])
+        old = [e for e in old_events if e.get("sourceId") == source_id]
         if found:
             events.extend(found)
             successful_ids.add(source_id)
-            if source_id == "usta":
-                usta_done = True
-            if source_id == "itf":
-                itf_success = True
-            source_results.append({"name": name, "url": url, "status": "success", "eventsCount": len(found), "note": ""})
-            print(f"[{name}] parsed {len(found)} events")
+            source_results.append({
+                "name": bucket["names"][0],
+                "url": bucket["urls"][0],
+                "status": "success",
+                "eventsCount": len(found),
+                "note": f"Collected across {len(bucket['urls'])} official route(s); duplicate records removed."
+            })
         else:
-            old = [e for e in old_events if e.get("sourceId") == source_id]
             events.extend(old)
-            status = "error" if error else "no-events"
-            note = error or "Page loaded but no dated tournament cards matched the parser; previous records retained."
-            source_results.append({"name": name, "url": url, "status": status, "eventsCount": len(old), "note": note})
-            print(f"[{name}] {status}; retained {len(old)} previous events")
+            status = "error" if all("Page loaded but no dated" not in e for e in bucket["errors"]) else "no-events"
+            note = "; ".join(bucket["errors"][:3]) + (" Previous records retained." if old else "")
+            source_results.append({
+                "name": bucket["names"][0],
+                "url": bucket["urls"][0],
+                "status": status,
+                "eventsCount": len(old),
+                "note": note
+            })
+            print(f"[{bucket['names'][0]}] {status}; retained {len(old)} previous events")
     # Keep prior records from any source that wasn't parsed this run.
     present_ids = {e.get("sourceId") for e in events}
     for event in old_events:
