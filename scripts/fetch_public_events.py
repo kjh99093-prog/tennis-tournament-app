@@ -90,6 +90,9 @@ def parse_event_card(card, source_id, source_name, country, base_url):
     if len(title) < 4 or title.lower() in {"learn more", "read more", "register"}:
         return None
     whole_text = clean(card.get_text(" ", strip=True))
+    # ITF calendars are international; only keep listings explicitly located in the United States.
+    if source_id == "itf" and not (re.search(r"\bUnited States\b|\bUSA\b|\bU\.S\.A\.\b", whole_text, re.I) or US_STATE_RE.search(whole_text)):
+        return None
     start, end = parse_dates(whole_text)
     if not start or not end:
         return None
@@ -151,6 +154,9 @@ def parse_cards(soup, source_id, source_name, country, base_url):
                 if not isinstance(item, dict) or not any(k in item for k in ("startDate", "endDate")):
                     continue
                 title = clean(item.get("name", ""))
+                item_text = json.dumps(item, ensure_ascii=False)
+                if source_id == "itf" and not (re.search(r"\bUnited States\b|\bUSA\b|\bU\.S\.A\.\b", item_text, re.I) or US_STATE_RE.search(item_text)):
+                    continue
                 start, end = parse_dates(f"{item.get('startDate', '')} {item.get('endDate', '')}")
                 if not title or not start:
                     continue
