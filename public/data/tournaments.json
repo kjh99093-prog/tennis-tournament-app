@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-23T23:20:45.275135+00:00",
+  "updatedAt": "2026-10-23T23:33:42.657111+00:00",
   "sources": [
     {
       "name": "Tennis Canada",
@@ -20,7 +20,7 @@
       "url": "https://playtennis.usta.com/Tournaments",
       "status": "no-events",
       "eventsCount": 4,
-      "note": "Page loaded but no dated tournament cards matched the parser.; Page loaded but no dated tournament cards matched the parser.; HTTPSConnectionPool(host='tdndownload.usta.com', port=443): Max retries exceeded with url: /tournaments/Schedule/Search.aspx (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'tdndownload.usta.com'. (_ssl.c:1010)\"))) Previous records retained."
+      "note": "Page loaded but no dated tournament cards matched the parser.; Page loaded but no dated tournament cards matched the parser. Previous records retained."
     },
     {
       "name": "ITF Tournament Calendar",
