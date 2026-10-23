@@ -28,8 +28,6 @@ USTA_URLS = [
     "https://playtennis.usta.com/Tournaments",
     # National USTA tournament listing, which is server-rendered for crawlers.
     "https://playtennis.usta.com/competitions/USTA/Tournaments/",
-    # Legacy advanced search route retained as a fallback.
-    "https://tdndownload.usta.com/tournaments/Schedule/Search.aspx",
 ]
 ITF_URLS = [
     # Current official ITF calendar routes (old generic slugs return 404).
@@ -146,8 +144,54 @@ def parse_event_card(card, source_id, source_name, country, base_url):
         "ageDivisions": ages, "tags": tags, "category": category, "entryFee": ""
     }
 
+def parse_usta_cards(soup, source_name, base_url):
+    """Parse USTA tournament cards even when the page uses generic div markup."""
+    found, seen = [], set()
+    date_text_re = re.compile(
+        r"(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}\s*(?:[-–—]|to)\s*(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+)?\d{1,2},?\s+20\d{2}",
+        re.I,
+    )
+    for node in soup.find_all(string=date_text_re):
+        parent = node.parent
+        for _ in range(6):
+            if parent is None:
+                break
+            text_value = clean(parent.get_text(" ", strip=True))
+            start, end = parse_dates(text_value)
+            if start and end and len(text_value) < 1800:
+                heading = parent.find(["h1", "h2", "h3", "h4"])
+                title_node = heading
+                if not title_node:
+                    for link in parent.find_all("a", href=True):
+                        label = clean(link.get_text(" ", strip=True))
+                        if len(label) >= 8 and not re.search(r"show events|learn more|register|view details", label, re.I):
+                            title_node = link
+                            break
+                if title_node:
+                    title = clean(title_node.get_text(" ", strip=True))
+                    if len(title) >= 8 and not re.search(r"upcoming tournaments|past tournaments|show events", title, re.I):
+                        loc = re.search(r"([^,]{2,80}),\s*\d{1,6}\s+[^,]+,\s*([A-Z]{2}),\s*\d{5}", text_value)
+                        city, state = (clean(loc.group(1)), loc.group(2)) if loc else ("", "")
+                        event = {
+                            "title": title, "officialUrl": urljoin(base_url, title_node.get("href", "")),
+                            "sourceId": "usta", "sourceName": source_name,
+                            "startDate": start, "endDate": end, "entryDeadline": "",
+                            "venueName": "", "city": city, "province": "", "state": state,
+                            "country": "United States", "ageDivisions": [],
+                            "tags": text_value[:600], "category": "junior" if re.search(r"junior|boys|girls|\bU(?:10|12|14|16|18)\b", title, re.I) else "adult",
+                            "entryFee": "",
+                        }
+                        key = (title.lower(), start, event["officialUrl"])
+                        if key not in seen:
+                            seen.add(key)
+                            found.append(event)
+                        break
+            parent = parent.parent
+    return found
+
+
 def parse_cards(soup, source_id, source_name, country, base_url):
-    found = []
+    found = parse_usta_cards(soup, source_name, base_url) if source_id == "usta" else []
     seen = set()
     # Prefer semantic cards; then inspect links/cards carrying date text.
     candidates = soup.select("article, li, tr, .event, .tournament, .competition, .card, [itemtype*=Event]")
