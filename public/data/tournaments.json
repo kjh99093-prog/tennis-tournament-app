@@ -21,6 +21,20 @@
       "status": "seeded",
       "eventsCount": 4,
       "note": "Four events transcribed from the official USTA listing as a temporary starter set. Live USTA scraper still needs to be fixed; verify registration details on the official listing."
+    },
+    {
+      "name": "ITF Tournament Calendar",
+      "url": "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/",
+      "status": "pending-validation",
+      "eventsCount": 0,
+      "note": "Official ITF calendar parser added; new collection results will be recorded on the next scheduled/manual workflow run."
+    },
+    {
+      "name": "UTR Events",
+      "url": "https://app.utrsports.net/events",
+      "status": "link-only",
+      "eventsCount": 0,
+      "note": "Official event page linked. Automated collection is disabled until an authorized API/feed or written permission is confirmed."
     }
   ],
   "events": [
