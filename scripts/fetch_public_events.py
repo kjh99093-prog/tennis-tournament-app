@@ -25,6 +25,12 @@ TC_SOFTWARE_URL = "https://tc.tournamentsoftware.com/find"
 USTA_URLS = [
     "https://playtennis.usta.com/Tournaments",
     "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+    # USTA legacy searchable schedule; official page includes a server-rendered search/results table.
+    "https://tdndownload.usta.com/tournaments/Schedule/Search.aspx",
+]
+ITF_URLS = [
+    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/",
+    "https://www.itftennis.com/en/tournament-calendar/junior-calendar/",
 ]
 MONTHS = {m.lower(): i for i, m in enumerate(
     ["", "January", "February", "March", "April", "May", "June",
@@ -123,13 +129,39 @@ def parse_cards(soup, source_id, source_name, country, base_url):
     found = []
     seen = set()
     # Prefer semantic cards; then inspect links/cards carrying date text.
-    candidates = soup.select("article, li, .event, .tournament, .competition, .card")
+    candidates = soup.select("article, li, tr, .event, .tournament, .competition, .card, [itemtype*=Event]")
     for node in candidates:
         event = parse_event_card(node, source_id, source_name, country, base_url)
         if event:
             key = (event["title"], event["startDate"], event["officialUrl"])
             if key not in seen:
                 seen.add(key); found.append(event)
+    # Also inspect structured event metadata, when the source provides it.
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            payload = json.loads(script.string or script.get_text())
+        except (json.JSONDecodeError, TypeError):
+            continue
+        objects = payload if isinstance(payload, list) else [payload]
+        for obj in objects:
+            if not isinstance(obj, dict):
+                continue
+            candidates_json = obj.get("@graph", []) if isinstance(obj.get("@graph"), list) else [obj]
+            for item in candidates_json:
+                if not isinstance(item, dict) or not any(k in item for k in ("startDate", "endDate")):
+                    continue
+                title = clean(item.get("name", ""))
+                start, end = parse_dates(f"{item.get('startDate', '')} {item.get('endDate', '')}")
+                if not title or not start:
+                    continue
+                loc = item.get("location", {}) if isinstance(item.get("location"), dict) else {}
+                addr = loc.get("address", {}) if isinstance(loc.get("address"), dict) else {}
+                region = clean(addr.get("addressRegion", ""))
+                city = clean(addr.get("addressLocality", ""))
+                event = {"title": title, "officialUrl": urljoin(base_url, item.get("url", base_url)), "sourceId": source_id, "sourceName": source_name, "startDate": start, "endDate": end or start, "entryDeadline": "", "venueName": clean(loc.get("name", "")), "city": city, "province": region if country == "Canada" else "", "state": region if country == "United States" else "", "country": country, "ageDivisions": [], "tags": "", "category": "adult", "entryFee": ""}
+                key = (event["title"], event["startDate"], event["officialUrl"])
+                if key not in seen:
+                    seen.add(key); found.append(event)
     if not found:
         for node in soup.find_all("a", href=True):
             parent = node
@@ -167,11 +199,15 @@ def main():
         (CANADA_URL, "Tennis Canada", "tennis-canada", "Canada"),
         (TC_SOFTWARE_URL, "Tennis Canada Tournament Software", "tennis-canada-tournamentsoftware", "Canada"),
         *[(url, "USTA Tournaments", "usta", "United States") for url in USTA_URLS],
+        *[(url, "ITF Tournament Calendar", "itf", "United States") for url in ITF_URLS],
     ]
     successful_ids = set()
     usta_done = False
+    itf_success = False
     for url, name, source_id, country in sources:
         if source_id == "usta" and usta_done:
+            continue
+        if source_id == "itf" and itf_success:
             continue
         soup, error = fetch_html(url)
         found = parse_cards(soup, source_id, name, country, url) if soup else []
@@ -180,6 +216,8 @@ def main():
             successful_ids.add(source_id)
             if source_id == "usta":
                 usta_done = True
+            if source_id == "itf":
+                itf_success = True
             source_results.append({"name": name, "url": url, "status": "success", "eventsCount": len(found), "note": ""})
             print(f"[{name}] parsed {len(found)} events")
         else:
