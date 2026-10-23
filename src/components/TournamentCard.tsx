@@ -29,6 +29,9 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
   const saved = isTournamentSaved(tournament.id);
   const status = getTournamentStatus(tournament.id);
   const isCompleted = status === 'completed';
+  // Imported public listings do not include enough player/profile data to calculate a truthful fit score or travel distance yet.
+  const hasCalculatedFit = !tournament.id.startsWith('real-');
+  const locationLabel = [tournament.venueName, tournament.city, tournament.stateProvince].filter(Boolean).join(', ');
 
   // Compute days until deadline
   const today = new Date('2026-10-15');
@@ -124,9 +127,7 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
               {tournament.surface}
             </span>
           </div>
-          <div className="shrink-0">
-            {getFitBadge(tournament.fitScore)}
-          </div>
+          {hasCalculatedFit && <div className="shrink-0">{getFitBadge(tournament.fitScore)}</div>}
         </div>
 
         {/* Title */}
@@ -142,17 +143,14 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
         </h3>
 
         {/* Venue & Location */}
-        <div className="flex items-center gap-1.5 text-xs text-[#AAB9B3] mt-1.5">
+        {(locationLabel || hasCalculatedFit) && <div className="flex items-center gap-1.5 text-xs text-[#AAB9B3] mt-1.5">
           <MapPin className={`w-3.5 h-3.5 shrink-0 ${isCompleted ? 'text-slate-500' : 'text-[#D5FA63]'}`} />
-          <span className="truncate">{tournament.venueName}, {tournament.city}</span>
-          <span className="text-[#354740]">•</span>
-          <span className={`font-medium shrink-0 ${isCompleted ? 'text-slate-400' : 'text-[#6677FF]'}`}>
-            {t('distance_from_base', { distance: tournament.distanceKm })}
-          </span>
-        </div>
+          {locationLabel && <span className="truncate">{locationLabel}</span>}
+          {hasCalculatedFit && <><span className="text-[#354740]">•</span><span className={`font-medium shrink-0 ${isCompleted ? 'text-slate-400' : 'text-[#6677FF]'}`}>{t('distance_from_base', { distance: tournament.distanceKm })}</span></>}
+        </div>}
 
         {/* Prominent Visual Fit Score Percentage Bar before clicking view details */}
-        <div className={`mt-2.5 p-2 rounded-xl border space-y-1.5 ${
+        {hasCalculatedFit && <div className={`mt-2.5 p-2 rounded-xl border space-y-1.5 ${
           isCompleted ? 'bg-slate-900/60 border-slate-800' : 'bg-[#151F24]/75 border-[#354740]/70'
         }`}>
           <div className="flex items-center justify-between text-xs">
