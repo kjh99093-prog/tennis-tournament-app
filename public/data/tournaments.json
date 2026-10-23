@@ -1,33 +1,33 @@
 {
-  "updatedAt": "2026-10-23T00:14:22.479526+00:00",
+  "updatedAt": "2026-10-23T02:47:52.267384+00:00",
   "sources": [
     {
       "name": "Tennis Canada",
       "url": "https://www.tenniscanada.com/tournaments/",
       "status": "success",
       "eventsCount": 20,
-      "note": ""
+      "note": "Collected across 1 official route(s); duplicate records removed."
     },
     {
       "name": "Tennis Canada Tournament Software",
       "url": "https://tc.tournamentsoftware.com/find",
       "status": "no-events",
       "eventsCount": 0,
-      "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
+      "note": "Page loaded but no dated tournament cards matched the parser."
     },
     {
-      "name": "USTA (verified starter events)",
-      "url": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
-      "status": "seeded",
+      "name": "USTA Tournaments",
+      "url": "https://playtennis.usta.com/Tournaments",
+      "status": "no-events",
       "eventsCount": 4,
-      "note": "Four events transcribed from the official USTA listing as a temporary starter set. Live USTA scraper still needs to be fixed; verify registration details on the official listing."
+      "note": "Page loaded but no dated tournament cards matched the parser.; Page loaded but no dated tournament cards matched the parser.; HTTPSConnectionPool(host='tdndownload.usta.com', port=443): Max retries exceeded with url: /tournaments/Schedule/Search.aspx (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'tdndownload.usta.com'. (_ssl.c:1010)\"))) Previous records retained."
     },
     {
       "name": "ITF Tournament Calendar",
       "url": "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/",
-      "status": "pending-validation",
+      "status": "error",
       "eventsCount": 0,
-      "note": "Official ITF calendar parser added; new collection results will be recorded on the next scheduled/manual workflow run."
+      "note": "404 Client Error: Not Found for url: https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/; 404 Client Error: Not Found for url: https://www.itftennis.com/en/tournament-calendar/junior-calendar/"
     },
     {
       "name": "UTR Events",
