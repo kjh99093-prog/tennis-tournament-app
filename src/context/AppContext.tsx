@@ -179,36 +179,71 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [activeModalTournament, setActiveModalTournament] = useState<Tournament | null>(null);
-  const [tournaments, setTournaments] = useState<Tournament[]>(SAMPLE_TOURNAMENTS);
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
 
-useEffect(() => {
-  let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-  async function loadTournaments() {
-    try {
-      const response = await fetch('/data/tournaments.json');
+    async function loadTournaments() {
+      try {
+        const response = await fetch('/data/tournaments.json');
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        const data = await response.json();
+        if (!Array.isArray(data.events)) throw new Error('Tournament JSON does not contain an events array');
 
-      if (!response.ok) {
-        throw new Error(`Request failed: ${response.status}`);
+        const mapped: Tournament[] = data.events
+          .filter((event: any) => event && typeof event.title === 'string' && event.title.trim() && event.officialUrl)
+          .map((event: any, index: number) => {
+            const ages: string[] = Array.isArray(event.ageDivisions) ? event.ageDivisions : [];
+            const inferredCategory = event.category === 'junior' || event.category === 'adult'
+              ? event.category
+              : (ages.some((age) => /^U\d+|RISING STARS/i.test(age)) ? 'junior' : 'adult');
+            const country = event.country === 'United States' ? 'United States' : 'Canada';
+            const sanctioningBody: Tournament['sanctioningBody'] =
+              event.sourceId === 'usta' ? 'USTA' :
+              event.sourceId === 'tennis-bc' ? 'Tennis BC' : 'Tennis Canada';
+            const rawLevel = (typeof event.tags === 'string' && event.tags.match(/\b(?:\d+(?:\.\d+)?\s*Star|\d+\s*Star|NTRP\s*[\d.]+|Level\s*\d+)\b/i)?.[0]) || '';
+            return {
+              id: `real-${event.sourceId || 'tournament'}-${event.startDate || 'undated'}-${index}`,
+              title: event.title,
+              sanctioningBody,
+              officialUrl: event.officialUrl,
+              sourceId: event.sourceId || '',
+              venueName: event.venueName || '',
+              address: '',
+              city: event.city || '',
+              stateProvince: event.province || event.state || '',
+              country,
+              distanceKm: 0,
+              category: inferredCategory,
+              ageDivisions: ages,
+              ageCategory: ages.join(', '),
+              levelCategory: rawLevel,
+              surface: '' as Tournament['surface'],
+              indoor: false,
+              startDate: event.startDate || '',
+              endDate: event.endDate || '',
+              entryDeadline: event.entryDeadline || '',
+              entryFee: event.entryFee || '',
+              fitScore: 0,
+              fitFactors: { distanceFit: 0, surfaceFit: 0, ratingFit: 0, categoryFit: 0 },
+            };
+          });
+
+        if (!cancelled && mapped.length > 0) {
+          setTournaments(mapped);
+          console.log('AURA real tournament data loaded:', mapped.length);
+        } else if (!cancelled) {
+          console.warn('Tournament JSON returned no events; keeping current list.');
+        }
+      } catch (error) {
+        console.error('Could not load tournament JSON; keeping current list:', error);
       }
-
-      const data = await response.json();
-
-      console.log(
-        'AURA tournament JSON loaded:',
-        Array.isArray(data.events) ? data.events.length : 0
-      );
-    } catch (error) {
-      console.error('Could not load tournament JSON:', error);
     }
-  }
 
-  loadTournaments();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
+    loadTournaments();
+    return () => { cancelled = true; };
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<'All' | 'Canada' | 'United States'>('All');
   const [selectedSurface, setSelectedSurface] = useState<string>('All');
