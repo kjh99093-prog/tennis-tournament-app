@@ -22,6 +22,7 @@ HEADERS = {
 TIMEOUT = 25
 CANADA_URL = "https://www.tenniscanada.com/tournaments/"
 TC_SOFTWARE_URL = "https://tc.tournamentsoftware.com/find"
+UTR_URL = "https://app.utrsports.net/events"
 USTA_URLS = [
     "https://playtennis.usta.com/Tournaments",
     "https://playtennis.usta.com/competitions/USTA/Tournaments/",
@@ -240,6 +241,14 @@ def main():
         if sid not in successful_ids and sid not in present_ids:
             events.append(event)
     events = dedupe(events)
+    # UTR is intentionally link-only until an authorized API/feed or permission is confirmed.
+    source_results.append({
+        "name": "UTR Events",
+        "url": UTR_URL,
+        "status": "link-only",
+        "eventsCount": len([e for e in events if e.get("sourceId") == "utr"]),
+        "note": "Official event page linked. Automated collection is disabled until an authorized API/feed or written permission is confirmed."
+    })
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     output = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
