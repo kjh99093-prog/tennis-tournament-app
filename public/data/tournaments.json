@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-23T02:47:52.267384+00:00",
+  "updatedAt": "2026-10-23T23:20:45.275135+00:00",
   "sources": [
     {
       "name": "Tennis Canada",
@@ -24,10 +24,10 @@
     },
     {
       "name": "ITF Tournament Calendar",
-      "url": "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/",
-      "status": "error",
+      "url": "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-mens-calendar/",
+      "status": "no-events",
       "eventsCount": 0,
-      "note": "404 Client Error: Not Found for url: https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/; 404 Client Error: Not Found for url: https://www.itftennis.com/en/tournament-calendar/junior-calendar/"
+      "note": "404 Client Error: Not Found for url: https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-mens-calendar/; 404 Client Error: Not Found for url: https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-womens-calendar/; Page loaded but no dated tournament cards matched the parser."
     },
     {
       "name": "UTR Events",
@@ -38,26 +38,6 @@
     }
   ],
   "events": [
-    {
-      "title": "SmartVMC Racquetsports ACE U16 Provincial Circuit Plus Oct 22nd-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=205EDF2D-5A68-4C3D-8A39-00D2CBD54D94",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-22",
-      "endDate": "2026-10-25",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "th Vaughan",
-      "province": "ON",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [
-        "U16"
-      ],
-      "tags": "SmartVMC Racquetsports ACE U16 Provincial Circuit Plus Oct 22nd-25th Vaughan, ON 2026-10-22 to 2026-10-25 Singles Male Female U16 3.5 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
     {
       "title": "2026 October WTN Singles and Doubles",
       "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=BBC5498B-2CE2-487C-AC43-579751F54347",
@@ -362,22 +342,42 @@
       "entryFee": ""
     },
     {
-      "title": "Hamilton Junior Smash U10 Rookie Oct 24th-25th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=32F36C55-1EAD-4D88-8ED4-B47285ED6983",
+      "title": "TOURNOI 14 ANS - OCT - Drummondville",
+      "officialUrl": "https://tq.tournamentsoftware.com/sport/tournament.aspx?id=09FDDAE7-AC76-4B28-B60E-0DB63FAAF422",
       "sourceId": "tennis-canada",
       "sourceName": "Tennis Canada",
       "startDate": "2026-10-24",
       "endDate": "2026-10-25",
       "entryDeadline": "",
       "venueName": "",
-      "city": "th Hamilton",
-      "province": "ON",
+      "city": "ANS - OCT - Drummondville Drummondville",
+      "province": "QC",
       "state": "",
       "country": "Canada",
       "ageDivisions": [
-        "U10"
+        "U14"
       ],
-      "tags": "Hamilton Junior Smash U10 Rookie Oct 24th-25th Hamilton, ON 2026-10-24 to 2026-10-25 Singles Male Female U10 Rookie",
+      "tags": "TOURNOI 14 ANS - OCT - Drummondville Drummondville, QC 2026-10-24 to 2026-10-25 Singles Male Female U14 3 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "TOURNOI 14 ANS - OCT - Île-des-Soeurs",
+      "officialUrl": "https://tq.tournamentsoftware.com/sport/tournament.aspx?id=F0D241DA-8B57-4276-A12C-0DAC24EDB434",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-24",
+      "endDate": "2026-10-25",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "ANS - OCT - Île-des-Soeurs Verdun",
+      "province": "QC",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U14"
+      ],
+      "tags": "TOURNOI 14 ANS - OCT - Île-des-Soeurs Verdun, QC 2026-10-24 to 2026-10-25 Singles Male Female U14 3.5 Star",
       "category": "junior",
       "entryFee": ""
     },
