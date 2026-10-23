@@ -2,6 +2,10 @@
 name: AURA Tournament Data Update
 
 on:
+  push:
+    paths:
+      - 'scripts/fetch_public_events.py'
+      - '.github/workflows/main.yml'
   schedule:
     - cron: '0 16 1,15 * *'
   workflow_dispatch:
