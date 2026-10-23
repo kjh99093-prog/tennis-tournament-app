@@ -262,7 +262,7 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
           </div>
         </div>
 
-        <div>
+        {tournament.entryDeadline && <div>
           <span className="text-[10px] uppercase text-[#AAB9B3] font-bold tracking-wider block">
             {t('deadline')}
           </span>
@@ -286,7 +286,7 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
               </span>
             )}
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* Bottom actions: Details, Save, Official Link */}
