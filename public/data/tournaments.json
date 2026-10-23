@@ -16,18 +16,11 @@
       "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
     },
     {
-      "name": "USTA Tournaments",
-      "url": "https://playtennis.usta.com/Tournaments",
-      "status": "no-events",
-      "eventsCount": 0,
-      "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
-    },
-    {
-      "name": "USTA Tournaments",
+      "name": "USTA (verified starter events)",
       "url": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
-      "status": "no-events",
-      "eventsCount": 0,
-      "note": "Page loaded but no dated tournament cards matched the parser; previous records retained."
+      "status": "seeded",
+      "eventsCount": 4,
+      "note": "Four events transcribed from the official USTA listing as a temporary starter set. Live USTA scraper still needs to be fixed; verify registration details on the official listing."
     }
   ],
   "events": [
@@ -278,6 +271,24 @@
       "entryFee": ""
     },
     {
+      "title": "Tennis on Campus Tournament: 2026 National Fall West Coast Invite",
+      "officialUrl": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+      "sourceId": "usta",
+      "sourceName": "USTA",
+      "startDate": "2026-10-23",
+      "endDate": "2026-10-25",
+      "entryDeadline": "2026-10-19",
+      "venueName": "Scottsdale Ranch Park Tennis Center",
+      "city": "Scottsdale",
+      "province": "",
+      "state": "AZ",
+      "country": "United States",
+      "ageDivisions": [],
+      "tags": "Coed; Tennis on Campus; official USTA listing; Scottsdale, AZ",
+      "category": "adult",
+      "entryFee": "$0.00"
+    },
+    {
       "title": "2026 TNS Fall League (SATC)",
       "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=0EDEA553-B4FD-4669-B2E0-2B8533A65B77",
       "sourceId": "tennis-canada",
@@ -437,6 +448,77 @@
       "tags": "ÉTOILES MONTANTES 9 ANS - OCT - Sani Sport Boucherville Boucherville, QC 2026-10-24 to 2026-10-24 Singles Mixed doubles U10 Rising Stars",
       "category": "junior",
       "entryFee": ""
+    },
+    {
+      "title": "Level 1: Orange Bowl International Tennis Championship (16 & Under)",
+      "officialUrl": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+      "sourceId": "usta",
+      "sourceName": "USTA",
+      "startDate": "2026-12-06",
+      "endDate": "2026-12-13",
+      "entryDeadline": "2026-11-10",
+      "venueName": "Jimmy Evert Tennis Center",
+      "city": "Fort Lauderdale",
+      "province": "",
+      "state": "FL",
+      "country": "United States",
+      "ageDivisions": [
+        "U16"
+      ],
+      "tags": "Level 1; Boys; Girls; official USTA listing; Fort Lauderdale, FL",
+      "category": "junior",
+      "entryFee": "$124.15"
+    },
+    {
+      "title": "Level 2: USTA/World Tennis Masters Championship (55-95)",
+      "officialUrl": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+      "sourceId": "usta",
+      "sourceName": "USTA",
+      "startDate": "2026-12-10",
+      "endDate": "2026-12-13",
+      "entryDeadline": "2026-11-15",
+      "venueName": "USTA National Campus",
+      "city": "Orlando",
+      "province": "",
+      "state": "FL",
+      "country": "United States",
+      "ageDivisions": [
+        "55+",
+        "60+",
+        "65+",
+        "70+",
+        "75+",
+        "80+",
+        "85+",
+        "90+"
+      ],
+      "tags": "Level 2; Men; Women; official USTA listing; Orlando, FL",
+      "category": "adult",
+      "entryFee": "$100.00 - $175.00"
+    },
+    {
+      "title": "Level 2: USTA/World Tennis Masters Championship (Open, 30-50)",
+      "officialUrl": "https://playtennis.usta.com/competitions/USTA/Tournaments/",
+      "sourceId": "usta",
+      "sourceName": "USTA",
+      "startDate": "2026-12-10",
+      "endDate": "2026-12-13",
+      "entryDeadline": "2026-11-15",
+      "venueName": "USTA National Campus",
+      "city": "Orlando",
+      "province": "",
+      "state": "FL",
+      "country": "United States",
+      "ageDivisions": [
+        "30+",
+        "35+",
+        "40+",
+        "45+",
+        "50+"
+      ],
+      "tags": "Level 2; Men; Women; official USTA listing; Orlando, FL",
+      "category": "adult",
+      "entryFee": "$100.00 - $175.00"
     }
   ]
 }
