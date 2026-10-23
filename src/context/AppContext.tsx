@@ -7,7 +7,6 @@ import {
   MatchNote,
   Tournament
 } from '../types';
-import { SAMPLE_TOURNAMENTS } from '../data/sampleTournaments';
 
 interface AppContextType {
   activeTab: 'dashboard' | 'events' | 'profile' | 'notes';
@@ -201,6 +200,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             const country = event.country === 'United States' ? 'United States' : 'Canada';
             const sanctioningBody: Tournament['sanctioningBody'] =
               event.sourceId === 'usta' ? 'USTA' :
+              event.sourceId === 'itf' ? 'ITF' :
+              event.sourceId === 'utr' ? 'UTR' :
               event.sourceId === 'tennis-bc' ? 'Tennis BC' : 'Tennis Canada';
             const rawLevel = (typeof event.tags === 'string' && event.tags.match(/\b(?:\d+(?:\.\d+)?\s*Star|\d+\s*Star|NTRP\s*[\d.]+|Level\s*\d+)\b/i)?.[0]) || '';
             return {
@@ -215,7 +216,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               stateProvince: event.province || event.state || '',
               country,
               distanceKm: 0,
-              category: inferredCategory,
+              category: event.category === 'both' ? 'both' : inferredCategory,
               ageDivisions: ages,
               ageCategory: ages.join(', '),
               levelCategory: rawLevel,
