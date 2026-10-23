@@ -34,9 +34,9 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
   const locationLabel = [tournament.venueName, tournament.city, tournament.stateProvince].filter(Boolean).join(', ');
 
   // Compute days until deadline
-  const today = new Date('2026-10-15');
-  const deadlineDate = new Date(tournament.entryDeadline);
-  const diffTime = deadlineDate.getTime() - today.getTime();
+  const today = new Date();
+  const deadlineDate = tournament.entryDeadline ? new Date(tournament.entryDeadline) : null;
+  const diffTime = deadlineDate ? deadlineDate.getTime() - today.getTime() : Number.NaN;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   const isDeadlineSoon = diffDays > 0 && diffDays <= 7;
