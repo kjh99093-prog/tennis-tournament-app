@@ -32,8 +32,10 @@ USTA_URLS = [
     "https://tdndownload.usta.com/tournaments/Schedule/Search.aspx",
 ]
 ITF_URLS = [
-    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-calendar/",
-    "https://www.itftennis.com/en/tournament-calendar/junior-calendar/",
+    # Current official ITF calendar routes (old generic slugs return 404).
+    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-mens-calendar/",
+    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-womens-calendar/",
+    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-juniors-calendar/",
 ]
 MONTHS = {m.lower(): i for i, m in enumerate(
     ["", "January", "February", "March", "April", "May", "June",
@@ -44,7 +46,9 @@ US_STATE_RE = re.compile(r"\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY
 DATE_PATTERNS = [
     re.compile(r"\b(20\d{2}-\d{2}-\d{2})\s*(?:to|[-–—])\s*(20\d{2}-\d{2}-\d{2})\b", re.I),
     re.compile(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:\s*[-–—]\s*(\d{1,2}))?,?\s+(20\d{2})\b", re.I),
-    re.compile(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),?\s*[-–—]\s*(January|February|March|April|May|June|July|August|September|October|November|December)?\s*(\d{1,2}),?\s+(20\d{2})\b", re.I),
+    re.compile(r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),?\s*[-–—]\s*(January|February|March|April|May|June|July|August|September|October|November|December)?\s*(\d{1,2}),?\s+(20\d{2})\b", re.I),,
+    # ITF calendar format: "28 Sep to 03 Oct 2026".
+    re.compile(r"\b(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s*(?:to|[-–—])\s*(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+(20\d{2})\b", re.I)
 ]
 
 def clean(value):
@@ -81,6 +85,17 @@ def parse_dates(text):
         try:
             return date(year, sm, start).isoformat(), date(year, em, end).isoformat()
         except ValueError:
+            return "", ""
+    m = DATE_PATTERNS[3].search(text)
+    if m:
+        month_map = {name[:3].lower(): number for number, name in enumerate(
+            ["", "January", "February", "March", "April", "May", "June",
+             "July", "August", "September", "October", "November", "December"]) if name}
+        start_month = month_map.get(m.group(2).lower()[:3])
+        end_month = month_map.get(m.group(4).lower()[:3])
+        try:
+            return date(int(m.group(5)), start_month, int(m.group(1))).isoformat(), date(int(m.group(5)), end_month, int(m.group(3))).isoformat()
+        except (ValueError, TypeError):
             return "", ""
     iso = re.findall(r"\b20\d{2}-\d{2}-\d{2}\b", text)
     return (iso[0], iso[-1]) if iso else ("", "")
