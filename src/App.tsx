@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { AppProvider, useApp } from './context/AppContext';
@@ -14,9 +14,17 @@ import { MyEventsView } from './components/MyEventsView';
 import { ProfileView } from './components/ProfileView';
 import { NotesView } from './components/NotesView';
 import { TournamentModal } from './components/TournamentModal';
+import { Onboarding } from './components/Onboarding';
 
 const AppContent: React.FC = () => {
   const { activeTab } = useApp();
+  const [setupComplete, setSetupComplete] = useState(() => {
+    try {
+      return localStorage.getItem('aura_tennis_setup_complete') === 'true' || Boolean(localStorage.getItem('aura_tennis_profile'));
+    } catch { return false; }
+  });
+
+  if (!setupComplete) return <Onboarding onComplete={() => setSetupComplete(true)} />;
 
   return (
     <div className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex flex-col font-sans transition-colors duration-200">
