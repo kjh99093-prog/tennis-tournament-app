@@ -29,8 +29,8 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
   const saved = isTournamentSaved(tournament.id);
   const status = getTournamentStatus(tournament.id);
   const isCompleted = status === 'completed';
-  // Imported public listings do not include enough player/profile data to calculate a truthful fit score or travel distance yet.
-  const hasCalculatedFit = !tournament.id.startsWith('real-');
+  // Real listings show a fit score only when at least one profile factor can be compared.
+  const hasCalculatedFit = (tournament as Tournament & { fitScoreAvailable?: boolean }).fitScoreAvailable ?? !tournament.id.startsWith('real-');
   const locationLabel = [tournament.venueName, tournament.city, tournament.stateProvince].filter(Boolean).join(', ');
 
   // Compute days until deadline
