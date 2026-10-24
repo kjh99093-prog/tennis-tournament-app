@@ -24,7 +24,7 @@ function saveSession(session: AuthSession | null) {
 async function request(path: string, body?: unknown, accessToken?: string) {
   if (!API_KEY) throw new Error('Supabase key is missing. Add VITE_SUPABASE_PUBLISHABLE_KEY in Vercel.');
   const response = await fetch(`${PROJECT_URL}${path}`, {
-    method: body === undefined ? 'GET' : 'POST',
+    method: 'POST',
     headers: { apikey: API_KEY, 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
