@@ -26,7 +26,7 @@ HEADERS = {
 TIMEOUT = 25
 CANADA_URL = "https://www.tenniscanada.com/tournaments/"
 TC_SOFTWARE_URL = "https://tc.tournamentsoftware.com/find"
-UTR_URL = "https://app.utrsports.net/events"
+UTR_URLS = ["https://app.utrsports.net/rankings/tennis-tournaments/usa", "https://app.utrsports.net/rankings/tennis-tournaments/canada"]
 USTA_URLS = [
     # National tournament discovery/search (official, filterable national index).
     "https://playtennis.usta.com/Tournaments",
@@ -58,7 +58,7 @@ def clean(value):
 
 def fetch_html(url):
     """Fetch rendered public pages where tournament cards are populated by JavaScript."""
-    if sync_playwright and ("playtennis.usta.com" in url or "itftennis.com" in url):
+    if sync_playwright and ("playtennis.usta.com" in url or "itftennis.com" in url or "utrsports.net" in url):
         try:
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True)
@@ -249,10 +249,74 @@ def parse_itf_rows(soup, source_name, base_url):
     return found
 
 
+def parse_utr_cards(soup, source_name, base_url, country):
+    """Extract public UTR event cards without using an API."""
+    found, seen = [], set()
+    month_map = {name[:3].lower(): number for number, name in enumerate(
+        ["", "January", "February", "March", "April", "May", "June",
+         "July", "August", "September", "October", "November", "December"]) if name}
+    date_re = re.compile(
+        r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})(?:\s*[-–—]\s*(?:(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+)?(\d{1,2}))?(?:,?\s+(20\d{2}))?\b",
+        re.I,
+    )
+    for link in soup.find_all("a", href=True):
+        href = link.get("href", "")
+        if not re.search(r"/events?/|/event/|/tournament", href, re.I):
+            continue
+        title = clean(link.get_text(" ", strip=True))
+        if len(title) < 5 or title.lower() in {"view event", "learn more", "register"}:
+            continue
+        node, card_text = link, ""
+        for _ in range(5):
+            if node.parent is None:
+                break
+            node = node.parent
+            candidate = clean(node.get_text(" ", strip=True))
+            if len(candidate) < 1800 and date_re.search(candidate):
+                card_text = candidate
+                break
+        match = date_re.search(card_text)
+        if not match:
+            continue
+        try:
+            sm = month_map[match.group(1).lower()[:3]]
+            start_day = int(match.group(2))
+            em = month_map[(match.group(3) or match.group(1)).lower()[:3]]
+            end_day = int(match.group(4) or start_day)
+            year = int(match.group(5) or datetime.now(timezone.utc).year)
+            start = date(year, sm, start_day)
+            end = date(year + (1 if em < sm else 0), em, end_day)
+        except (ValueError, TypeError, KeyError):
+            continue
+        detected_country = country
+        location = re.search(r"([A-Za-zÀ-ÿ .'-]+),\s*(Canada|United States|USA)\b", card_text, re.I)
+        city = clean(location.group(1)) if location else ""
+        if location and location.group(2).lower() == "canada":
+            detected_country = "Canada"
+        elif location:
+            detected_country = "United States"
+        official_url = urljoin(base_url, href)
+        category = "junior" if re.search(r"\b(junior|boys|girls|U(?:10|12|14|16|18))\b", card_text + " " + title, re.I) else "adult"
+        event = {
+            "title": title, "officialUrl": official_url, "sourceId": "utr",
+            "sourceName": source_name, "startDate": start.isoformat(), "endDate": end.isoformat(),
+            "entryDeadline": "", "venueName": "", "city": city, "province": "", "state": "",
+            "country": detected_country, "ageDivisions": [], "tags": card_text[:600],
+            "category": category, "entryFee": "",
+        }
+        key = (title.lower(), event["startDate"], official_url)
+        if key not in seen:
+            seen.add(key)
+            found.append(event)
+    return found
+
+
 def parse_cards(soup, source_id, source_name, country, base_url):
     found = parse_usta_cards(soup, source_name, base_url) if source_id == "usta" else []
     if source_id == "itf":
         found.extend(parse_itf_rows(soup, source_name, base_url))
+    if source_id == "utr":
+        found.extend(parse_utr_cards(soup, source_name, base_url, country))
     seen = set()
     # Prefer semantic cards; then inspect links/cards carrying date text.
     candidates = soup.select("article, li, tr, .event, .tournament, .competition, .card, [itemtype*=Event]")
@@ -328,7 +392,9 @@ def main():
         (CANADA_URL, "Tennis Canada", "tennis-canada", "Canada"),
         (TC_SOFTWARE_URL, "Tennis Canada Tournament Software", "tennis-canada-tournamentsoftware", "Canada"),
         *[(url, "USTA Tournaments", "usta", "United States") for url in USTA_URLS],
-        *[(url, "ITF Tournament Calendar", "itf", "United States") for url in ITF_URLS],
+        *[(url, "ITF Tournament Calendar", "itf", "International") for url in ITF_URLS],
+        (UTR_URLS[0], "UTR US Tournament Listings", "utr", "United States"),
+        (UTR_URLS[1], "UTR Canada Tournament Listings", "utr", "Canada"),
     ]
     successful_ids = set()
     # Collect from every official USTA/ITF route instead of stopping at the first
@@ -379,14 +445,6 @@ def main():
         if sid not in successful_ids and sid not in present_ids:
             events.append(event)
     events = dedupe(events)
-    # UTR is intentionally link-only until an authorized API/feed or permission is confirmed.
-    source_results.append({
-        "name": "UTR Events",
-        "url": UTR_URL,
-        "status": "link-only",
-        "eventsCount": len([e for e in events if e.get("sourceId") == "utr"]),
-        "note": "Official event page linked. Automated collection is disabled until an authorized API/feed or written permission is confirmed."
-    })
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     output = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
