@@ -15,6 +15,64 @@ import {
   X
 } from 'lucide-react';
 
+const calculateProfileFit = (tournament: any, profile: any, category: string) => {
+  const factors: { distanceFit: number; surfaceFit: number; ratingFit: number; categoryFit: number } = {
+    distanceFit: 0, surfaceFit: 0, ratingFit: 0, categoryFit: 0
+  };
+  const weights = { distanceFit: 20, surfaceFit: 15, ratingFit: 25, categoryFit: 40 };
+  const available: Array<keyof typeof factors> = [];
+
+  if (tournament.category === 'both' || tournament.category === category) {
+    factors.categoryFit = 100;
+    available.push('categoryFit');
+  } else if (tournament.category) {
+    factors.categoryFit = 0;
+    available.push('categoryFit');
+  }
+  const age = String(profile.ageGroup || '').toUpperCase().match(/U\d{1,2}|18\+|30\+|35\+|40\+|45\+|50\+|OPEN/);
+  const divisions = Array.isArray(tournament.ageDivisions) ? tournament.ageDivisions.map((v: string) => String(v).toUpperCase()) : [];
+  if (divisions.length && age) {
+    factors.categoryFit = Math.round((factors.categoryFit + (divisions.some((v: string) => v.includes(age[0])) ? 100 : 0)) / 2);
+  }
+
+  const homeCity = String(profile.homeCity || '').trim().toLowerCase();
+  const homeRegion = String(profile.homeProvinceState || '').trim().toLowerCase();
+  const city = String(tournament.city || '').trim().toLowerCase();
+  const region = String(tournament.stateProvince || '').trim().toLowerCase();
+  if (city || region) {
+    factors.distanceFit = city && homeCity && city === homeCity ? 100
+      : region && homeRegion && region === homeRegion ? 80
+      : tournament.country === profile.homeCountry ? 55 : 20;
+    available.push('distanceFit');
+  }
+
+  const preferredSurfaces = Array.isArray(profile.preferredSurfaces) ? profile.preferredSurfaces : [];
+  if (tournament.surface) {
+    factors.surfaceFit = preferredSurfaces.some((surface: string) =>
+      String(surface).toLowerCase() === String(tournament.surface).toLowerCase()
+    ) ? 100 : 30;
+    available.push('surfaceFit');
+  }
+
+  const eventLevel = String(tournament.levelCategory || '');
+  const profileLevel = String(profile.utrRating || '') + ' ' + String(profile.nationalRating || '');
+  if (eventLevel && profileLevel.trim()) {
+    const numbers = (value: string) => value.match(/\d+(?:\.\d+)?/g) || [];
+    const eventNumbers = numbers(eventLevel);
+    const profileNumbers = numbers(profileLevel);
+    factors.ratingFit = eventNumbers.length && profileNumbers.length
+      ? (eventNumbers.some((n: string) => profileNumbers.includes(n)) ? 100 : 45)
+      : 60;
+    available.push('ratingFit');
+  }
+
+  const totalWeight = available.reduce((sum, key) => sum + weights[key], 0);
+  const fitScore = totalWeight
+    ? Math.round(available.reduce((sum, key) => sum + factors[key] * weights[key], 0) / totalWeight)
+    : 0;
+  return { ...tournament, fitScore, fitFactors: factors, fitScoreAvailable: available.length > 0 };
+};
+
 export const DashboardView: React.FC = () => {
   const {
     tournaments,
@@ -66,8 +124,10 @@ export const DashboardView: React.FC = () => {
     ];
   }, [category]);
 
+  const scoredTournaments = useMemo(() => tournaments.map((tournament) => calculateProfileFit(tournament, playerProfile, category)), [tournaments, playerProfile, category]);
+
   const filteredTournaments = useMemo(() => {
-    return tournaments
+    return scoredTournaments
       .filter((t) => {
         // Filter by Junior / Adult category
         if (category === 'junior' && t.category === 'adult') return false;
@@ -120,7 +180,7 @@ export const DashboardView: React.FC = () => {
         if (sortBy === 'distance') return a.distanceKm - b.distanceKm;
         return 0;
       });
-  }, [tournaments, category, selectedCountry, selectedSurface, selectedAge, selectedLevel, searchQuery, sortBy]);
+  }, [scoredTournaments, category, selectedCountry, selectedSurface, selectedAge, selectedLevel, searchQuery, sortBy]);
 
   const handleResetFilters = () => {
     setSearchQuery('');
