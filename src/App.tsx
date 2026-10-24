@@ -16,7 +16,8 @@ import { NotesView } from './components/NotesView';
 import { TournamentModal } from './components/TournamentModal';
 import { Onboarding } from './components/Onboarding';
 import { AuthScreen } from './components/AuthScreen';
-import { readSession, signOut, AuthSession } from './lib/supabase';
+import { readSession, signOut } from './lib/supabase';
+import type { AuthSession } from './lib/supabase';
 
 const AppContent: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const { activeTab, setCategory, updatePlayerProfile } = useApp();
