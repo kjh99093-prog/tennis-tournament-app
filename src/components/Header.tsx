@@ -1,12 +1,10 @@
 
 import React from 'react';
-import { useApp } from '../context/AppContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
-import { Trophy, UserCheck, Sun, Moon } from 'lucide-react';
+import { Trophy, Sun, Moon } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  const { category, setCategory } = useApp();
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
 
@@ -33,9 +31,7 @@ export const Header: React.FC = () => {
               </div>
 
               <p className="text-[10px] sm:text-[11px] text-[#AAB9B3] truncate leading-tight">
-                {category === 'junior'
-                  ? t('category_junior')
-                  : t('category_adult')} • {t('fit_score')}
+                {t('app_subtitle')}
               </p>
             </div>
           </div>
@@ -90,41 +86,7 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Junior / Adult Selector & Desktop Controls */}
-        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 min-w-0">
-          <div
-            className="grid grid-cols-2 sm:flex items-center bg-[#20352F] p-0.5 rounded-lg border border-[#354740] w-full sm:w-auto shrink-0"
-            role="group"
-            aria-label={t('category_selector_label')}
-          >
-            <button
-              type="button"
-              onClick={() => setCategory('junior')}
-              className={`px-3 py-1.5 sm:py-1 text-xs font-bold rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                category === 'junior'
-                  ? 'bg-[#D5FA63] text-[#151F24] shadow-xs'
-                  : 'text-[#AAB9B3] hover:text-[#F3F5F0]'
-              }`}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-              <span>{t('category_junior')}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCategory('adult')}
-              className={`px-3 py-1.5 sm:py-1 text-xs font-bold rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                category === 'adult'
-                  ? 'bg-[#D5FA63] text-[#151F24] shadow-xs'
-                  : 'text-[#AAB9B3] hover:text-[#F3F5F0]'
-              }`}
-            >
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>{t('category_adult')}</span>
-            </button>
-          </div>
-
-          {/* Desktop Language & Theme Controls */}
+        {/* Desktop Language & Theme Controls */}
           <div className="hidden sm:flex items-center gap-1.5 shrink-0">
             <div
               className="flex items-center bg-[#20352F] p-0.5 rounded-lg border border-[#354740]"
