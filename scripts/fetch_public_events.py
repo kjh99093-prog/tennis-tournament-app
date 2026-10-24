@@ -58,13 +58,33 @@ def clean(value):
 
 def fetch_html(url):
     """Fetch rendered public pages where tournament cards are populated by JavaScript."""
-    if sync_playwright and ("playtennis.usta.com" in url or "itftennis.com" in url or "utrsports.net" in url):
+    if sync_playwright and any(domain in url for domain in ("playtennis.usta.com", "itftennis.com", "utrsports.net", "tenniscanada.com")):
         try:
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True)
                 page = browser.new_page(locale="en-US")
                 page.goto(url, wait_until="domcontentloaded", timeout=45000)
-                page.wait_for_timeout(3500)
+                page.wait_for_timeout(2500)
+                # Public calendars often lazy-load results as the page is scrolled.
+                # Scroll repeatedly and activate only explicit "load/show more" controls.
+                previous_height = 0
+                for _ in range(12):
+                    try:
+                        page.get_by_role("button", name=re.compile(r"load more|show more|view more", re.I)).first.click(timeout=700)
+                        page.wait_for_timeout(500)
+                    except Exception:
+                        pass
+                    try:
+                        height = page.evaluate("document.body.scrollHeight")
+                        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                        page.wait_for_timeout(700)
+                        new_height = page.evaluate("document.body.scrollHeight")
+                    except Exception:
+                        break
+                    if new_height <= previous_height and height <= previous_height:
+                        break
+                    previous_height = new_height
+                page.wait_for_timeout(1000)
                 html = page.content()
                 browser.close()
                 if len(html) > 1000:
@@ -225,7 +245,11 @@ def parse_itf_rows(soup, source_name, base_url):
         host = cells[2] if len(cells) > 2 else ""
         city = cells[3] if len(cells) > 3 else ""
         category_label = cells[4] if len(cells) > 4 else ""
-        host_clean = re.sub(r"\s*\([^)]*\)\s*$", "", host).strip()
+        # ITF row cells sometimes include their column labels in the text.
+        host_clean = re.sub(r"^Host Nation:\\s*", "", host, flags=re.I).strip()
+        city = re.sub(r"^City/Town:\\s*", "", city, flags=re.I).strip()
+        category_label = re.sub(r"^Category:\\s*", "", category_label, flags=re.I).strip()
+        host_clean = re.sub(r"\s*\([^)]*\)\s*$", "", host_clean).strip()
         country_map = {
             "USA": "United States", "United States": "United States",
             "CAN": "Canada", "Canada": "Canada", "GBR": "United Kingdom",
