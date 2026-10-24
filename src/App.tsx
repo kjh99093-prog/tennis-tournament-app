@@ -15,8 +15,10 @@ import { ProfileView } from './components/ProfileView';
 import { NotesView } from './components/NotesView';
 import { TournamentModal } from './components/TournamentModal';
 import { Onboarding } from './components/Onboarding';
+import { AuthScreen } from './components/AuthScreen';
+import { readSession, signOut, AuthSession } from './lib/supabase';
 
-const AppContent: React.FC = () => {
+const AppContent: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const { activeTab, setCategory, updatePlayerProfile } = useApp();
   const [setupComplete, setSetupComplete] = useState(() => {
     try {
@@ -44,7 +46,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex flex-col font-sans transition-colors duration-200">
       {/* Top Header with Junior/Adult toggle, EN/中文 language toggle, and Dark/Light toggle */}
-      <Header />
+      <Header onLogout={onLogout} />
 
       {/* Main View Area */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-3.5 sm:p-5 md:p-6">
@@ -63,14 +65,18 @@ const AppContent: React.FC = () => {
   );
 };
 
+const AuthenticatedShell: React.FC = () => {
+  const [session, setSession] = useState<AuthSession | null>(() => readSession());
+  const handleLogout = async () => {
+    try { await signOut(session); } catch (error) { console.error('Logout error:', error); }
+    setSession(null);
+    for (const key of ['aura_tennis_setup_complete', 'aura_tennis_profile', 'aura_tennis_category', 'aura_tennis_saved_tournaments', 'aura_tennis_notes']) localStorage.removeItem(key);
+    window.location.reload();
+  };
+  if (!session) return <AuthScreen onAuthenticated={() => setSession(readSession())} />;
+  return <AppProvider><AppContent onLogout={handleLogout} /></AppProvider>;
+};
+
 export default function App() {
-  return (
-    <ThemeProvider>
-      <LanguageProvider>
-        <AppProvider>
-          <AppContent />
-        </AppProvider>
-      </LanguageProvider>
-    </ThemeProvider>
-  );
+  return <ThemeProvider><LanguageProvider><AuthenticatedShell /></LanguageProvider></ThemeProvider>;
 }
