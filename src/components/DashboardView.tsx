@@ -146,7 +146,7 @@ export const DashboardView: React.FC = () => {
         // Filter by Age category
         if (selectedAge !== 'All') {
           const matchAgeCat = t.ageCategory?.toLowerCase() === selectedAge.toLowerCase();
-          const matchDiv = t.ageDivisions.some((d) => d.toLowerCase().includes(selectedAge.toLowerCase()));
+          const matchDiv = t.ageDivisions.some((d: string) => d.toLowerCase().includes(selectedAge.toLowerCase()));
           if (!matchAgeCat && !matchDiv) return false;
         }
 
@@ -192,7 +192,7 @@ export const DashboardView: React.FC = () => {
   }, [scoredTournaments, category]);
 
   const profileName = String(playerProfile.name || '').trim();
-  const showWelcome = Boolean(profileName && !['leo zhang', 'your name', ''].includes(profileName.toLowerCase()));
+  const showWelcome = Boolean(profileName && !( ['leo zhang', 'your name', ''] as string[]).includes(profileName.toLowerCase()));
 
   const handleResetFilters = () => {
     setSearchQuery('');
