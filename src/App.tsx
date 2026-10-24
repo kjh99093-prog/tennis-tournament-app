@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
+import { supabase } from './lib/supabase';
+import { AuthScreen } from './components/AuthScreen';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { AppProvider, useApp } from './context/AppContext';
@@ -20,17 +23,84 @@ import { readSession, signOut } from './lib/supabase';
 import type { AuthSession } from './lib/supabase';
 
 const AppContent: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
-  const { activeTab, setCategory, updatePlayerProfile } = useApp();
-  const [setupComplete, setSetupComplete] = useState(() => {
-    try {
-      if (localStorage.getItem('aura_tennis_setup_complete') === 'true') return true;
-      const saved = localStorage.getItem('aura_tennis_profile');
-      if (!saved) return false;
-      const profile = JSON.parse(saved);
-      const name = String(profile?.name || '').trim().toLowerCase();
-      return Boolean(name && name !== 'leo zhang' && name !== 'your name');
-    } catch { return false; }
-  });
+  const { activeTab, setCategory, updatePlayerProfile, playerProfile } = useApp();
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [setupComplete, setSetupComplete] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    const restoreUser = async (nextUser: User | null) => {
+      if (!alive) return;
+      setUser(nextUser);
+      if (!nextUser) {
+        setSetupComplete(false);
+        return;
+      }
+      const { data, error } = await supabase.from('profiles')
+        .select('full_name, category, profile_data')
+        .eq('id', nextUser.id).maybeSingle();
+      if (!alive) return;
+      if (error) {
+        console.error('Could not load saved profile:', error.message);
+      }
+      const savedProfile = data?.profile_data;
+      if (savedProfile && typeof savedProfile === 'object' && String((savedProfile as any).name || '').trim()) {
+        const profile = savedProfile as any;
+        setCategory(profile.category === 'adult' ? 'adult' : 'junior');
+        updatePlayerProfile(profile);
+        localStorage.setItem('aura_tennis_profile', JSON.stringify(profile));
+        localStorage.setItem('aura_tennis_category', profile.category === 'adult' ? 'adult' : 'junior');
+        localStorage.setItem('aura_tennis_setup_complete', 'true');
+        setSetupComplete(true);
+      } else {
+        localStorage.removeItem('aura_tennis_setup_complete');
+        localStorage.removeItem('aura_tennis_profile');
+        setSetupComplete(false);
+      }
+    };
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) console.error('Could not restore login session:', error.message);
+      return restoreUser(data.session?.user ?? null);
+    }).finally(() => { if (alive) setAuthLoading(false); });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      void restoreUser(session?.user ?? null);
+    });
+    return () => { alive = false; listener.subscription.unsubscribe(); };
+  }, [setCategory, updatePlayerProfile]);
+
+  useEffect(() => {
+    if (!user || !setupComplete || !playerProfile.name.trim()) return;
+    const category = playerProfile.category === 'adult' ? 'adult' : 'junior';
+    const timer = window.setTimeout(async () => {
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id,
+        full_name: playerProfile.name.trim(),
+        category,
+        profile_data: playerProfile,
+        updated_at: new Date().toISOString(),
+      });
+      if (error) console.error('Could not save profile:', error.message);
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [user, setupComplete, playerProfile]);
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Sign out failed:', error.message);
+      window.alert('Could not log out. Please try again.');
+      return;
+    }
+    ['aura_tennis_setup_complete', 'aura_tennis_profile', 'aura_tennis_category',
+     'aura_tennis_saved_tournaments', 'aura_tennis_notes'].forEach((key) => localStorage.removeItem(key));
+    setSetupComplete(false);
+  };
+
+  if (authLoading) {
+    return <main className="min-h-screen bg-[#151F24] text-[#D5FA63] flex items-center justify-center">Loading your account…</main>;
+  }
+  if (!user) return <AuthScreen />;
 
   if (!setupComplete) {
     return (
