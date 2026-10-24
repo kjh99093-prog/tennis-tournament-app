@@ -13,6 +13,10 @@ from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
+try:
+    from playwright.sync_api import sync_playwright
+except ImportError:  # Local runs can still use the requests fallback.
+    sync_playwright = None
 
 OUTPUT_PATH = Path("public/data/tournaments.json")
 HEADERS = {
@@ -53,6 +57,20 @@ def clean(value):
     return re.sub(r"\s+", " ", value or "").strip()
 
 def fetch_html(url):
+    """Fetch rendered public pages where tournament cards are populated by JavaScript."""
+    if sync_playwright and ("playtennis.usta.com" in url or "itftennis.com" in url):
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                page = browser.new_page(locale="en-US")
+                page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(3500)
+                html = page.content()
+                browser.close()
+                if len(html) > 1000:
+                    return BeautifulSoup(html, "html.parser"), ""
+        except Exception as exc:
+            print(f"[WARN] Browser fetch failed for {url}: {exc}; trying plain HTML.")
     try:
         response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
         response.raise_for_status()
@@ -190,8 +208,51 @@ def parse_usta_cards(soup, source_name, base_url):
     return found
 
 
+def parse_itf_rows(soup, source_name, base_url):
+    """Parse the official ITF calendar table rows."""
+    found = []
+    for row in soup.select("tr"):
+        cells = [clean(cell.get_text(" ", strip=True)) for cell in row.find_all(["th", "td"])]
+        if len(cells) < 4:
+            continue
+        row_text = " | ".join(cells)
+        start, end = parse_dates(row_text)
+        if not start or not end:
+            continue
+        title = cells[0]
+        if not title or title.lower() in {"name", "tournament", "tournament name"}:
+            continue
+        host = cells[2] if len(cells) > 2 else ""
+        city = cells[3] if len(cells) > 3 else ""
+        category_label = cells[4] if len(cells) > 4 else ""
+        host_clean = re.sub(r"\s*\([^)]*\)\s*$", "", host).strip()
+        country_map = {
+            "USA": "United States", "United States": "United States",
+            "CAN": "Canada", "Canada": "Canada", "GBR": "United Kingdom",
+            "Great Britain": "United Kingdom", "KOR": "South Korea",
+            "Korea, Rep.": "South Korea", "CHN": "China", "China, P.R.": "China",
+        }
+        country = country_map.get(host_clean, host_clean or "International")
+        event_url = base_url
+        link = row.find("a", href=True)
+        if link:
+            event_url = urljoin(base_url, link["href"])
+        found.append({
+            "title": title, "officialUrl": event_url, "sourceId": "itf",
+            "sourceName": source_name, "startDate": start, "endDate": end,
+            "entryDeadline": "", "venueName": "", "city": city,
+            "province": "", "state": "", "country": country,
+            "ageDivisions": [], "tags": row_text[:600],
+            "category": "junior" if "juniors" in base_url.lower() or re.search(r"\bJ(?:30|60|100|200|300|M)\b", category_label + " " + title, re.I) else "adult",
+            "entryFee": "",
+        })
+    return found
+
+
 def parse_cards(soup, source_id, source_name, country, base_url):
     found = parse_usta_cards(soup, source_name, base_url) if source_id == "usta" else []
+    if source_id == "itf":
+        found.extend(parse_itf_rows(soup, source_name, base_url))
     seen = set()
     # Prefer semantic cards; then inspect links/cards carrying date text.
     candidates = soup.select("article, li, tr, .event, .tournament, .competition, .card, [itemtype*=Event]")
