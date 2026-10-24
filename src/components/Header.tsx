@@ -39,9 +39,7 @@ export const Header: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           {/* Mobile Language & Theme Controls */}
           <div className="flex sm:hidden items-center gap-1.5 shrink-0">
 
-            <button type="button" onClick={onSignOut} className="flex items-center gap-1 rounded-lg border border-[#354740] bg-[#20352F] px-2 py-1.5 text-[10px] font-bold text-[#F3F5F0] hover:border-[#D5FA63]" aria-label="Log out" title={userEmail ? `Log out (${userEmail})` : 'Log out'}>
-              <LogOut className="h-3.5 w-3.5" /><span>Log out</span>
-            </button>
+
             <div
               className="flex items-center bg-[#20352F] p-0.5 rounded-lg border border-[#354740]"
               role="group"
