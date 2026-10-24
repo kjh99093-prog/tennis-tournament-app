@@ -61,26 +61,7 @@ export const BottomNav: React.FC = () => {
           )}
         </button>
 
-        {/* 3. My Profile */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('profile')}
-          className={`flex flex-col items-center justify-center py-1 px-1 rounded-lg transition-colors relative ${
-            activeTab === 'profile'
-              ? 'text-[#D5FA63]'
-              : 'text-[#AAB9B3] hover:text-[#F3F5F0]'
-          }`}
-        >
-          <User className="w-5 h-5 mb-0.5" />
-          <span className="text-[11px] font-medium leading-tight">
-            {t('nav_profile')}
-          </span>
-          {activeTab === 'profile' && (
-            <span className="absolute -bottom-1 w-6 h-0.5 bg-[#D5FA63] rounded-full" />
-          )}
-        </button>
-
-        {/* 4. Notes */}
+        {/* 3. Notes */}
         <button
           type="button"
           onClick={() => setActiveTab('notes')}
@@ -105,6 +86,25 @@ export const BottomNav: React.FC = () => {
             <span className="absolute -bottom-1 w-6 h-0.5 bg-[#D5FA63] rounded-full" />
           )}
         </button>
+        {/* 4. My Profile */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('profile')}
+          className={`flex flex-col items-center justify-center py-1 px-1 rounded-lg transition-colors relative ${
+            activeTab === 'profile'
+              ? 'text-[#D5FA63]'
+              : 'text-[#AAB9B3] hover:text-[#F3F5F0]'
+          }`}
+        >
+          <User className="w-5 h-5 mb-0.5" />
+          <span className="text-[11px] font-medium leading-tight">
+            {t('nav_profile')}
+          </span>
+          {activeTab === 'profile' && (
+            <span className="absolute -bottom-1 w-6 h-0.5 bg-[#D5FA63] rounded-full" />
+          )}
+        </button>
+
       </div>
     </nav>
   );
