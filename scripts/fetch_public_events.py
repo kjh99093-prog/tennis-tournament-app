@@ -242,14 +242,22 @@ def parse_itf_rows(soup, source_name, base_url):
         title = cells[0]
         if not title or title.lower() in {"name", "tournament", "tournament name"}:
             continue
+        # Some ITF rows repeat the tournament name in the title cell.
+        title = re.sub(r"^(J(?:30|60|100|200|300|500)\s+.+?)\s+\1$", r"\1", title, flags=re.I)
+        title = clean(title)
         host = cells[2] if len(cells) > 2 else ""
         city = cells[3] if len(cells) > 3 else ""
         category_label = cells[4] if len(cells) > 4 else ""
         # ITF row cells sometimes include their column labels in the text.
-        host_clean = re.sub(r"^Host Nation:\\s*", "", host, flags=re.I).strip()
-        city = re.sub(r"^City/Town:\\s*", "", city, flags=re.I).strip()
-        category_label = re.sub(r"^Category:\\s*", "", category_label, flags=re.I).strip()
+        host_clean = re.sub(r"^Host Nation:\s*", "", host, flags=re.I).strip()
+        city = re.sub(r"^City/Town:\s*", "", city, flags=re.I).strip()
+        category_label = re.sub(r"^Category:\s*", "", category_label, flags=re.I).strip()
         host_clean = re.sub(r"\s*\([^)]*\)\s*$", "", host_clean).strip()
+        # Never save table labels as location values; these rows need re-parsing.
+        if re.match(r"^(Host Nation|Country|City/Town|Category):", host_clean, re.I):
+            continue
+        if re.match(r"^City/Town:", city, re.I):
+            continue
         country_map = {
             "USA": "United States", "United States": "United States",
             "CAN": "Canada", "Canada": "Canada", "GBR": "United Kingdom",
