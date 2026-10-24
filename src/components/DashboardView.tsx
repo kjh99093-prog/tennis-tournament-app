@@ -57,7 +57,7 @@ const calculateProfileFit = (tournament: any, profile: any, category: string) =>
   const eventLevel = String(tournament.levelCategory || '');
   const profileLevel = String(profile.utrRating || '') + ' ' + String(profile.nationalRating || '');
   if (eventLevel && profileLevel.trim()) {
-    const numbers = (value: string) => value.match(/\d+(?:\.\d+)?/g) || [];
+    const numbers = (value: string): string[] => Array.from(value.match(/\d+(?:\.\d+)?/g) || []);
     const eventNumbers = numbers(eventLevel);
     const profileNumbers = numbers(profileLevel);
     factors.ratingFit = eventNumbers.length && profileNumbers.length
@@ -146,7 +146,7 @@ export const DashboardView: React.FC = () => {
         // Filter by Age category
         if (selectedAge !== 'All') {
           const matchAgeCat = t.ageCategory?.toLowerCase() === selectedAge.toLowerCase();
-          const matchDiv = t.ageDivisions.some((d: string) => d.toLowerCase().includes(selectedAge.toLowerCase()));
+          const matchDiv = (Array.isArray(t.ageDivisions) ? t.ageDivisions : []).some((d: string) => String(d).toLowerCase().includes(selectedAge.toLowerCase()));
           if (!matchAgeCat && !matchDiv) return false;
         }
 
@@ -163,7 +163,7 @@ export const DashboardView: React.FC = () => {
           const matchTitle = t.title.toLowerCase().includes(q);
           const matchVenue = t.venueName.toLowerCase().includes(q);
           const matchCity = t.city.toLowerCase().includes(q);
-          const matchDiv = t.ageDivisions.some((d) => d.toLowerCase().includes(q));
+          const matchDiv = (Array.isArray(t.ageDivisions) ? t.ageDivisions : []).some((d: string) => String(d).toLowerCase().includes(q));
           const matchSanction = t.sanctioningBody.toLowerCase().includes(q);
           const matchAge = t.ageCategory?.toLowerCase().includes(q);
           const matchLvl = t.levelCategory?.toLowerCase().includes(q);
