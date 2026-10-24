@@ -67,7 +67,7 @@ const AppContent: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
       void restoreUser(session?.user ?? null);
     });
     return () => { alive = false; listener.subscription.unsubscribe(); };
-  }, [setCategory, updatePlayerProfile]);
+  }, []);
 
   useEffect(() => {
     if (!user || !setupComplete || !playerProfile.name.trim()) return;
