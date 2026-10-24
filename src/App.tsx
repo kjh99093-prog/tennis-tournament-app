@@ -17,14 +17,29 @@ import { TournamentModal } from './components/TournamentModal';
 import { Onboarding } from './components/Onboarding';
 
 const AppContent: React.FC = () => {
-  const { activeTab } = useApp();
+  const { activeTab, setCategory, updatePlayerProfile } = useApp();
   const [setupComplete, setSetupComplete] = useState(() => {
     try {
-      return localStorage.getItem('aura_tennis_setup_complete') === 'true' || Boolean(localStorage.getItem('aura_tennis_profile'));
+      if (localStorage.getItem('aura_tennis_setup_complete') === 'true') return true;
+      const saved = localStorage.getItem('aura_tennis_profile');
+      if (!saved) return false;
+      const profile = JSON.parse(saved);
+      const name = String(profile?.name || '').trim().toLowerCase();
+      return Boolean(name && name !== 'leo zhang' && name !== 'your name');
     } catch { return false; }
   });
 
-  if (!setupComplete) return <Onboarding onComplete={() => setSetupComplete(true)} />;
+  if (!setupComplete) {
+    return (
+      <Onboarding
+        onComplete={(category, profile) => {
+          setCategory(category);
+          updatePlayerProfile(profile);
+          setSetupComplete(true);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex flex-col font-sans transition-colors duration-200">
