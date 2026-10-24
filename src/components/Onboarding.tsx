@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlayerCategory, PlayerProfile, SurfaceType } from '../types';
 
-interface Props { onComplete: () => void; }
+interface Props { onComplete: (category: PlayerCategory, profile: PlayerProfile) => void; }
 
 const blankProfile = (category: PlayerCategory, name: string): PlayerProfile => ({
   name,
@@ -43,7 +43,7 @@ export const Onboarding: React.FC<Props> = ({ onComplete }) => {
     localStorage.setItem('aura_tennis_category', category);
     localStorage.setItem('aura_tennis_profile', JSON.stringify(profile));
     localStorage.setItem('aura_tennis_setup_complete', 'true');
-    onComplete();
+    onComplete(category, profile);
   };
 
   const toggleSurface = (surface: SurfaceType) => setSurfaces((current) =>
