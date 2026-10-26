@@ -29,7 +29,6 @@ export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = (
   const [formData, setFormData] = useState({ ...playerProfile });
   const [showSavedToast, setShowSavedToast] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
