@@ -16,10 +16,11 @@ import {
   Activity,
   Globe,
   Sun,
-  Moon
+  Moon,
+  LogOut
 } from 'lucide-react';
 
-export const ProfileView: React.FC = () => {
+export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = ({ onLogout }) => {
   const { playerProfile, updatePlayerProfile, category, setCategory } = useApp();
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
@@ -27,6 +28,7 @@ export const ProfileView: React.FC = () => {
   const [activeSection, setActiveSection] = useState<'profile' | 'sources' | 'settings'>('sources');
   const [formData, setFormData] = useState({ ...playerProfile });
   const [showSavedToast, setShowSavedToast] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -268,6 +270,29 @@ export const ProfileView: React.FC = () => {
             </div>
           </div>
         </form>
+      )}
+
+      {/* Account actions */}
+      <section className="rounded-2xl border border-[#4A554E] bg-[#192623] p-4 space-y-2">
+        <h3 className="text-sm font-bold text-[#F3F5F0]">Account</h3>
+        <p className="text-xs text-[#B7C4BE]">Sign out of your AURA Tennis account on this device.</p>
+        <button type="button" onClick={() => setShowLogoutConfirm(true)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#8A5A55] bg-[#302321] px-4 py-3 text-sm font-bold text-[#FFD8D2] transition-colors hover:bg-[#3A2926]">
+          <LogOut className="h-4 w-4" /> Log out
+        </button>
+      </section>
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 p-4" role="presentation" onClick={() => setShowLogoutConfirm(false)}>
+          <section role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title" className="w-full max-w-sm rounded-2xl border border-[#526A5D] bg-[#1C2B28] p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#302321] text-[#FFD8D2]"><LogOut className="h-5 w-5" /></div>
+            <h3 id="logout-confirm-title" className="mt-3 text-center text-lg font-extrabold text-[#F3F5F0]">Are you sure you want to log out?</h3>
+            <p className="mt-2 text-center text-sm leading-5 text-[#B7C4BE]">You can log back in anytime with your email and password.</p>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => setShowLogoutConfirm(false)} className="rounded-xl border border-[#526A5D] bg-[#243832] px-3 py-2.5 text-sm font-bold text-[#F3F5F0] hover:bg-[#293F37]">Cancel</button>
+              <button type="button" onClick={() => { setShowLogoutConfirm(false); void onLogout(); }} className="rounded-xl bg-[#D5FA63] px-3 py-2.5 text-sm font-extrabold text-[#151F24] hover:bg-[#CBF74E]">Yes, log out</button>
+            </div>
+          </section>
+        </div>
       )}
 
       {/* 3. Preferences & Settings */}
