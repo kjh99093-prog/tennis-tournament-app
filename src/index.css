@@ -36,6 +36,20 @@ html.light body {
 /* ========================================================
    LIGHT MODE: clean neutral surfaces with cool blue accents
    ======================================================== */
+/* Force light surfaces for all app-level green surfaces and text contrast */
+html.light .bg-\\[\\#151F24\\] { background-color: #F5F7FB !important; }
+html.light .bg-\\[\\#20352F\\] { background-color: #FFFFFF !important; }
+html.light .bg-\\[\\#293B35\\] { background-color: #EEF2F8 !important; }
+html.light .bg-\\[\\#1C2B28\\],
+html.light .bg-\\[\\#192623\\],
+html.light .bg-\\[\\#243832\\],
+html.light .bg-\\[\\#302321\\] { background-color: #FFFFFF !important; }
+html.light .text-\\[\\#F3F5F0\\] { color: #182230 !important; }
+html.light .text-\\[\\#AAB9B3\\] { color: #536174 !important; }
+html.light .border-\\[\\#354740\\] { border-color: #D7DFEB !important; }
+html.light .bg-\\[\\#D5FA63\\] { background-color: #5267D8 !important; color: #FFFFFF !important; }
+html.light .text-\\[\\#D5FA63\\] { color: #4054C5 !important; }
+html.light input, html.light textarea, html.light select { background-color: #FFFFFF !important; color: #182230 !important; border-color: #C7D2E2 !important; }
 html.light .bg-\\[\\#151F24\\] {
   background-color: #F5F7FB !important;
 }
