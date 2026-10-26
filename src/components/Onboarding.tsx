@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlayerCategory, PlayerProfile, SurfaceType } from '../types';
 
-interface Props { onComplete: (category: PlayerCategory, profile: PlayerProfile) => void; }
+interface Props { onComplete: (category: PlayerCategory, profile: PlayerProfile) => void; initialName: string; }
 
 const blankProfile = (category: PlayerCategory, name: string): PlayerProfile => ({
   name,
@@ -20,10 +20,9 @@ const blankProfile = (category: PlayerCategory, name: string): PlayerProfile => 
   racketModel: ''
 });
 
-export const Onboarding: React.FC<Props> = ({ onComplete }) => {
+export const Onboarding: React.FC<Props> = ({ onComplete, initialName }) => {
   const [step, setStep] = useState(0);
   const [category, setCategory] = useState<PlayerCategory>('junior');
-  const [name, setName] = useState('');
   const [ageGroup, setAgeGroup] = useState('');
   const [utrRating, setUtrRating] = useState('');
   const [nationalRating, setNationalRating] = useState('');
@@ -35,7 +34,7 @@ export const Onboarding: React.FC<Props> = ({ onComplete }) => {
 
   const finish = () => {
     const profile: PlayerProfile = {
-      ...blankProfile(category, name.trim()),
+      ...blankProfile(category, initialName.trim() || 'Player'),
       ageGroup, utrRating, nationalRating, homeCity: homeCity.trim(),
       homeProvinceState: homeProvinceState.trim(), homeCountry,
       preferredSurfaces: surfaces, maxTravelKm: Number(maxTravelKm) || 100
@@ -56,8 +55,8 @@ export const Onboarding: React.FC<Props> = ({ onComplete }) => {
         <div className="text-center">
           <div className="mx-auto mb-4 w-12 h-12 rounded-2xl bg-[#20352F] border border-[#354740] flex items-center justify-center text-[#D5FA63] text-xl">🎾</div>
           <p className="text-xs uppercase tracking-[0.2em] text-[#D5FA63] font-bold">AuraTennis</p>
-          <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold">{step === 0 ? 'Let’s set up your profile' : step === 1 ? 'What should we call you?' : 'Personalize your recommendations'}</h1>
-          <p className="mt-2 text-sm text-[#AAB9B3]">Step {step + 1} of 3 · {step === 2 ? 'Optional details' : 'A quick setup'}</p>
+          <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold">{step === 0 ? 'Let’s set up your profile' : 'Personalize your recommendations'}</h1>
+          <p className="mt-2 text-sm text-[#AAB9B3]">Step {step + 1} of 2 · {step === 1 ? 'Optional details' : 'A quick setup'}</p>
         </div>
 
         {step === 0 && <section className="grid grid-cols-2 gap-3">
@@ -70,13 +69,7 @@ export const Onboarding: React.FC<Props> = ({ onComplete }) => {
           ))}
         </section>}
 
-        {step === 1 && <section className="space-y-2">
-          <label htmlFor="setup-name" className="text-sm font-semibold">Your name <span className="text-[#D5FA63]">*</span></label>
-          <input id="setup-name" autoFocus value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) setStep(2); }} placeholder="Enter your name" maxLength={80} className="w-full rounded-xl bg-[#20352F] border border-[#354740] focus:border-[#D5FA63] px-4 py-3 outline-none" />
-          <p className="text-xs text-[#AAB9B3]">This name will appear in your welcome message.</p>
-        </section>}
-
-        {step === 2 && <section className="space-y-4">
+        {step === 1 && <section className="space-y-4">
           <p className="text-sm text-[#AAB9B3]">You can skip everything here and add details later in My Profile.</p>
           <div className="grid grid-cols-2 gap-3">
             <label className="text-xs text-[#AAB9B3]">Age group / division
@@ -113,7 +106,7 @@ export const Onboarding: React.FC<Props> = ({ onComplete }) => {
 
         <div className="flex gap-3">
           {step > 0 && <button type="button" onClick={() => setStep(step - 1)} className="rounded-xl border border-[#354740] px-5 py-3 text-sm font-bold text-[#AAB9B3]">Back</button>}
-          {step < 2 ? <button type="button" disabled={step === 1 && !name.trim()} onClick={() => setStep(step + 1)} className="flex-1 rounded-xl bg-[#D5FA63] px-5 py-3 text-sm font-extrabold text-[#151F24] disabled:opacity-40">Continue</button>
+          {step < 1 ? <button type="button" onClick={() => setStep(step + 1)} className="flex-1 rounded-xl bg-[#D5FA63] px-5 py-3 text-sm font-extrabold text-[#151F24] disabled:opacity-40">Continue</button>
             : <><button type="button" onClick={finish} className="rounded-xl border border-[#354740] px-4 py-3 text-sm font-bold text-[#AAB9B3]">Skip</button><button type="button" onClick={finish} className="flex-1 rounded-xl bg-[#D5FA63] px-5 py-3 text-sm font-extrabold text-[#151F24]">Create profile</button></>}
         </div>
       </div>
