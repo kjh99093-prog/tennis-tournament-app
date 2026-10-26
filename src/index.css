@@ -34,16 +34,9 @@ html.light body {
 }
 
 /* ========================================================
-   Theme polish: deeper dark slate + genuinely bright light mode
+   Light mode: bright neutral surfaces with cool blue accents.
+   Dark mode intentionally keeps the original app palette.
    ======================================================== */
-
-/* Dark mode: darker slate canvas, gently lifted forest-green surfaces */
-html.dark body { background-color: #10181D; color: #F3F5F0; }
-html.dark .bg-\\[\\#151F24\\] { background-color: #10181D !important; }
-html.dark .bg-\\[\\#151F24\\]\\/95 { background-color: rgba(16, 24, 29, 0.96) !important; }
-html.dark .bg-\\[\\#20352F\\] { background-color: #243A32 !important; }
-html.dark .bg-\\[\\#293B35\\] { background-color: #2D443B !important; }
-html.dark .border-\\[\\#354740\\] { border-color: #40564C !important; }
 
 /* Light mode: bright neutral background, white cards, readable dark text */
 html.light body { background-color: #F5F7FB !important; color: #182230 !important; }
