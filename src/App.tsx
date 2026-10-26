@@ -126,11 +126,11 @@ const AppContent: React.FC = () => {
   }} />;
 
   return <div className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex flex-col font-sans transition-colors duration-200">
-    <Header onLogout={handleSignOut} />
+    <Header />
     <main className="flex-1 max-w-5xl w-full mx-auto p-3.5 sm:p-5 md:p-6">
       {activeTab === 'dashboard' && <DashboardView />}
       {activeTab === 'events' && <MyEventsView />}
-      {activeTab === 'profile' && <ProfileView />}
+      {activeTab === 'profile' && <ProfileView onLogout={handleSignOut} />}
       {activeTab === 'notes' && <NotesView />}
     </main>
     <TournamentModal />
