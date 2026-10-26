@@ -122,3 +122,18 @@ html.light ::-webkit-scrollbar-thumb {
 html.light ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
+
+/* Final light-theme canvas enforcement: keep the dark palette untouched. */
+html.light body,
+html.light body #root,
+html.light body #root > div,
+html.light body #root main,
+html.light body #root [class~="min-h-screen"][class~="bg-[#151F24]"] {
+  background-color: #F5F7FB !important;
+  color: #182230;
+}
+html.light [class~="bg-[#151F24]"] { background-color: #F5F7FB !important; }
+html.light [class~="bg-[#151F24]/95"] { background-color: rgba(245,247,251,.97) !important; }
+html.light [class~="bg-[#20352F]"] { background-color: #FFFFFF !important; }
+html.light [class~="bg-[#293B35]"] { background-color: #EDF1F7 !important; }
+html.light [class~="text-[#F3F5F0]"] { color: #182230 !important; }
