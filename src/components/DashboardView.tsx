@@ -211,39 +211,53 @@ export const DashboardView: React.FC = () => {
   return (
     <div className="space-y-4 pb-20">
       {showWelcome && (
-        <section className="space-y-3">
+        <section className="space-y-4">
           <div className="px-1 pt-1">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#AAB9B3]">AuraTennis</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#D5FA63]">AURA TENNIS</p>
             <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight text-[#F3F5F0]">{t('welcome_player', { name: profileName })}</h1>
-            <p className="mt-1 text-sm text-[#AAB9B3]">{t('welcome_subtitle')}</p>
+            <p className="mt-1 text-sm text-[#B7C4BE]">{t('welcome_subtitle')}</p>
           </div>
           {recommendedTournament && (
-            <button type="button" onClick={() => openTournamentModal(recommendedTournament)} className="w-full text-left rounded-2xl border border-[#52664B] bg-gradient-to-br from-[#20352F] to-[#293B35] p-4 sm:p-5 hover:border-[#D5FA63] transition-colors">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] uppercase tracking-wider font-bold text-[#D5FA63]">{t('sort_fit')}</p>
-                  <h2 className="mt-1 text-base sm:text-lg font-extrabold text-[#F3F5F0]">{recommendedTournament.title}</h2>
-                  <p className="mt-1 text-xs text-[#AAB9B3]">{[recommendedTournament.city, recommendedTournament.stateProvince].filter(Boolean).join(', ')}</p>
-                  <p className="mt-2 text-xs text-[#AAB9B3]">{recommendedTournament.startDate || t('dates')}: {recommendedTournament.startDate || '—'}</p>
-                </div>
-                <div className="shrink-0 rounded-xl bg-[#D5FA63] px-3 py-2 text-center text-[#151F24]">
-                  <span className="block text-2xl font-black">{recommendedTournament.fitScore}%</span>
-                  <span className="text-[10px] font-bold uppercase">{t('fit_score')}</span>
+            <div className="rounded-2xl border border-[#526A5D] bg-[#1C2B28] p-3.5 sm:p-4 shadow-sm">
+              <div className="mb-3 flex items-center gap-2 border-b border-[#354A41] pb-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2B4037] text-[#D5FA63]">✦</span>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.14em] font-extrabold text-[#D5FA63]">BEST FIT FOR YOU</p>
+                  <p className="mt-0.5 text-xs text-[#B7C4BE]">Recommended tournament</p>
                 </div>
               </div>
-              <p className="mt-3 text-xs font-semibold text-[#D5FA63]">{t('view_details')} →</p>
-            </button>
+              <button type="button" onClick={() => openTournamentModal(recommendedTournament)} className="w-full text-left rounded-xl border border-[#40574B] bg-[#243832] p-4 hover:border-[#829A70] hover:bg-[#293F37] transition-colors">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-base sm:text-lg font-extrabold leading-snug text-[#F3F5F0]">{recommendedTournament.title}</h2>
+                    <p className="mt-1.5 text-sm text-[#C0CDC6]">{[recommendedTournament.city, recommendedTournament.stateProvince].filter(Boolean).join(', ')}</p>
+                    <p className="mt-2 text-xs text-[#AAB9B3]">{recommendedTournament.startDate || t('dates')}: {recommendedTournament.startDate || '—'}</p>
+                  </div>
+                  <div className="shrink-0 rounded-xl border border-[#D5FA63]/40 bg-[#D5FA63] px-3 py-2 text-center text-[#151F24]">
+                    <span className="block text-2xl font-black">{recommendedTournament.fitScore}%</span>
+                    <span className="text-[10px] font-extrabold uppercase">{t('fit_score')}</span>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs font-bold text-[#D5FA63]">{t('view_details')} →</p>
+              </button>
+            </div>
           )}
         </section>
       )}
 
-      {/* Keep the recommended tournament visually separate from search and filters */}
+      {/* Clear visual break between the recommendation and tournament discovery tools */}
       {showWelcome && recommendedTournament && (
-        <div aria-hidden="true" className="mx-1 border-t border-[#354740] pt-4 mt-5" />
+        <div aria-hidden="true" className="my-2 border-t border-[#354740]" />
       )}
 
       {/* Search first, followed by optional filters */}
 
+      {/* Search and quick filters are grouped as their own section */}
+      <section className="rounded-2xl border border-[#354740] bg-[#192623] p-3.5 space-y-3.5">
+      <div className="flex items-center justify-between px-0.5">
+        <h2 className="text-sm font-bold text-[#F3F5F0]">Find tournaments</h2>
+        <span className="text-[11px] font-medium text-[#AAB9B3]">Search & filters</span>
+      </div>
       {/* Unified Search Bar & Quick Filter Button */}
       <div className="flex items-center gap-2">
         <div className="relative flex-1 min-w-0">
@@ -458,6 +472,8 @@ export const DashboardView: React.FC = () => {
           </div>
         </div>
       )}
+
+      </section>
 
       {/* Results Header */}
       <div className="flex items-center justify-between text-xs text-[#AAB9B3] px-1 pt-0.5">
