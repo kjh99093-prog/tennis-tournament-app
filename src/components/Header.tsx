@@ -2,9 +2,9 @@
 import React from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
-import { Trophy, Sun, Moon, LogOut } from 'lucide-react';
+import { Trophy, Sun, Moon } from 'lucide-react';
 
-export const Header: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+export const Header: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
 
@@ -85,9 +85,7 @@ export const Header: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
                 <Moon className="w-3.5 h-3.5 text-[#151F24]" />
               )}
             </button>
-            <button type="button" onClick={onLogout} className="flex h-7 items-center gap-1 rounded-lg border border-[#354740] bg-[#20352F] px-2 text-[10px] font-bold text-[#F3F5F0]" aria-label="Log out">
-              <LogOut className="h-3 w-3" /> Log out
-            </button>
+            
           </div>
         </div>
 
@@ -141,9 +139,7 @@ export const Header: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
                 <Moon className="w-4 h-4 text-[#151F24]" />
               )}
             </button>
-            <button type="button" onClick={onLogout} className="flex h-8 items-center gap-1 rounded-lg border border-[#354740] bg-[#20352F] px-2 text-[11px] font-bold text-[#F3F5F0]" aria-label="Log out">
-              <LogOut className="h-3.5 w-3.5" /> Log out
-            </button>
+            
           </div>
       </div>
     </header>
