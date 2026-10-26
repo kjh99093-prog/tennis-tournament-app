@@ -253,7 +253,7 @@ export const DashboardView: React.FC = () => {
       {/* Search first, followed by optional filters */}
 
       {/* Search and quick filters are grouped as their own section */}
-      <section className="rounded-2xl border border-[#354740] bg-[#192623] p-3.5 space-y-3.5">
+      <section className="rounded-2xl bg-[#192623] p-3.5 space-y-3.5">
       <div className="flex items-center justify-between px-0.5">
         <h2 className="text-sm font-bold text-[#F3F5F0]">Find tournaments</h2>
         <span className="text-[11px] font-medium text-[#AAB9B3]">Search & filters</span>
@@ -267,7 +267,7 @@ export const DashboardView: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('search_placeholder')}
-            className="w-full bg-[#20352F] border border-[#354740] focus:border-[#D5FA63] focus:ring-1 focus:ring-[#D5FA63] rounded-xl pl-9 pr-8 py-2 text-xs md:text-sm text-[#F3F5F0] placeholder-[#AAB9B3]/60 outline-hidden transition-all"
+            className="w-full bg-[#20352F] focus:ring-1 focus:ring-[#D5FA63] rounded-xl pl-9 pr-8 py-2 text-xs md:text-sm text-[#F3F5F0] placeholder-[#AAB9B3]/60 outline-hidden transition-all"
           />
           {searchQuery && (
             <button
@@ -286,8 +286,8 @@ export const DashboardView: React.FC = () => {
           onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
           className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 shrink-0 ${
             showAdvancedFilters || activeFilterCount > 0
-              ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63] shadow-xs'
-              : 'bg-[#20352F] text-[#AAB9B3] hover:text-[#F3F5F0] border-[#354740]'
+              ? 'bg-[#D5FA63] text-[#151F24] shadow-xs'
+              : 'bg-[#20352F] text-[#AAB9B3] hover:text-[#F3F5F0]'
           }`}
         >
           <Filter className="w-3.5 h-3.5" />
@@ -307,8 +307,8 @@ export const DashboardView: React.FC = () => {
           onClick={() => setSelectedCountry('All')}
           className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
             selectedCountry === 'All'
-              ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]'
-              : 'bg-[#20352F] text-[#AAB9B3] hover:text-[#F3F5F0] border-[#354740]'
+              ? 'bg-[#D5FA63] text-[#151F24]'
+              : 'bg-[#20352F] text-[#AAB9B3] hover:text-[#F3F5F0]'
           }`}
         >
           {t('filter_all_regions')}
@@ -318,7 +318,7 @@ export const DashboardView: React.FC = () => {
           onClick={() => setSelectedCountry('Canada')}
           className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border flex items-center gap-1 ${
             selectedCountry === 'Canada'
-              ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]'
+              ? 'bg-[#D5FA63] text-[#151F24]'
               : 'bg-[#20352F] text-[#AAB9B3] hover:text-[#F3F5F0] border-[#354740]'
           }`}
         >
@@ -345,7 +345,7 @@ export const DashboardView: React.FC = () => {
           className={`text-xs font-semibold px-2 py-1 rounded-lg border outline-hidden cursor-pointer whitespace-nowrap ${
             selectedAge !== 'All'
               ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]'
-              : 'bg-[#20352F] text-[#AAB9B3] border-[#354740]'
+              : 'bg-[#20352F] text-[#AAB9B3]'
           }`}
           aria-label={t('filter_age')}
         >
