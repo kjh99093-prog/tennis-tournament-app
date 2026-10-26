@@ -9,7 +9,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
  const submit=async(e:React.FormEvent)=>{e.preventDefault();setError('');setMessage('');setBusy(true);try{
   if(mode==='signup'){
    if(!name.trim()) throw new Error('Please enter your name.');
-   const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{data:{full_name:name.trim()},emailRedirectTo:'https://tennis-tournament-app-alpha.vercel.app/'}});
+   const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{data:{full_name:name.trim()},emailRedirectTo:`${window.location.origin}/auth/callback`}});
    if(error) throw error;
    if(data.session){onAuthenticated?.();setMessage('Account created. You are signed in.');}
    else {setMode('login');setMessage('Account created. Check your email to confirm your address, then log in.');}
