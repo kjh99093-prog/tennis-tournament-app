@@ -81,7 +81,7 @@ const AppContent: React.FC = () => {
 
   if (authLoading) return <main className="min-h-screen bg-[#151F24] text-[#D5FA63] flex items-center justify-center">Loading your account…</main>;
   if (!user) return <AuthScreen />;
-  if (!setupComplete) return <Onboarding onComplete={(category, profile) => {
+  if (!setupComplete) return <Onboarding initialName={String(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Player')} onComplete={(category, profile) => {
     setCategory(category); updatePlayerProfile(profile); setSetupComplete(true);
   }} />;
 
