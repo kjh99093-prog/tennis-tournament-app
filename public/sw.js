@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aura-tennis-shell-v4';
+const CACHE_NAME = 'aura-tennis-shell-v5';
 const APP_SHELL = ['/'];
 
 self.addEventListener('install', (event) => {
