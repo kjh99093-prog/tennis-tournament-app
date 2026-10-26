@@ -14,6 +14,45 @@ import { NotesView } from './components/NotesView';
 import { TournamentModal } from './components/TournamentModal';
 import { Onboarding } from './components/Onboarding';
 
+
+const EmailConfirmationReturn: React.FC = () => {
+  const [status, setStatus] = useState<'checking' | 'confirmed' | 'error'>('checking');
+  useEffect(() => {
+    let active = true;
+    const check = async () => {
+      // Supabase processes the confirmation code from the URL during client initialization.
+      const { data, error } = await supabase.auth.getSession();
+      if (!active) return;
+      if (!error && data.session) setStatus('confirmed');
+      else {
+        const params = new URLSearchParams(window.location.search);
+        const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        const authError = params.get('error_description') || hash.get('error_description') || params.get('error') || hash.get('error');
+        setStatus(authError ? 'error' : 'checking');
+        if (!authError) {
+          window.setTimeout(async () => {
+            const retry = await supabase.auth.getSession();
+            if (active) setStatus(retry.data.session ? 'confirmed' : 'error');
+          }, 1200);
+        }
+      }
+    };
+    void check();
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active && session) setStatus('confirmed');
+    });
+    return () => { active = false; listener.subscription.unsubscribe(); };
+  }, []);
+  return <main className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex items-center justify-center p-5">
+    <section className="w-full max-w-md rounded-3xl border border-[#354740] bg-[#20352F] p-8 text-center">
+      <div className="text-4xl">{status === 'confirmed' ? '🎾' : status === 'checking' ? '⏳' : '⚠️'}</div>
+      <h1 className="mt-4 text-2xl font-extrabold">{status === 'confirmed' ? 'Email confirmed!' : status === 'checking' ? 'Confirming your email…' : 'We couldn’t confirm your email'}</h1>
+      <p className="mt-3 text-sm leading-6 text-[#AAB9B3]">{status === 'confirmed' ? 'Your email address is verified. Return to AURA Tennis to continue setting up your profile.' : status === 'checking' ? 'Please wait while we verify your account.' : 'This confirmation link may have expired or the redirect settings may be incorrect. Open AURA Tennis and request a new confirmation email.'}</p>
+      <a href="/" className="mt-6 block w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24]">{status === 'confirmed' ? 'Return to AURA Tennis' : 'Open AURA Tennis'}</a>
+    </section>
+  </main>;
+};
+
 const AppContent: React.FC = () => {
   const { activeTab, setCategory, updatePlayerProfile, playerProfile } = useApp();
   const [user, setUser] = useState<User | null>(null);
@@ -79,6 +118,7 @@ const AppContent: React.FC = () => {
     setSetupComplete(false);
   };
 
+  if (window.location.pathname === '/auth/callback') return <EmailConfirmationReturn />;
   if (authLoading) return <main className="min-h-screen bg-[#151F24] text-[#D5FA63] flex items-center justify-center">Loading your account…</main>;
   if (!user) return <AuthScreen />;
   if (!setupComplete) return <Onboarding initialName={String(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Player')} onComplete={(category, profile) => {
