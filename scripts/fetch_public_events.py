@@ -68,22 +68,34 @@ def fetch_html(url):
                 # Public calendars often lazy-load results as the page is scrolled.
                 # Scroll repeatedly and activate only explicit "load/show more" controls.
                 previous_height = 0
-                for _ in range(12):
+                stable_rounds = 0
+                # Public tournament pages often paginate via infinite scroll.
+                # Scroll in viewport-sized increments and keep going until the
+                # page stops growing repeatedly, rather than stopping after 12
+                # passes (which can silently omit most state/region listings).
+                for _ in range(50):
                     try:
-                        page.get_by_role("button", name=re.compile(r"load more|show more|view more", re.I)).first.click(timeout=700)
-                        page.wait_for_timeout(500)
-                    except Exception:
-                        pass
-                    try:
+                        for label in (r"load more", r"show more", r"view more", r"next"):
+                            try:
+                                page.get_by_role("button", name=re.compile(label, re.I)).first.click(timeout=350)
+                                page.wait_for_timeout(500)
+                                break
+                            except Exception:
+                                continue
                         height = page.evaluate("document.body.scrollHeight")
-                        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                        page.wait_for_timeout(700)
+                        page.evaluate("window.scrollBy(0, Math.max(window.innerHeight * 0.85, 600))")
+                        page.wait_for_timeout(900)
                         new_height = page.evaluate("document.body.scrollHeight")
                     except Exception:
                         break
-                    if new_height <= previous_height and height <= previous_height:
+                    if new_height <= previous_height:
+                        stable_rounds += 1
+                    else:
+                        stable_rounds = 0
+                    previous_height = max(previous_height, new_height)
+                    if stable_rounds >= 5:
                         break
-                    previous_height = new_height
+                page.evaluate("window.scrollTo(0, 0)")
                 page.wait_for_timeout(1000)
                 html = page.content()
                 browser.close()
