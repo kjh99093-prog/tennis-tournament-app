@@ -237,6 +237,11 @@ export const DashboardView: React.FC = () => {
         </section>
       )}
 
+      {/* Keep the recommended tournament visually separate from search and filters */}
+      {showWelcome && recommendedTournament && (
+        <div aria-hidden="true" className="mx-1 border-t border-[#354740] pt-4 mt-5" />
+      )}
+
       {/* Search first, followed by optional filters */}
 
       {/* Unified Search Bar & Quick Filter Button */}
