@@ -72,17 +72,17 @@ const EmailConfirmationReturn: React.FC = () => {
       </div>
       <p className="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-[#D5FA63]">AURA TENNIS</p>
       <h1 className="mt-3 text-2xl font-extrabold">
-        {confirmed ? '이메일 인증이 완료되었습니다!' : checking ? '이메일을 확인하고 있어요…' : '이메일 인증을 완료할 수 없습니다'}
+        {confirmed ? 'Email verified successfully!' : checking ? 'Verifying your email…' : 'We couldn’t verify your email'}
       </h1>
       <p className="mt-3 text-sm leading-6 text-[#AAB9B3]">
         {confirmed
-          ? 'AURA Tennis 계정의 이메일 인증이 성공적으로 완료되었어요. 이제 앱으로 돌아가 로그인하거나 프로필 설정을 계속해 주세요.'
+          ? 'Your AURA Tennis email has been verified. Return to the app to log in or continue setting up your profile.'
           : checking
-            ? '잠시만 기다려 주세요. 인증 상태를 확인하고 있습니다.'
-            : '인증 링크가 만료되었거나 이미 사용되었을 수 있어요. AURA Tennis로 돌아가 다시 인증 이메일을 요청해 주세요.'}
+            ? 'Please wait while we confirm your email address.'
+            : 'This confirmation link may have expired or already been used. Return to AURA Tennis and request a new confirmation email.'}
       </p>
       <a href="/" className="mt-7 block w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24]">
-        {confirmed ? 'AURA Tennis로 돌아가기' : 'AURA Tennis 열기'}
+        {confirmed ? 'Return to AURA Tennis' : 'Open AURA Tennis'}
       </a>
     </section>
   </main>;
