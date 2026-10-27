@@ -344,7 +344,7 @@ export const DashboardView: React.FC = () => {
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
         <button
           type="button"
-          onClick={() => setSelectedCountry('All')}
+          onClick={() => { setSelectedCountry('All'); setSelectedProvince('All'); setSelectedCity('All'); }}
           className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
             selectedCountry === 'All'
               ? 'bg-[#D5FA63] text-[#151F24]'
@@ -355,7 +355,7 @@ export const DashboardView: React.FC = () => {
         </button>
         <button
           type="button"
-          onClick={() => setSelectedCountry('Canada')}
+          onClick={() => { setSelectedCountry('Canada'); setSelectedProvince('All'); setSelectedCity('All'); }}
           className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border flex items-center gap-1 ${
             selectedCountry === 'Canada'
               ? 'bg-[#D5FA63] text-[#151F24]'
@@ -367,7 +367,7 @@ export const DashboardView: React.FC = () => {
         </button>
         <button
           type="button"
-          onClick={() => setSelectedCountry('United States')}
+          onClick={() => { setSelectedCountry('United States'); setSelectedProvince('All'); setSelectedCity('All'); }}
           className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border flex items-center gap-1 ${
             selectedCountry === 'United States'
               ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]'
