@@ -34,9 +34,10 @@ USTA_URLS = [
     "https://playtennis.usta.com/competitions/USTA/Tournaments/",
 ]
 ITF_URLS = [
-    # Current official ITF calendar routes (old generic slugs return 404).
-    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-mens-calendar/",
-    "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-womens-calendar/",
+    # Current official ITF calendar routes. The older slugs silently redirected
+    # to a stale/default calendar view and returned past events only.
+    "https://www.itftennis.com/en/tournament-calendar/mens-world-tennis-tour-calendar/",
+    "https://www.itftennis.com/en/tournament-calendar/womens-world-tennis-tour-calendar/",
     "https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-juniors-calendar/",
 ]
 MONTHS = {m.lower(): i for i, m in enumerate(
@@ -156,8 +157,12 @@ def parse_event_card(card, source_id, source_name, country, base_url):
     if len(title) < 4 or title.lower() in {"learn more", "read more", "register"}:
         return None
     whole_text = clean(card.get_text(" ", strip=True))
-    # ITF calendars are international; only keep listings explicitly located in the United States.
-    if source_id == "itf" and not (re.search(r"\bUnited States\b|\bUSA\b|\bU\.S\.A\.\b", whole_text, re.I) or US_STATE_RE.search(whole_text)):
+    # ITF calendars are international; this app currently displays events
+    # hosted in Canada or the United States only.
+    if source_id == "itf" and not (
+        re.search(r"\bCanada\b|\bCAN\b|\bUnited States\b|\bUSA\b|\bU\.S\.A\.\b", whole_text, re.I)
+        or PROVINCE_RE.search(whole_text) or US_STATE_RE.search(whole_text)
+    ):
         return None
     start, end = parse_dates(whole_text)
     if not start or not end:
@@ -272,11 +277,14 @@ def parse_itf_rows(soup, source_name, base_url):
             continue
         country_map = {
             "USA": "United States", "United States": "United States",
-            "CAN": "Canada", "Canada": "Canada", "GBR": "United Kingdom",
-            "Great Britain": "United Kingdom", "KOR": "South Korea",
-            "Korea, Rep.": "South Korea", "CHN": "China", "China, P.R.": "China",
+            "U.S.A.": "United States", "US": "United States",
+            "CAN": "Canada", "Canada": "Canada",
         }
-        country = country_map.get(host_clean, host_clean or "International")
+        # This app currently supports Canada and the United States. Do not
+        # mislabel international ITF events as Canadian events in the UI.
+        country = country_map.get(host_clean)
+        if not country:
+            continue
         event_url = base_url
         link = row.find("a", href=True)
         if link:
