@@ -71,14 +71,14 @@ export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = (
         <button
           type="button"
           onClick={() => setActiveSection('sources')}
-          className={`py-2 px-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1 min-w-0 ${
+          className={`py-2 px-1 rounded-lg text-[11px] sm:text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 min-w-0 leading-tight ${
             activeSection === 'sources'
               ? 'bg-[#D5FA63] text-[#151F24] shadow-xs'
               : 'text-[#AAB9B3] hover:text-[#F3F5F0]'
           }`}
         >
           <Database className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">{t('tab_sources_short')}</span>
+          <span className="whitespace-normal text-center">{t('tab_sources_short')}</span>
         </button>
 
         <button
