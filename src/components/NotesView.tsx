@@ -20,7 +20,7 @@ export const NotesView: React.FC = () => {
   const { t } = useLanguage();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState<MatchNote | null>(null);
+  const [editingNote, setEditingNote] = useState<MatchNote | null>(null);\n  const [pendingDeleteNote, setPendingDeleteNote] = useState<MatchNote | null>(null);
 
   const [formData, setFormData] = useState({
     tournamentId: '',
@@ -211,7 +211,7 @@ export const NotesView: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => deleteNote(note.id)}
+                    onClick={() => setPendingDeleteNote(note)}
                     className="p-1.5 rounded-lg bg-[#293B35] text-[#AAB9B3] hover:text-[#FF5D64] transition-colors"
                     title={t('delete_note_btn')}
                   >
@@ -277,6 +277,22 @@ export const NotesView: React.FC = () => {
           >
             {t('new_note_btn')}
           </button>
+        </div>
+      )}
+
+      {/* Delete confirmation: prevent accidental permanent loss */}
+      {pendingDeleteNote && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4" role="presentation" onClick={() => setPendingDeleteNote(null)}>
+          <section role="dialog" aria-modal="true" aria-labelledby="delete-note-title" className="w-full max-w-sm rounded-2xl border border-[#526A5D] bg-[#20352F] p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#4A2427] text-[#FF9A9F]"><Trash2 className="h-5 w-5" /></div>
+            <h3 id="delete-note-title" className="mt-3 text-center text-lg font-extrabold text-[#F3F5F0]">Delete this match note?</h3>
+            <p className="mt-2 text-center text-sm leading-5 text-[#B7C4BE]">This will permanently delete this note. This action cannot be undone.</p>
+            {pendingDeleteNote.opponentName && <p className="mt-2 text-center text-sm font-semibold text-[#F3F5F0]">vs. {pendingDeleteNote.opponentName}</p>}
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => setPendingDeleteNote(null)} className="rounded-xl border border-[#526A5D] bg-[#293B35] px-3 py-2.5 text-sm font-bold text-[#F3F5F0]">Cancel</button>
+              <button type="button" onClick={() => { deleteNote(pendingDeleteNote.id); setPendingDeleteNote(null); }} className="rounded-xl bg-[#C62828] px-3 py-2.5 text-sm font-extrabold text-white hover:bg-[#B71C1C]">Delete note</button>
+            </div>
+          </section>
         </div>
       )}
 
