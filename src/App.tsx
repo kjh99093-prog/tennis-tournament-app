@@ -21,7 +21,6 @@ const EmailConfirmationReturn: React.FC = () => {
   useEffect(() => {
     let active = true;
     const confirmEmail = async () => {
-      // Supabase may return either a PKCE code in the query string or tokens in the URL hash.
       const params = new URLSearchParams(window.location.search);
       const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
       const authError = params.get('error_description') || hash.get('error_description') || params.get('error') || hash.get('error');
@@ -38,7 +37,6 @@ const EmailConfirmationReturn: React.FC = () => {
         return;
       }
 
-      // The Supabase client can also process access/refresh tokens from the hash automatically.
       const { data, error } = await supabase.auth.getSession();
       if (!active) return;
       if (!error && data.session) {
@@ -46,7 +44,6 @@ const EmailConfirmationReturn: React.FC = () => {
         return;
       }
 
-      // A signup confirmation link can be valid even if the browser has not established a session.
       if (params.get('type') === 'signup' || hash.get('type') === 'signup' ||
           params.has('token_hash') || hash.has('access_token')) {
         setStatus('confirmed');
@@ -65,23 +62,23 @@ const EmailConfirmationReturn: React.FC = () => {
   const confirmed = status === 'confirmed';
   const checking = status === 'checking';
 
-  return <main className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex items-center justify-center p-5">
-    <section className="w-full max-w-md rounded-3xl border border-[#354740] bg-[#20352F] p-8 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#D5FA63]/10 text-4xl">
-        {confirmed ? '✓' : checking ? '⏳' : '✉️'}
+  return <main className="min-h-screen bg-white flex items-center justify-center p-2 sm:p-6">
+    <section className="w-full max-w-7xl rounded-[28px] sm:rounded-[40px] border border-[#354740] bg-gradient-to-br from-[#203A32] to-[#1B332C] px-5 py-8 sm:px-10 sm:py-10 md:px-12 md:py-12 text-center text-[#F3F5F0] shadow-sm">
+      <div className="mx-auto flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-full bg-[#D5FA63] text-4xl sm:text-5xl font-medium text-[#151F24]">
+        {confirmed ? '✓' : checking ? '…' : '✉'}
       </div>
-      <p className="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-[#D5FA63]">AURA TENNIS</p>
-      <h1 className="mt-3 text-2xl font-extrabold">
+      <p className="mt-5 sm:mt-7 text-sm sm:text-lg font-bold uppercase tracking-[0.12em] text-[#D5FA63]">AURA TENNIS</p>
+      <h1 className="mt-4 text-2xl sm:text-3xl md:text-[40px] leading-tight font-extrabold tracking-tight">
         {confirmed ? 'Email verified successfully!' : checking ? 'Verifying your email…' : 'We couldn’t verify your email'}
       </h1>
-      <p className="mt-3 text-sm leading-6 text-[#AAB9B3]">
+      <p className="mx-auto mt-5 sm:mt-6 max-w-6xl text-base sm:text-xl md:text-[28px] leading-relaxed text-[#AAB9B3]">
         {confirmed
           ? 'Your AURA Tennis email has been verified. Return to the app to log in or continue setting up your profile.'
           : checking
             ? 'Please wait while we confirm your email address.'
             : 'This confirmation link may have expired or already been used. Return to AURA Tennis and request a new confirmation email.'}
       </p>
-      <a href="/" className="mt-7 block w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24]">
+      <a href="/" className="mt-6 sm:mt-8 block w-full rounded-2xl bg-[#D5FA63] px-5 py-5 sm:py-6 text-lg sm:text-2xl font-extrabold text-[#151F24] transition hover:brightness-95 focus:outline-none focus:ring-4 focus:ring-[#D5FA63]/40">
         {confirmed ? 'Return to AURA Tennis' : 'Open AURA Tennis'}
       </a>
     </section>
