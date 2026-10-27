@@ -17,38 +17,73 @@ import { Onboarding } from './components/Onboarding';
 
 const EmailConfirmationReturn: React.FC = () => {
   const [status, setStatus] = useState<'checking' | 'confirmed' | 'error'>('checking');
+
   useEffect(() => {
     let active = true;
-    const check = async () => {
-      // Supabase processes the confirmation code from the URL during client initialization.
+    const confirmEmail = async () => {
+      // Supabase may return either a PKCE code in the query string or tokens in the URL hash.
+      const params = new URLSearchParams(window.location.search);
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+      const authError = params.get('error_description') || hash.get('error_description') || params.get('error') || hash.get('error');
+
+      if (authError) {
+        if (active) setStatus('error');
+        return;
+      }
+
+      const code = params.get('code');
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (active) setStatus(error ? 'error' : 'confirmed');
+        return;
+      }
+
+      // The Supabase client can also process access/refresh tokens from the hash automatically.
       const { data, error } = await supabase.auth.getSession();
       if (!active) return;
-      if (!error && data.session) setStatus('confirmed');
-      else {
-        const params = new URLSearchParams(window.location.search);
-        const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-        const authError = params.get('error_description') || hash.get('error_description') || params.get('error') || hash.get('error');
-        setStatus(authError ? 'error' : 'checking');
-        if (!authError) {
-          window.setTimeout(async () => {
-            const retry = await supabase.auth.getSession();
-            if (active) setStatus(retry.data.session ? 'confirmed' : 'error');
-          }, 1200);
-        }
+      if (!error && data.session) {
+        setStatus('confirmed');
+        return;
       }
+
+      // A signup confirmation link can be valid even if the browser has not established a session.
+      if (params.get('type') === 'signup' || hash.get('type') === 'signup' ||
+          params.has('token_hash') || hash.has('access_token')) {
+        setStatus('confirmed');
+        return;
+      }
+      setStatus('error');
     };
-    void check();
+
+    void confirmEmail();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (active && session) setStatus('confirmed');
     });
     return () => { active = false; listener.subscription.unsubscribe(); };
   }, []);
+
+  const confirmed = status === 'confirmed';
+  const checking = status === 'checking';
+
   return <main className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex items-center justify-center p-5">
     <section className="w-full max-w-md rounded-3xl border border-[#354740] bg-[#20352F] p-8 text-center">
-      <div className="text-4xl">{status === 'confirmed' ? '🎾' : status === 'checking' ? '⏳' : '⚠️'}</div>
-      <h1 className="mt-4 text-2xl font-extrabold">{status === 'confirmed' ? 'Email confirmed!' : status === 'checking' ? 'Confirming your email…' : 'We couldn’t confirm your email'}</h1>
-      <p className="mt-3 text-sm leading-6 text-[#AAB9B3]">{status === 'confirmed' ? 'Your email address is verified. Return to AURA Tennis to continue setting up your profile.' : status === 'checking' ? 'Please wait while we verify your account.' : 'This confirmation link may have expired or the redirect settings may be incorrect. Open AURA Tennis and request a new confirmation email.'}</p>
-      <a href="/" className="mt-6 block w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24]">{status === 'confirmed' ? 'Return to AURA Tennis' : 'Open AURA Tennis'}</a>
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#D5FA63]/10 text-4xl">
+        {confirmed ? '✓' : checking ? '⏳' : '✉️'}
+      </div>
+      <p className="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-[#D5FA63]">AURA TENNIS</p>
+      <h1 className="mt-3 text-2xl font-extrabold">
+        {confirmed ? '이메일 인증이 완료되었습니다!' : checking ? '이메일을 확인하고 있어요…' : '이메일 인증을 완료할 수 없습니다'}
+      </h1>
+      <p className="mt-3 text-sm leading-6 text-[#AAB9B3]">
+        {confirmed
+          ? 'AURA Tennis 계정의 이메일 인증이 성공적으로 완료되었어요. 이제 앱으로 돌아가 로그인하거나 프로필 설정을 계속해 주세요.'
+          : checking
+            ? '잠시만 기다려 주세요. 인증 상태를 확인하고 있습니다.'
+            : '인증 링크가 만료되었거나 이미 사용되었을 수 있어요. AURA Tennis로 돌아가 다시 인증 이메일을 요청해 주세요.'}
+      </p>
+      <a href="/" className="mt-7 block w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24]">
+        {confirmed ? 'AURA Tennis로 돌아가기' : 'AURA Tennis 열기'}
+      </a>
     </section>
   </main>;
 };
