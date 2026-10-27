@@ -276,7 +276,7 @@ export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = (
       <section className="rounded-2xl border border-[#4A554E] bg-[#192623] p-4 space-y-2">
         <h3 className="text-sm font-bold text-[#F3F5F0]">Account</h3>
         <p className="text-xs text-[#B7C4BE]">Sign out of your AURA Tennis account on this device.</p>
-        <button type="button" onClick={() => setShowLogoutConfirm(true)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#8A5A55] bg-[#302321] px-4 py-3 text-sm font-bold text-[#FFD8D2] transition-colors hover:bg-[#3A2926]">
+        <button type="button" onClick={() => setShowLogoutConfirm(true)} className="logout-action flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-colors">
           <LogOut className="h-4 w-4" /> Log out
         </button>
       </section>
@@ -299,7 +299,7 @@ export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = (
       <section className="rounded-2xl border border-[#4A554E] bg-[#192623] p-4 space-y-2">
         <h3 className="text-sm font-bold text-[#F3F5F0]">Account</h3>
         <p className="text-xs text-[#B7C4BE]">Sign out of your AURA Tennis account on this device.</p>
-        <button type="button" onClick={() => setShowLogoutConfirm(true)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#8A5A55] bg-[#302321] px-4 py-3 text-sm font-bold text-[#FFD8D2] transition-colors hover:bg-[#3A2926]">
+        <button type="button" onClick={() => setShowLogoutConfirm(true)} className="logout-action flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-colors">
           <LogOut className="h-4 w-4" /> Log out
         </button>
       </section>
