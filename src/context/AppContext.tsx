@@ -192,12 +192,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         const mapped: Tournament[] = data.events
           .filter((event: any) => event && typeof event.title === 'string' && event.title.trim() && event.officialUrl)
-          .map((event: any, index: number) => {
+          .map((event: any, index: number): Tournament | null => {
             const ages: string[] = Array.isArray(event.ageDivisions) ? event.ageDivisions : [];
-            const inferredCategory = event.category === 'junior' || event.category === 'adult'
-              ? event.category
-              : (ages.some((age) => /^U\d+|RISING STARS/i.test(age)) ? 'junior' : 'adult');
-            const country = event.country === 'United States' ? 'United States' : 'Canada';
+            const eventText = String(event.title || '') + ' ' + String(event.tags || '') + ' ' + ages.join(' ');
+            const juniorClue = /\b(junior|juniors|boys|girls|under\s*\d{1,2}|U(?:8|9|10|12|14|16|18)|\d{1,2}\s*&\s*under|orange bowl international tennis championship)\b/i.test(eventText);
+            const adultClue = /\b(adult|men'?s|women'?s|masters|NTRP|18\+|30\+|35\+|40\+|45\+|50\+|55-95)\b/i.test(eventText);
+            const hasJuniorDivision = ages.some((age) => /\bU\d{1,2}\b|RISING STARS|BOYS|GIRLS/i.test(age));
+            const category = event.category === 'both'
+              ? 'both'
+              : (hasJuniorDivision || juniorClue ? 'junior' : (event.category === 'adult' || adultClue ? 'adult' : 'adult'));
+
+            const countryText = String(event.country || '') + ' ' + String(event.tags || '') + ' ' + String(event.title || '');
+            const usState = String(event.state || event.province || '').toUpperCase();
+            const isUnitedStates =
+              /\b(United States|USA|U\.S\.A\.|Host Nation:\s*US\b|Host Nation:\s*USA\b)\b/i.test(countryText) ||
+              /\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC)\b/.test(usState);
+            const isCanada = /\b(Canada|CAN|Host Nation:\s*Canada)\b/i.test(countryText);
+            // Never silently convert unknown or International events into Canadian events.
+            if (!isUnitedStates && !isCanada) return null;
+            const country = isUnitedStates ? 'United States' : 'Canada';
+
             const sanctioningBody: Tournament['sanctioningBody'] =
               event.sourceId === 'usta' ? 'USTA' :
               event.sourceId === 'itf' ? 'ITF' :
@@ -205,7 +219,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               event.sourceId === 'tennis-bc' ? 'Tennis BC' : 'Tennis Canada';
             const rawLevel = (typeof event.tags === 'string' && event.tags.match(/\b(?:\d+(?:\.\d+)?\s*Star|\d+\s*Star|NTRP\s*[\d.]+|Level\s*\d+)\b/i)?.[0]) || '';
             return {
-              id: `real-${event.sourceId || 'tournament'}-${event.startDate || 'undated'}-${index}`,
+              id: 'real-' + (event.sourceId || 'tournament') + '-' + (event.startDate || 'undated') + '-' + index,
               title: event.title,
               sanctioningBody,
               officialUrl: event.officialUrl,
@@ -216,7 +230,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               stateProvince: event.province || event.state || '',
               country,
               distanceKm: 0,
-              category: event.category === 'both' ? 'both' : inferredCategory,
+              category,
               ageDivisions: ages,
               ageCategory: ages.join(', '),
               levelCategory: rawLevel,
@@ -229,8 +243,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               fitScore: 0,
               fitFactors: { distanceFit: 0, surfaceFit: 0, ratingFit: 0, categoryFit: 0 },
             };
-          });
-
+          })
+          .filter((event): event is Tournament => event !== null);
         if (!cancelled && mapped.length > 0) {
           setTournaments(mapped);
           console.log('AURA real tournament data loaded:', mapped.length);
