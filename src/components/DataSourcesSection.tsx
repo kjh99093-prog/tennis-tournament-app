@@ -119,18 +119,18 @@ export const DataSourcesSection: React.FC = () => {
       </div>
 
       {/* Freshness & Integrity Notice */}
-      <div className="p-3.5 rounded-xl bg-[#293B35]/70 border border-[#354740] space-y-2">
-        <div className="flex items-center gap-2 text-xs font-bold text-[#D5FA63]">
+      <div className="source-freshness-notice p-3.5 rounded-xl border space-y-2">
+        <div className="source-notice-title flex items-center gap-2 text-xs font-bold">
           <ShieldCheck className="w-4 h-4" />
           <span>{t('source_disclaimer_title')}</span>
         </div>
-        <p className="text-xs text-[#AAB9B3] leading-relaxed">
+        <p className="source-notice-body text-xs leading-relaxed">
           {t('source_disclaimer_text')}
         </p>
-        <p className="text-[11px] text-[#AAB9B3]/80 leading-relaxed italic">
+        <p className="source-notice-note text-[11px] leading-relaxed italic">
           {t('source_integrity_note')}
         </p>
-        <div className="flex items-center gap-1.5 text-[11px] text-[#6677FF] font-medium pt-1 border-t border-[#354740]/50">
+        <div className="source-notice-verified flex items-center gap-1.5 text-[11px] font-medium pt-1 border-t">
           <Clock className="w-3 h-3" />
           <span>{t('source_last_verified')}</span>
         </div>
