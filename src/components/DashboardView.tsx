@@ -162,6 +162,11 @@ export const DashboardView: React.FC = () => {
   const filteredTournaments = useMemo(() => {
     return scoredTournaments
       .filter((t) => {
+        // Dashboard discovery shows only dated tournaments that are still upcoming or in progress.
+        // Past events remain available in a user's saved history/notes, not the default discovery list.
+        const today = new Date().toISOString().slice(0, 10);
+        if (!t.startDate || !t.endDate || t.endDate < today) return false;
+
         // Filter by Junior / Adult category
         if (category === 'junior' && t.category === 'adult') return false;
         if (category === 'adult' && t.category === 'junior') return false;
