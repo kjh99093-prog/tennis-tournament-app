@@ -194,3 +194,24 @@ html.light .best-fit-event:hover { background: #FFFFFF; border-color: #6EA66A; b
 html.light .best-fit-title { color: #1D3423; }
 html.light .best-fit-date { color: #647765; }
 html.light .best-fit-link { color: #2F7438; }
+
+
+/* Data-source notice: distinct, readable surfaces in both themes. */
+.source-freshness-notice {
+  background: linear-gradient(135deg, #243A32 0%, #2D473B 100%);
+  border-color: #52695B;
+  box-shadow: 0 8px 20px rgba(13,27,22,.12);
+}
+.source-notice-title { color: #D5FA63; }
+.source-notice-body { color: #E0E9E2; }
+.source-notice-note { color: #C0CEC4; }
+.source-notice-verified { color: #9EADFF; border-top-color: rgba(220,232,222,.25); }
+html.light .source-freshness-notice {
+  background: linear-gradient(135deg, #F1F8ED 0%, #E4F1DF 100%);
+  border-color: #C8DDC0;
+  box-shadow: 0 8px 20px rgba(44,83,47,.09);
+}
+html.light .source-notice-title { color: #2F7438; }
+html.light .source-notice-body { color: #3F5142; }
+html.light .source-notice-note { color: #596D5A; }
+html.light .source-notice-verified { color: #4F63D9; border-top-color: #C8DCC2; }
