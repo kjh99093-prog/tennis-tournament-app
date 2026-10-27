@@ -258,27 +258,27 @@ export const DashboardView: React.FC = () => {
             <p className="mt-1 text-sm text-[#B7C4BE]">{t('welcome_subtitle')}</p>
           </div>
           {recommendedTournament && (
-            <div className="rounded-2xl border border-[#526A5D] bg-[#1C2B28] p-3.5 sm:p-4 shadow-sm">
-              <div className="mb-3 flex items-center gap-2 border-b border-[#354A41] pb-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2B4037] text-[#D5FA63]">✦</span>
+            <div className="best-fit-panel rounded-2xl p-3.5 sm:p-4 shadow-lg">
+              <div className="best-fit-heading mb-3 flex items-center gap-2 pb-3">
+                <span className="best-fit-icon flex h-9 w-9 items-center justify-center rounded-xl">✦</span>
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.14em] font-extrabold text-[#D5FA63]">BEST FIT FOR YOU</p>
-                  <p className="mt-0.5 text-xs text-[#B7C4BE]">Recommended tournament</p>
+                  <p className="best-fit-eyebrow text-[11px] uppercase tracking-[0.14em] font-extrabold">BEST FIT FOR YOU</p>
+                  <p className="best-fit-subtitle mt-0.5 text-xs">Recommended tournament</p>
                 </div>
               </div>
-              <button type="button" onClick={() => openTournamentModal(recommendedTournament)} className="w-full text-left rounded-xl border border-[#40574B] bg-[#243832] p-4 hover:border-[#829A70] hover:bg-[#293F37] transition-colors">
+              <button type="button" onClick={() => openTournamentModal(recommendedTournament)} className="best-fit-event w-full text-left rounded-xl p-4 transition-colors">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-base sm:text-lg font-extrabold leading-snug text-[#F3F5F0]">{recommendedTournament.title}</h2>
-                    <p className="mt-1.5 text-sm text-[#C0CDC6]">{[recommendedTournament.city, recommendedTournament.stateProvince].filter(Boolean).join(', ')}</p>
-                    <p className="mt-2 text-xs text-[#AAB9B3]">{recommendedTournament.startDate || t('dates')}: {recommendedTournament.startDate || '—'}</p>
+                    <h2 className="best-fit-title text-base sm:text-lg font-extrabold leading-snug">{recommendedTournament.title}</h2>
+                    <p className="best-fit-meta mt-1.5 text-sm">{[recommendedTournament.city, recommendedTournament.stateProvince].filter(Boolean).join(', ')}</p>
+                    <p className="best-fit-date mt-2 text-xs">{recommendedTournament.startDate || t('dates')}: {recommendedTournament.startDate || '—'}</p>
                   </div>
                   <div className="shrink-0 rounded-xl border border-[#D5FA63]/40 bg-[#D5FA63] px-3 py-2 text-center text-[#151F24]">
                     <span className="block text-2xl font-black">{recommendedTournament.fitScore}%</span>
                     <span className="text-[10px] font-extrabold uppercase">{t('fit_score')}</span>
                   </div>
                 </div>
-                <p className="mt-3 text-xs font-bold text-[#D5FA63]">{t('view_details')} →</p>
+                <p className="best-fit-link mt-3 text-xs font-bold">{t('view_details')} →</p>
               </button>
             </div>
           )}
