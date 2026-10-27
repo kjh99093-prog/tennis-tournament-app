@@ -43,95 +43,6 @@ interface AppContextType {
   createNoteForTournament: (tournament: Tournament) => void;
 }
 
-const defaultJuniorProfile: PlayerProfile = {
-  name: 'Leo Zhang',
-  category: 'junior',
-  ageGroup: 'U14',
-  utrRating: '6.8',
-  nationalRating: 'TC 5.2 (BC Ranked #12)',
-  tennisCanadaPin: 'BC-2012-9844',
-  ustaId: '202688401',
-  homeCity: 'Vancouver',
-  homeProvinceState: 'BC',
-  homeCountry: 'Canada',
-  preferredSurfaces: ['Indoor Hard', 'Hard'],
-  maxTravelKm: 150,
-  playStyle: 'Aggressive Baseliner',
-  racketModel: 'Babolat Pure Aero (300g)'
-};
-
-const defaultAdultProfile: PlayerProfile = {
-  name: 'Leo Zhang',
-  category: 'adult',
-  ageGroup: 'NTRP 4.0 / Open',
-  utrRating: '7.4',
-  nationalRating: 'Tennis Canada 4.5 / NTRP 4.0',
-  tennisCanadaPin: 'BC-1996-4122',
-  ustaId: '202511993',
-  homeCity: 'Vancouver',
-  homeProvinceState: 'BC',
-  homeCountry: 'Canada',
-  preferredSurfaces: ['Indoor Hard', 'Hard'],
-  maxTravelKm: 200,
-  playStyle: 'All-Court Counterpuncher',
-  racketModel: 'Head Speed MP (310g)'
-};
-
-const initialSavedRecords: SavedTournamentRecord[] = [
-  {
-    tournamentId: 't-bc-jr-selection-1',
-    status: 'registered',
-    savedAt: '2026-10-12T10:00:00Z',
-    targetDivision: 'U14'
-  },
-  {
-    tournamentId: 't-vancouver-lawn-adult-open',
-    status: 'interested',
-    savedAt: '2026-10-14T14:30:00Z',
-    targetDivision: 'NTRP 4.0'
-  }
-];
-
-const initialNotes: MatchNote[] = [
-  {
-    id: 'note-1',
-    tournamentId: 't-bc-jr-selection-1',
-    tournamentTitle: 'Tennis BC Provincial Junior Selection Series #1',
-    opponentName: 'Marcus Chen',
-    date: '2026-10-24',
-    surface: 'Indoor Hard',
-    matchType: 'Singles',
-    result: 'scheduled',
-    racketTension: '52 lbs (Poly)',
-    tags: ['Quarterfinal Prep', 'Heavy Spin', 'Indoor Bounce'],
-    keyTakeaways: [
-      'Opponent possesses heavy topspin forehand; keep balls deep into his backhand',
-      'Attack second serve early by stepping inside baseline',
-      'Maintain 70%+ first serve percentage in key game points'
-    ],
-    tacticalNotes: 'Marcus likes high ball tempo on forehand wing. Use sliced low backhands to disrupt rhythm and take time away at net.',
-    createdAt: '2026-10-14T18:00:00Z'
-  },
-  {
-    id: 'note-2',
-    tournamentId: 't-vancouver-lawn-adult-open',
-    tournamentTitle: 'Vancouver Lawn Tennis & Badminton Club Masters & Open',
-    opponentName: 'David Miller',
-    date: '2026-10-29',
-    surface: 'Indoor Hard',
-    matchType: 'Singles',
-    result: 'scheduled',
-    racketTension: '50 lbs (Hybrid Gut/Poly)',
-    tags: ['Serve & Volley Prep', 'Fast Indoor Courts'],
-    keyTakeaways: [
-      'David charges net often behind flat serve; prepare low dipping passing shots',
-      'Lob over backhand side when he crowds the net'
-    ],
-    tacticalNotes: 'Keep return of serve low at his shoelaces. Do not feed pace to his forehand volley.',
-    createdAt: '2026-10-15T09:00:00Z'
-  }
-];
-
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -154,7 +65,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {
       // fallback
     }
-    return category === 'junior' ? defaultJuniorProfile : defaultAdultProfile;
+    return {
+      name: '',
+      category,
+      ageGroup: '',
+      utrRating: '',
+      nationalRating: '',
+      tennisCanadaPin: '',
+      ustaId: '',
+      homeCity: '',
+      homeProvinceState: '',
+      homeCountry: 'Canada',
+      preferredSurfaces: [],
+      maxTravelKm: 100,
+      playStyle: '',
+      racketModel: ''
+    };
   });
 
   const [savedTournaments, setSavedTournaments] = useState<SavedTournamentRecord[]>(() => {
@@ -164,7 +90,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {
       // fallback
     }
-    return initialSavedRecords;
+    return [];
   });
 
   const [notes, setNotes] = useState<MatchNote[]>(() => {
@@ -174,7 +100,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {
       // fallback
     }
-    return initialNotes;
+    return [];
   });
 
   const [activeModalTournament, setActiveModalTournament] = useState<Tournament | null>(null);
@@ -288,6 +214,61 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return next;
     });
   };
+
+  // Remove only the known demo records from earlier builds, preserving user-created records.
+  useEffect(() => {
+    try {
+      const savedTournaments = localStorage.getItem('aura_tennis_saved_tournaments');
+      if (savedTournaments) {
+        const records = JSON.parse(savedTournaments);
+        if (Array.isArray(records)) {
+          const cleaned = records.filter((record) =>
+            !['t-bc-jr-selection-1', 't-vancouver-lawn-adult-open'].includes(record?.tournamentId)
+          );
+          localStorage.setItem('aura_tennis_saved_tournaments', JSON.stringify(cleaned));
+          setSavedTournaments(cleaned);
+        }
+      }
+
+      const savedNotes = localStorage.getItem('aura_tennis_notes');
+      if (savedNotes) {
+        const records = JSON.parse(savedNotes);
+        if (Array.isArray(records)) {
+          const cleaned = records.filter((record) => !['note-1', 'note-2'].includes(record?.id));
+          localStorage.setItem('aura_tennis_notes', JSON.stringify(cleaned));
+          setNotes(cleaned);
+        }
+      }
+
+      const savedProfile = localStorage.getItem('aura_tennis_profile');
+      if (savedProfile) {
+        const profile = JSON.parse(savedProfile);
+        if (profile?.name === 'Leo Zhang' &&
+            ['BC-2012-9844', 'BC-1996-4122'].includes(profile?.tennisCanadaPin)) {
+          localStorage.removeItem('aura_tennis_profile');
+          localStorage.removeItem('aura_tennis_setup_complete');
+          setPlayerProfile({
+            name: '',
+            category,
+            ageGroup: '',
+            utrRating: '',
+            nationalRating: '',
+            tennisCanadaPin: '',
+            ustaId: '',
+            homeCity: '',
+            homeProvinceState: '',
+            homeCountry: 'Canada',
+            preferredSurfaces: [],
+            maxTravelKm: 100,
+            playStyle: '',
+            racketModel: ''
+          });
+        }
+      }
+    } catch {
+      // Leave unrecognized local data untouched if it cannot be parsed safely.
+    }
+  }, []);
 
   // Save changes to localStorage
   useEffect(() => {
