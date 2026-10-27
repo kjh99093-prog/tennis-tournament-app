@@ -137,3 +137,28 @@ html.light [class~="bg-[#151F24]/95"] { background-color: rgba(250,251,248,.97) 
 html.light [class~="bg-[#20352F]"] { background-color: #FFFFFF !important; }
 html.light [class~="bg-[#293B35]"] { background-color: #EAF4E8 !important; }
 html.light [class~="text-[#F3F5F0]"] { color: #25312A !important; }
+
+
+/* Accessible logout action: strong, consistent red in both themes. */
+.logout-action {
+  background-color: #C62828 !important;
+  border: 1px solid #C62828 !important;
+  color: #FFFFFF !important;
+}
+.logout-action:hover {
+  background-color: #B71C1C !important;
+  border-color: #B71C1C !important;
+  color: #FFFFFF !important;
+}
+html.light .logout-action,
+html.dark .logout-action {
+  background-color: #C62828 !important;
+  border-color: #C62828 !important;
+  color: #FFFFFF !important;
+}
+html.light .logout-action:hover,
+html.dark .logout-action:hover {
+  background-color: #B71C1C !important;
+  border-color: #B71C1C !important;
+  color: #FFFFFF !important;
+}
