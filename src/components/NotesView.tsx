@@ -20,7 +20,8 @@ export const NotesView: React.FC = () => {
   const { t } = useLanguage();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState<MatchNote | null>(null);\n  const [pendingDeleteNote, setPendingDeleteNote] = useState<MatchNote | null>(null);
+  const [editingNote, setEditingNote] = useState<MatchNote | null>(null);
+  const [pendingDeleteNote, setPendingDeleteNote] = useState<MatchNote | null>(null);
 
   const [formData, setFormData] = useState({
     tournamentId: '',
