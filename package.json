@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "aura-tennis-tournament-navigator",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +8,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "cap:sync": "npm run build && cap sync",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android",
+    "cap:run:ios": "cap run ios",
+    "cap:run:android": "cap run android"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -21,7 +26,10 @@
     "express": "^4.21.2",
     "dotenv": "^17.2.3",
     "motion": "^12.23.24",
-    "@supabase/supabase-js": "^2.75.0"
+    "@supabase/supabase-js": "^2.75.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
@@ -32,6 +40,7 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
     "typescript": "^7.0.2",
-    "@types/express": "^4.17.21"
+    "@types/express": "^4.17.21",
+    "@capacitor/cli": "^8.0.0"
   }
 }
