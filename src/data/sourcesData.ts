@@ -91,6 +91,43 @@ export const OFFICIAL_DATA_SOURCES: DataSource[] = [
     description: 'Modern public directory for discovering community, junior, and adult tournaments hosted at USTA facility networks.'
   },
 
+  {
+    id: 'itf-us-tour',
+    name: 'ITF World Tennis Tour — USA Events',
+    country: 'United States',
+    coverageArea: 'United States & International ITF Circuit',
+    distanceInfo: 'USA-hosted professional events',
+    purpose: 'ITF World Tennis Tour events hosted in the US, including M15/M25 and W15/W35 tournaments',
+    url: 'https://www.itftennis.com/en/tournament-calendar/',
+    status: 'Link Only',
+    isFutureExpansion: false,
+    description: 'Official ITF calendar; filter by host nation to find professional tournaments held in the United States.'
+  },
+  {
+    id: 'utr-us-events',
+    name: 'UTR Sports — Events & Tournaments',
+    country: 'United States',
+    coverageArea: 'United States & North America',
+    distanceInfo: 'Local, regional & national events',
+    purpose: 'UTR-rated events, verified prize-money tours, college showcases and flex leagues',
+    url: 'https://app.utrsports.net/events',
+    status: 'Link Only',
+    isFutureExpansion: false,
+    description: 'Universal Tennis event directory for level-based competition and tournament discovery.'
+  },
+  {
+    id: 'ita-college-tennis',
+    name: 'ITA — College Tennis',
+    country: 'United States',
+    coverageArea: 'US College Tennis (NCAA, NAIA, JUCO & DIII)',
+    distanceInfo: 'National collegiate calendar',
+    purpose: 'College tennis championships, regional events, rankings and collegiate tournament schedules',
+    url: 'https://wearecollegetennis.com/championships/',
+    status: 'Link Only',
+    isFutureExpansion: false,
+    description: 'Official Intercollegiate Tennis Association championship and college tournament information.'
+  },
+
   // Future Expansion Sources
   {
     id: 'itf-tennis',
