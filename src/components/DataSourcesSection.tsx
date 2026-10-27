@@ -109,7 +109,7 @@ export const DataSourcesSection: React.FC = () => {
           <h3 className="font-bold text-base text-[#F3F5F0] flex items-center gap-2">
             <span>{t('data_sources_title')}</span>
             <span className="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-[#20352F] text-[#D5FA63] border border-[#354740]">
-              9 Platforms
+              {OFFICIAL_DATA_SOURCES.length} Platforms
             </span>
           </h3>
           <p className="text-xs text-[#AAB9B3] mt-0.5">
@@ -143,7 +143,7 @@ export const DataSourcesSection: React.FC = () => {
             <span>🇨🇦</span>
             <span>{t('primary_sources_canada')}</span>
           </h4>
-          <span className="text-[11px] text-[#AAB9B3]">4 Sources</span>
+          <span className="text-[11px] text-[#AAB9B3]">{canadaSources.length} Sources</span>
         </div>
         <div className="grid grid-cols-1 gap-3">
           {canadaSources.map(renderSourceCard)}
@@ -157,7 +157,7 @@ export const DataSourcesSection: React.FC = () => {
             <span>🇺🇸</span>
             <span>{t('primary_sources_usa')}</span>
           </h4>
-          <span className="text-[11px] text-[#AAB9B3]">3 Sources</span>
+          <span className="text-[11px] text-[#AAB9B3]">{usaSources.length} Sources</span>
         </div>
         <div className="grid grid-cols-1 gap-3">
           {usaSources.map(renderSourceCard)}
@@ -171,7 +171,7 @@ export const DataSourcesSection: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>{t('future_expansion')}</span>
           </h4>
-          <span className="text-[11px] text-[#AAB9B3]">2 Platforms (Planned)</span>
+          <span className="text-[11px] text-[#AAB9B3]">{futureSources.length} Platforms (Planned)</span>
         </div>
         <div className="grid grid-cols-1 gap-3">
           {futureSources.map(renderSourceCard)}
