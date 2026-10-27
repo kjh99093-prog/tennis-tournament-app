@@ -272,15 +272,6 @@ export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = (
         </form>
       )}
 
-      {/* Account actions */}
-      <section className="rounded-2xl border border-[#4A554E] bg-[#192623] p-4 space-y-2">
-        <h3 className="text-sm font-bold text-[#F3F5F0]">Account</h3>
-        <p className="text-xs text-[#B7C4BE]">Sign out of your AURA Tennis account on this device.</p>
-        <button type="button" onClick={() => setShowLogoutConfirm(true)} className="logout-action flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-colors">
-          <LogOut className="h-4 w-4" /> Log out
-        </button>
-      </section>
-
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 p-4" role="presentation" onClick={() => setShowLogoutConfirm(false)}>
           <section role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title" className="w-full max-w-sm rounded-2xl border border-[#526A5D] bg-[#1C2B28] p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -298,6 +289,14 @@ export const ProfileView: React.FC<{ onLogout: () => Promise<void> | void }> = (
       {/* 3. Preferences & Settings */}
       {activeSection === 'settings' && (
         <div className="space-y-4">
+          {/* Account actions are kept in Settings only */}
+          <section className="rounded-2xl border border-[#4A554E] bg-[#192623] p-4 space-y-2">
+            <h3 className="text-sm font-bold text-[#F3F5F0]">Account</h3>
+            <p className="text-xs text-[#B7C4BE]">Sign out of your AURA Tennis account on this device.</p>
+            <button type="button" onClick={() => setShowLogoutConfirm(true)} className="logout-action flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-colors">
+              <LogOut className="h-4 w-4" /> Log out
+            </button>
+          </section>
           <div className="bg-[#20352F] border border-[#354740] rounded-2xl p-4 md:p-5 space-y-4">
             <h3 className="font-bold text-sm text-[#F3F5F0] flex items-center gap-2">
               <Sliders className="w-4 h-4 text-[#D5FA63]" />
