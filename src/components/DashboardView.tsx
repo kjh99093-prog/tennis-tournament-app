@@ -378,40 +378,6 @@ export const DashboardView: React.FC = () => {
           <span>{t('filter_usa_only')}</span>
         </button>
 
-        {/* Province / State selector */}
-        <select
-          value={selectedProvince}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSelectedProvince(value);
-            setSelectedCity('All');
-            const region = regionOptions.find((item) => item.value === value);
-            if (value === 'All') setSelectedCountry('All');
-            else if (region) setSelectedCountry(region.country as 'Canada' | 'United States');
-          }}
-          className={`text-xs font-semibold px-2 py-1 rounded-lg border outline-hidden cursor-pointer whitespace-nowrap ${selectedProvince !== 'All' ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]' : 'bg-[#20352F] text-[#AAB9B3] border-[#354740]'}`}
-          aria-label="Province or state"
-        >
-          <option value="All">Province / State</option>
-          {regionOptions.filter((region) => selectedCountry === 'All' || region.country === selectedCountry).map((region) => (
-            <option key={region.value} value={region.value}>{region.label}</option>
-          ))}
-        </select>
-
-        {/* City selector */}
-        <select
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value)}
-          disabled={selectedProvince === 'All'}
-          className={`text-xs font-semibold px-2 py-1 rounded-lg border outline-hidden cursor-pointer whitespace-nowrap ${selectedCity !== 'All' ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]' : 'bg-[#20352F] text-[#AAB9B3] border-[#354740]'}`}
-          aria-label="City"
-        >
-          <option value="All">All cities</option>
-          {(cityOptionsByRegion[selectedProvince] || []).map((city) => (
-            <option key={city} value={city}>{city}</option>
-          ))}
-        </select>
-
         {/* Quick Age Chip dropdown */}
         <select
           value={selectedAge}
@@ -449,6 +415,46 @@ export const DashboardView: React.FC = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Always-visible region filters on their own row (mobile-friendly) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+        <label className="min-w-0 space-y-1">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#AAB9B3]">Province / State</span>
+          <select
+            value={selectedProvince}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedProvince(value);
+              setSelectedCity('All');
+              const region = regionOptions.find((item) => item.value === value);
+              if (value === 'All') setSelectedCountry('All');
+              else if (region) setSelectedCountry(region.country as 'Canada' | 'United States');
+            }}
+            className={`w-full min-w-0 rounded-xl border px-3 py-2 text-sm font-semibold outline-hidden ${selectedProvince !== 'All' ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]' : 'bg-[#20352F] text-[#F3F5F0] border-[#354740]'}`}
+            aria-label="Province or state"
+          >
+            <option value="All">All provinces / states</option>
+            {regionOptions.filter((region) => selectedCountry === 'All' || region.country === selectedCountry).map((region) => (
+              <option key={region.value} value={region.value}>{region.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="min-w-0 space-y-1">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-[#AAB9B3]">City</span>
+          <select
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+            disabled={selectedProvince === 'All'}
+            className={`w-full min-w-0 rounded-xl border px-3 py-2 text-sm font-semibold outline-hidden disabled:opacity-60 ${selectedCity !== 'All' ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]' : 'bg-[#20352F] text-[#F3F5F0] border-[#354740]'}`}
+            aria-label="City"
+          >
+            <option value="All">All cities</option>
+            {(cityOptionsByRegion[selectedProvince] || []).map((city) => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
+        </label>
       </div>
 
       {/* Expandable Advanced Filter Panel on Mobile */}
