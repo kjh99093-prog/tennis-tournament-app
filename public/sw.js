@@ -1,5 +1,10 @@
-const CACHE_NAME = 'aura-tennis-shell-v5';
-const APP_SHELL = ['/'];
+const CACHE_NAME = 'aura-tennis-shell-v6';
+const APP_SHELL = [
+  '/',
+  '/manifest.webmanifest',
+  '/icons/aura-192.png',
+  '/icons/aura-512.png'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
