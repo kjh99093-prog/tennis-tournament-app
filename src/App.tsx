@@ -111,6 +111,11 @@ const AppContent: React.FC = () => {
   }, [user, setupComplete, playerProfile]);
 
   const handleSignOut = async () => {
+    const confirmed = window.confirm(
+      'Before you log out: your saved tournaments and match notes are currently stored on this device only. Logging out will clear those local records, and they may not be recoverable. To keep using them for now, choose Cancel and stay signed in.'
+    );
+    if (!confirmed) return;
+
     const { error } = await supabase.auth.signOut();
     if (error) { window.alert('Could not log out. Please try again.'); return; }
     ['aura_tennis_setup_complete','aura_tennis_profile','aura_tennis_category','aura_tennis_saved_tournaments','aura_tennis_notes']
