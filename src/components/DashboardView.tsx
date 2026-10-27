@@ -95,6 +95,38 @@ export const DashboardView: React.FC = () => {
   const { t } = useLanguage();
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState('All');
+  const [selectedCity, setSelectedCity] = useState('All');
+  const regionOptions = [
+    { value: 'BC', label: 'British Columbia (BC)', country: 'Canada' },
+    { value: 'ON', label: 'Ontario (ON)', country: 'Canada' },
+    { value: 'QC', label: 'Québec (QC)', country: 'Canada' },
+    { value: 'AB', label: 'Alberta (AB)', country: 'Canada' },
+    { value: 'WA', label: 'Washington (WA)', country: 'United States' },
+    { value: 'OR', label: 'Oregon (OR)', country: 'United States' },
+    { value: 'CA', label: 'California (CA)', country: 'United States' },
+    { value: 'NY', label: 'New York (NY)', country: 'United States' }
+  ];
+  const cityOptionsByRegion: Record<string, string[]> = {
+    BC: ['Vancouver', 'Richmond', 'Burnaby', 'Surrey', 'North Vancouver', 'West Vancouver', 'Victoria', 'Kelowna'],
+    ON: ['Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Markham', 'Waterloo', 'Hamilton', 'London'],
+    QC: ['Montréal', 'Québec City', 'Laval', 'Gatineau', 'Longueuil'],
+    AB: ['Calgary', 'Edmonton', 'Red Deer'],
+    WA: ['Seattle', 'Bellevue', 'Tacoma', 'Bellingham', 'Spokane'],
+    OR: ['Portland', 'Eugene', 'Salem'],
+    CA: ['Los Angeles', 'San Diego', 'San Francisco', 'San Jose', 'Sacramento', 'Irvine'],
+    NY: ['New York City', 'Albany', 'Buffalo', 'Rochester']
+  };
+  const normalizeRegion = (value: string) => {
+    const v = String(value || '').trim().toLowerCase();
+    const aliases: Record<string, string> = {
+      'british columbia': 'bc', bc: 'bc', ontario: 'on', on: 'on',
+      'québec': 'qc', quebec: 'qc', qc: 'qc', alberta: 'ab', ab: 'ab',
+      washington: 'wa', wa: 'wa', oregon: 'or', or: 'or',
+      california: 'ca', ca: 'ca', 'new york': 'ny', ny: 'ny'
+    };
+    return aliases[v] || v;
+  };
 
   // Dynamic age options based on active category
   const ageOptions = useMemo(() => {
@@ -137,6 +169,10 @@ export const DashboardView: React.FC = () => {
         // Filter by country
         if (selectedCountry === 'Canada' && t.country !== 'Canada') return false;
         if (selectedCountry === 'United States' && t.country !== 'United States') return false;
+
+        // Filter by province/state and city.
+        if (selectedProvince !== 'All' && normalizeRegion(t.stateProvince) !== normalizeRegion(selectedProvince)) return false;
+        if (selectedCity !== 'All' && String(t.city || '').trim().toLowerCase() !== selectedCity.toLowerCase()) return false;
 
         // Filter by surface
         if (selectedSurface !== 'All' && !t.surface.toLowerCase().includes(selectedSurface.toLowerCase())) {
@@ -181,7 +217,7 @@ export const DashboardView: React.FC = () => {
         if (sortBy === 'distance') return a.distanceKm - b.distanceKm;
         return 0;
       });
-  }, [scoredTournaments, category, selectedCountry, selectedSurface, selectedAge, selectedLevel, searchQuery, sortBy]);
+  }, [scoredTournaments, category, selectedCountry, selectedProvince, selectedCity, selectedSurface, selectedAge, selectedLevel, searchQuery, sortBy]);
 
   const recommendedTournament = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
@@ -197,6 +233,8 @@ export const DashboardView: React.FC = () => {
   const handleResetFilters = () => {
     setSearchQuery('');
     setSelectedCountry('All');
+    setSelectedProvince('All');
+    setSelectedCity('All');
     setSelectedSurface('All');
     setSelectedAge('All');
     setSelectedLevel('All');
@@ -204,6 +242,8 @@ export const DashboardView: React.FC = () => {
 
   const activeFilterCount =
     (selectedCountry !== 'All' ? 1 : 0) +
+    (selectedProvince !== 'All' ? 1 : 0) +
+    (selectedCity !== 'All' ? 1 : 0) +
     (selectedSurface !== 'All' ? 1 : 0) +
     (selectedAge !== 'All' ? 1 : 0) +
     (selectedLevel !== 'All' ? 1 : 0);
@@ -337,6 +377,40 @@ export const DashboardView: React.FC = () => {
           <span>🇺🇸</span>
           <span>{t('filter_usa_only')}</span>
         </button>
+
+        {/* Province / State selector */}
+        <select
+          value={selectedProvince}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSelectedProvince(value);
+            setSelectedCity('All');
+            const region = regionOptions.find((item) => item.value === value);
+            if (value === 'All') setSelectedCountry('All');
+            else if (region) setSelectedCountry(region.country as 'Canada' | 'United States');
+          }}
+          className={`text-xs font-semibold px-2 py-1 rounded-lg border outline-hidden cursor-pointer whitespace-nowrap ${selectedProvince !== 'All' ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]' : 'bg-[#20352F] text-[#AAB9B3] border-[#354740]'}`}
+          aria-label="Province or state"
+        >
+          <option value="All">Province / State</option>
+          {regionOptions.filter((region) => selectedCountry === 'All' || region.country === selectedCountry).map((region) => (
+            <option key={region.value} value={region.value}>{region.label}</option>
+          ))}
+        </select>
+
+        {/* City selector */}
+        <select
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+          disabled={selectedProvince === 'All'}
+          className={`text-xs font-semibold px-2 py-1 rounded-lg border outline-hidden cursor-pointer whitespace-nowrap ${selectedCity !== 'All' ? 'bg-[#D5FA63] text-[#151F24] border-[#D5FA63]' : 'bg-[#20352F] text-[#AAB9B3] border-[#354740]'}`}
+          aria-label="City"
+        >
+          <option value="All">All cities</option>
+          {(cityOptionsByRegion[selectedProvince] || []).map((city) => (
+            <option key={city} value={city}>{city}</option>
+          ))}
+        </select>
 
         {/* Quick Age Chip dropdown */}
         <select
