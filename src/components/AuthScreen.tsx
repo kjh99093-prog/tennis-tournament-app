@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 type Props = { onAuthenticated?: () => void };
+
+// Always send production sign-ups back to the deployed app, never to a stale localhost origin.
+const APP_BASE_URL = import.meta.env.PROD
+  ? 'https://tennis-tournament-app-alpha.vercel.app'
+  : window.location.origin;
 export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
  const [mode,setMode]=useState<'login'|'signup'>('login');
  const [name,setName]=useState(''); const [email,setEmail]=useState(''); const [password,setPassword]=useState('');
@@ -9,7 +14,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
  const submit=async(e:React.FormEvent)=>{e.preventDefault();setError('');setMessage('');setBusy(true);try{
   if(mode==='signup'){
    if(!name.trim()) throw new Error('Please enter your name.');
-   const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{data:{full_name:name.trim()},emailRedirectTo:`${window.location.origin}/auth/callback`}});
+   const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{data:{full_name:name.trim()},emailRedirectTo:`${APP_BASE_URL}/auth/callback`}});
    if(error) throw error;
    if(data.session){onAuthenticated?.();setMessage('Account created. You are signed in.');}
    else {setMode('login');setMessage('Account created. Check your email to confirm your address, then log in.');}
