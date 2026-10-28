@@ -73,14 +73,11 @@ const EmailConfirmationReturn: React.FC = () => {
       </h1>
       <p className="mx-auto mt-5 sm:mt-6 max-w-6xl text-base sm:text-xl md:text-[28px] leading-relaxed text-[#AAB9B3]">
         {confirmed
-          ? 'Your AURA Tennis email has been verified. Return to the app to log in or continue setting up your profile.'
+          ? 'Your email has been verified. Please return to the app and log in.'
           : checking
             ? 'Please wait while we confirm your email address.'
             : 'This confirmation link may have expired or already been used. Return to AURA Tennis and request a new confirmation email.'}
       </p>
-      <a href="/" className="mt-6 sm:mt-8 block w-full rounded-2xl bg-[#D5FA63] px-5 py-5 sm:py-6 text-lg sm:text-2xl font-extrabold text-[#151F24] transition hover:brightness-95 focus:outline-none focus:ring-4 focus:ring-[#D5FA63]/40">
-        {confirmed ? 'Return to AURA Tennis' : 'Open AURA Tennis'}
-      </a>
     </section>
   </main>;
 };
