@@ -141,10 +141,10 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
           </p>
         )}
 
-        {mode !== 'reset' && (
+        {(mode === 'signup' || mode === 'forgot') && (
           <p className="text-center text-sm text-[#AAB9B3]">
-            {mode === 'login' ? "Don't have an account?" : mode === 'signup' ? 'Already have an account?' : 'Remembered your password?'}{' '}
-            <button type="button" onClick={() => switchMode(mode === 'signup' ? 'login' : 'login')}
+            {mode === 'signup' ? 'Already have an account?' : 'Remembered your password?'}{' '}
+            <button type="button" onClick={() => switchMode('login')}
               className="font-bold text-[#D5FA63] underline underline-offset-4">
               {mode === 'signup' ? 'Log in' : 'Back to log in'}
             </button>
