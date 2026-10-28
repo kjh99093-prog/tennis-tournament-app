@@ -58,7 +58,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
         }
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-          redirectTo: APP_BASE_URL,
+          redirectTo: `${APP_BASE_URL}/auth/reset-password`,
         });
         if (error) throw error;
         setMessage('If an account exists for this email, a password reset link will be sent when email delivery is available.');
