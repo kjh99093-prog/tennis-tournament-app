@@ -13,6 +13,7 @@ import { ProfileView } from './components/ProfileView';
 import { NotesView } from './components/NotesView';
 import { TournamentModal } from './components/TournamentModal';
 import { Onboarding } from './components/Onboarding';
+import { InstallPage } from './components/InstallPage';
 
 
 const EmailConfirmationReturn: React.FC = () => {
@@ -150,6 +151,7 @@ const AppContent: React.FC = () => {
     setSetupComplete(false);
   };
 
+  if (window.location.pathname === '/install') return <InstallPage />;
   if (window.location.pathname === '/auth/callback') return <EmailConfirmationReturn />;
   if (window.location.pathname === '/auth/reset-password') return <AuthScreen />;
   if (authLoading) return <main className="min-h-screen bg-[#151F24] text-[#D5FA63] flex items-center justify-center">Loading your account…</main>;
