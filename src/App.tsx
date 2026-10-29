@@ -67,7 +67,7 @@ const EmailConfirmationReturn: React.FC = () => {
       <div className="mx-auto flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-full bg-[#D5FA63] text-4xl sm:text-5xl font-medium text-[#151F24]">
         {confirmed ? '✓' : checking ? '…' : '✉'}
       </div>
-      <p className="mt-5 sm:mt-7 text-sm sm:text-lg font-bold uppercase tracking-[0.12em] text-[#D5FA63]">AURA TENNIS</p>
+      <p className="mt-5 sm:mt-7 text-sm sm:text-lg font-bold uppercase tracking-[0.12em] text-[#D5FA63]">ATONI / TOURNAMENT TRACKER</p>
       <h1 className="mt-4 text-2xl sm:text-3xl md:text-[40px] leading-tight font-extrabold tracking-tight">
         {confirmed ? 'Email verified successfully!' : checking ? 'Verifying your email…' : 'We couldn’t verify your email'}
       </h1>
