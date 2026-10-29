@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "AuraTennis Tournament Navigator",
-  "short_name": "AURA Tennis",
+  "name": "ATONI — Tournament Tracker",
+  "short_name": "ATONI",
   "description": "Tennis tournament discovery, scheduling, and match preparation app.",
   "start_url": "/",
   "scope": "/",
