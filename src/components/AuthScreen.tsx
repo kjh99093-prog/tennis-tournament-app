@@ -46,7 +46,10 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { data: { full_name: name.trim() } },
+          options: {
+            data: { full_name: name.trim() },
+            emailRedirectTo: `${APP_BASE_URL}/auth/callback`,
+          },
         });
         if (error) throw error;
         if (data.session) {
