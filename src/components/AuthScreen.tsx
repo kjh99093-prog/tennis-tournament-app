@@ -57,7 +57,13 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
         if (data.session) {
           setNeedsConfirmation(false);
           onAuthenticated?.();
-          setMessage('Your account has been created successfully, and you are now signed in.');
+          const { error: emailError } = await supabase.functions.invoke('welcome-email');
+          if (emailError) {
+            console.error('Account created, but welcome email failed:', emailError.message);
+            setMessage('Your account was created and you are signed in, but the welcome email could not be sent. You can still use ATONI.');
+          } else {
+            setMessage('Your account was created successfully, you are now signed in, and the welcome email was sent.');
+          }
         } else if (data.user) {
           setMode('login');
           setNeedsConfirmation(true);
