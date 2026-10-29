@@ -60,6 +60,7 @@ export interface Tournament {
     categoryFit: number; // 0 - 100
   };
   notes?: string;
+  isNew?: boolean;
 }
 
 export type RegistrationStatus = 'interested' | 'registered' | 'waitlisted' | 'completed' | 'withdrawn';
