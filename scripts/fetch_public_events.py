@@ -499,6 +499,10 @@ def main():
         if sid not in successful_ids and sid not in present_ids:
             events.append(event)
     events = dedupe(events)
+    # Highlight tournaments first discovered in this refresh; the badge clears on the next scheduled run.
+    previous_ids = {str(e.get("id", "")) for e in old_events}
+    for event in events:
+        event["isNew"] = str(event.get("id", "")) not in previous_ids
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     output = {
         "updatedAt": datetime.now(timezone.utc).isoformat(),
