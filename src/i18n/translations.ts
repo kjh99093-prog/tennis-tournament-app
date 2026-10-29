@@ -3,8 +3,8 @@ import { Language } from '../types';
 export const translations = {
   en: {
     // Brand & Navigation
-    app_title: "AuraTennis",
-    app_subtitle: "Tournament Navigator",
+    app_title: "ATONI",
+    app_subtitle: "Tournament Tracker",
     nav_dashboard: "Dashboard",
     nav_my_events: "My Events",
     nav_profile: "My Profile",
@@ -196,7 +196,7 @@ export const translations = {
   },
   ko: {
     // Brand & Navigation
-    app_title: "AuraTennis",
+    app_title: "ATONI",
     app_subtitle: "토너먼트 내비게이터",
     nav_dashboard: "대시보드",
     nav_my_events: "내 대회 일정",
