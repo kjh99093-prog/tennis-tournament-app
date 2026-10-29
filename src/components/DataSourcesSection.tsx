@@ -13,6 +13,9 @@ export const DataSourcesSection: React.FC = () => {
   const usaSources = OFFICIAL_DATA_SOURCES.filter(
     (s) => !s.isFutureExpansion && s.country === 'United States'
   );
+  const globalSources = OFFICIAL_DATA_SOURCES.filter(
+    (s) => !s.isFutureExpansion && s.country === 'Global'
+  );
   const futureSources = OFFICIAL_DATA_SOURCES.filter((s) => s.isFutureExpansion);
 
   const getStatusBadge = (status: SourceStatus) => {
@@ -163,6 +166,22 @@ export const DataSourcesSection: React.FC = () => {
           {usaSources.map(renderSourceCard)}
         </div>
       </div>
+
+      {/* Required Global Sources */}
+      {globalSources.length > 0 && (
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#A78BFA] flex items-center gap-1.5">
+              <span>🌎</span>
+              <span>Required Global Sources</span>
+            </h4>
+            <span className="text-[11px] text-[#AAB9B3]">{globalSources.length} Sources</span>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            {globalSources.map(renderSourceCard)}
+          </div>
+        </div>
+      )}
 
       {/* Future Expansion Sources */}
       <div className="space-y-3 pt-2">
