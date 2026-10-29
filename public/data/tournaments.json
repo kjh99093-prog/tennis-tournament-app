@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T02:08:48.890834+00:00",
+  "updatedAt": "2026-10-29T02:31:42.893769+00:00",
   "sources": [
     {
       "name": "Tennis Canada",
@@ -7,6 +7,13 @@
       "status": "success",
       "eventsCount": 20,
       "note": "Collected across 1 official route(s); duplicate records removed."
+    },
+    {
+      "name": "Tennis BC",
+      "url": "https://new.tennisbc.org/tournaments/tournament-calendar/",
+      "status": "no-events",
+      "eventsCount": 0,
+      "note": "Page loaded but no dated tournament cards matched the parser."
     },
     {
       "name": "Tennis Canada Tournament Software",
@@ -489,44 +496,6 @@
       "entryFee": ""
     },
     {
-      "title": "2026 OFSAA Championships",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=8B62367E-0805-42D2-BB19-1F30D4D36D18",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-26",
-      "endDate": "2026-10-28",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "OFSAA Championships GTA",
-      "province": "ON",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [
-        "U18"
-      ],
-      "tags": "2026 OFSAA Championships GTA, ON 2026-10-26 to 2026-10-28 Singles Doubles Male Female Mixed doubles U18 18+ 3 Star",
-      "category": "junior",
-      "entryFee": ""
-    },
-    {
-      "title": "Burlington Hall Open 350 (Evenings) Oct 26th-29th",
-      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=309FF766-2F48-4BEF-BA3F-146047538100",
-      "sourceId": "tennis-canada",
-      "sourceName": "Tennis Canada",
-      "startDate": "2026-10-26",
-      "endDate": "2026-10-29",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "th Burlington",
-      "province": "ON",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Burlington Hall Open 350 (Evenings) Oct 26th-29th Burlington, ON 2026-10-26 to 2026-10-29 Singles Male Female 18+ Open 350",
-      "category": "adult",
-      "entryFee": ""
-    },
-    {
       "title": "W75 Toronto W75 Toronto (CAN) Live",
       "officialUrl": "https://www.itftennis.com/en/tournament/w75-toronto/can/2026/w-itf-can-2026-006/",
       "sourceId": "itf",
@@ -743,24 +712,6 @@
       "entryFee": ""
     },
     {
-      "title": "Oct 27 | 6:00 PM TOMORROW | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
-      "officialUrl": "https://app.utrsports.net/events/407638",
-      "sourceId": "utr",
-      "sourceName": "UTR Canada Tournament Listings",
-      "startDate": "2026-10-27",
-      "endDate": "2026-10-27",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "PM tennis Player Created Play Singles Game Free Event Vaughan",
-      "province": "",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Oct 27 | 6:00 PM TOMORROW | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
-      "category": "adult",
-      "entryFee": ""
-    },
-    {
       "title": "Burlington-Hamilton Community Tennis League - Fall Session 2",
       "officialUrl": "https://tc.tournamentsoftware.com/box-ladder/0c20d703-0a0a-4f88-883c-8ffbaf332702/entry",
       "sourceId": "tennis-canada",
@@ -829,42 +780,6 @@
       "country": "Canada",
       "ageDivisions": [],
       "tags": "Mississauga-Oakville Community Tennis League - Fall Session 2 Mississauga-Oakville, ON 2026-10-28 to 2026-11-29 Singles 18+ Community Tennis Leagues",
-      "category": "adult",
-      "entryFee": ""
-    },
-    {
-      "title": "Oct 28 | 6:00 PM Oct 28, 2026 | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
-      "officialUrl": "https://app.utrsports.net/events/407662",
-      "sourceId": "utr",
-      "sourceName": "UTR Canada Tournament Listings",
-      "startDate": "2026-10-28",
-      "endDate": "2026-10-28",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "PM tennis Player Created Play Singles Game Free Event Vaughan",
-      "province": "",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Oct 28 | 6:00 PM Oct 28, 2026 | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
-      "category": "adult",
-      "entryFee": ""
-    },
-    {
-      "title": "Oct 28 | 7:30 PM Oct 28, 2026 | 7:30 PM tennis Match Play Wednesday Night Midtown Singles League (October 28, 2026) Free Event Montréal, Canada UTR 1.0 - 4.0 Co-ed Singles · Free Event · Montréal, Canada · UTR 1.0 - 4.0 · Co-ed · Singles Registration Closed 12 registered",
-      "officialUrl": "https://app.utrsports.net/events/405028",
-      "sourceId": "utr",
-      "sourceName": "UTR Canada Tournament Listings",
-      "startDate": "2026-10-28",
-      "endDate": "2026-10-28",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Free Event Montréal",
-      "province": "",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Oct 28 | 7:30 PM Oct 28, 2026 | 7:30 PM tennis Match Play Wednesday Night Midtown Singles League (October 28, 2026) Free Event Montréal, Canada UTR 1.0 - 4.0 Co-ed Singles · Free Event · Montréal, Canada · UTR 1.0 - 4.0 · Co-ed · Singles Registration Closed 12 registered",
       "category": "adult",
       "entryFee": ""
     },
@@ -941,7 +856,7 @@
       "entryFee": ""
     },
     {
-      "title": "Oct 29 | 6:00 PM Oct 29, 2026 | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
+      "title": "Oct 29 | 6:00 PM TOMORROW | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
       "officialUrl": "https://app.utrsports.net/events/407663",
       "sourceId": "utr",
       "sourceName": "UTR Canada Tournament Listings",
@@ -954,12 +869,12 @@
       "state": "",
       "country": "Canada",
       "ageDivisions": [],
-      "tags": "Oct 29 | 6:00 PM Oct 29, 2026 | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
+      "tags": "Oct 29 | 6:00 PM TOMORROW | 6:00 PM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
       "category": "adult",
       "entryFee": ""
     },
     {
-      "title": "Oct 29 | 7:30 PM Oct 29, 2026 | 7:30 PM tennis Match Play Thursday Night Midtown Singles League (October 29, 2026) Free Event Montréal, Canada UTR 3.5 - 16.0 Co-ed Singles · Free Event · Montréal, Canada · UTR 3.5 - 16.0 · Co-ed · Singles Registration Open 7 registered",
+      "title": "Oct 29 | 7:30 PM TOMORROW | 7:30 PM tennis Match Play Thursday Night Midtown Singles League (October 29, 2026) Free Event Montréal, Canada UTR 3.5 - 16.0 Co-ed Singles · Free Event · Montréal, Canada · UTR 3.5 - 16.0 · Co-ed · Singles Registration Open 11 registered",
       "officialUrl": "https://app.utrsports.net/events/405029",
       "sourceId": "utr",
       "sourceName": "UTR Canada Tournament Listings",
@@ -972,7 +887,7 @@
       "state": "",
       "country": "Canada",
       "ageDivisions": [],
-      "tags": "Oct 29 | 7:30 PM Oct 29, 2026 | 7:30 PM tennis Match Play Thursday Night Midtown Singles League (October 29, 2026) Free Event Montréal, Canada UTR 3.5 - 16.0 Co-ed Singles · Free Event · Montréal, Canada · UTR 3.5 - 16.0 · Co-ed · Singles Registration Open 7 registered",
+      "tags": "Oct 29 | 7:30 PM TOMORROW | 7:30 PM tennis Match Play Thursday Night Midtown Singles League (October 29, 2026) Free Event Montréal, Canada UTR 3.5 - 16.0 Co-ed Singles · Free Event · Montréal, Canada · UTR 3.5 - 16.0 · Co-ed · Singles Registration Open 11 registered",
       "category": "adult",
       "entryFee": ""
     },
@@ -1059,25 +974,7 @@
       "entryFee": ""
     },
     {
-      "title": "Oct 30 - Nov 1 Oct 30 - Nov 1, 2026 tennis Tournament | Verified Event ATP LAB CUP Level-Based Tournament Free–CAN$11.55 Division Fees Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles/Doubles · Free–CAN$11.55 Division Fees · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles/Doubles Registration Open 3 registered",
-      "officialUrl": "https://app.utrsports.net/events/406369",
-      "sourceId": "utr",
-      "sourceName": "UTR Canada Tournament Listings",
-      "startDate": "2026-10-30",
-      "endDate": "2026-11-01",
-      "entryDeadline": "",
-      "venueName": "",
-      "city": "Division Fees Calgary",
-      "province": "",
-      "state": "",
-      "country": "Canada",
-      "ageDivisions": [],
-      "tags": "Oct 30 - Nov 1 Oct 30 - Nov 1, 2026 tennis Tournament | Verified Event ATP LAB CUP Level-Based Tournament Free–CAN$11.55 Division Fees Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles/Doubles · Free–CAN$11.55 Division Fees · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles/Doubles Registration Open 3 registered",
-      "category": "adult",
-      "entryFee": ""
-    },
-    {
-      "title": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Friday Night Doubles Clinic Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Doubles Registration Open 1 registered",
+      "title": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Friday Night Doubles Clinic Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Doubles Registration Open 2 registered",
       "officialUrl": "https://app.utrsports.net/events/402768",
       "sourceId": "utr",
       "sourceName": "UTR Canada Tournament Listings",
@@ -1090,12 +987,12 @@
       "state": "",
       "country": "Canada",
       "ageDivisions": [],
-      "tags": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Friday Night Doubles Clinic Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Doubles Registration Open 1 registered",
+      "tags": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Friday Night Doubles Clinic Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Doubles Registration Open 2 registered",
       "category": "adult",
       "entryFee": ""
     },
     {
-      "title": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Serve Clinic (biomechanics-based) Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles Registration Open 5 registered",
+      "title": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Serve Clinic (biomechanics-based) Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles Registration Open 8 registered",
       "officialUrl": "https://app.utrsports.net/events/407314",
       "sourceId": "utr",
       "sourceName": "UTR Canada Tournament Listings",
@@ -1108,7 +1005,7 @@
       "state": "",
       "country": "Canada",
       "ageDivisions": [],
-      "tags": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Serve Clinic (biomechanics-based) Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles Registration Open 5 registered",
+      "tags": "Oct 30 | 6:00 PM Oct 30, 2026 | 6:00 PM tennis Clinic Serve Clinic (biomechanics-based) Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles Registration Open 8 registered",
       "category": "adult",
       "entryFee": ""
     },
@@ -1131,7 +1028,7 @@
       "entryFee": ""
     },
     {
-      "title": "Oct 30 | 7:00 PM Oct 30, 2026 | 7:00 PM tennis Match Play Friday Night Doubles Social Free Event Calgary, Canada UTR 1.0 - 10.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 10.0 · Co-ed · Doubles Registration Open 2 registered",
+      "title": "Oct 30 | 7:00 PM Oct 30, 2026 | 7:00 PM tennis Match Play Friday Night Doubles Social Free Event Calgary, Canada UTR 1.0 - 10.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 10.0 · Co-ed · Doubles Registration Open 11 registered",
       "officialUrl": "https://app.utrsports.net/events/407308",
       "sourceId": "utr",
       "sourceName": "UTR Canada Tournament Listings",
@@ -1144,7 +1041,7 @@
       "state": "",
       "country": "Canada",
       "ageDivisions": [],
-      "tags": "Oct 30 | 7:00 PM Oct 30, 2026 | 7:00 PM tennis Match Play Friday Night Doubles Social Free Event Calgary, Canada UTR 1.0 - 10.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 10.0 · Co-ed · Doubles Registration Open 2 registered",
+      "tags": "Oct 30 | 7:00 PM Oct 30, 2026 | 7:00 PM tennis Match Play Friday Night Doubles Social Free Event Calgary, Canada UTR 1.0 - 10.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 10.0 · Co-ed · Doubles Registration Open 11 registered",
       "category": "adult",
       "entryFee": ""
     },
@@ -1264,6 +1161,119 @@
         "U12"
       ],
       "tags": "WEEK 44 ATC U12 4 STAR 2026 Calgary, AB 2026-10-30 to 2026-11-01 Singles Doubles Male Female U12 4 Star",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "NAT U12 Rookie Oct 31st",
+      "officialUrl": "https://tc.tournamentsoftware.com/sport/tournament.aspx?id=4404F409-B1AF-4079-93F7-10917D97E364",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-31",
+      "endDate": "2026-10-31",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "st Vineland Station",
+      "province": "ON",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "U12"
+      ],
+      "tags": "NAT U12 Rookie Oct 31st Vineland Station, ON 2026-10-31 to 2026-10-31 Singles Male Female U12 Rookie",
+      "category": "junior",
+      "entryFee": ""
+    },
+    {
+      "title": "Oct 31 | 11:00 AM Oct 31, 2026 | 11:00 AM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
+      "officialUrl": "https://app.utrsports.net/events/407666",
+      "sourceId": "utr",
+      "sourceName": "UTR Canada Tournament Listings",
+      "startDate": "2026-10-31",
+      "endDate": "2026-10-31",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "AM tennis Player Created Play Singles Game Free Event Vaughan",
+      "province": "",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [],
+      "tags": "Oct 31 | 11:00 AM Oct 31, 2026 | 11:00 AM tennis Player Created Play Singles Game Free Event Vaughan, Canada Co-ed Singles · Free Event · Vaughan, Canada · Co-ed · Singles Registration Open",
+      "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "Oct 31 | 2:00 PM Oct 31, 2026 | 2:00 PM tennis Match Play | Verified Event Match play at Orleans Tennis Club CAN$13.99 Division Fees Ottawa, Canada UTR 1.0 - 16.0 Co-ed Singles · CAN$13.99 Division Fees · Ottawa, Canada · UTR 1.0 - 16.0 · Co-ed · Singles Registration Open 8 registered",
+      "officialUrl": "https://app.utrsports.net/events/407470",
+      "sourceId": "utr",
+      "sourceName": "UTR Canada Tournament Listings",
+      "startDate": "2026-10-31",
+      "endDate": "2026-10-31",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "Division Fees Ottawa",
+      "province": "",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [],
+      "tags": "Oct 31 | 2:00 PM Oct 31, 2026 | 2:00 PM tennis Match Play | Verified Event Match play at Orleans Tennis Club CAN$13.99 Division Fees Ottawa, Canada UTR 1.0 - 16.0 Co-ed Singles · CAN$13.99 Division Fees · Ottawa, Canada · UTR 1.0 - 16.0 · Co-ed · Singles Registration Open 8 registered",
+      "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "Oct 31 | 3:00 PM Oct 31, 2026 | 3:00 PM tennis Tournament | Verified Event ATP LAB CUP Level-Based Tournament Free–CAN$11.55 Division Fees Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles/Doubles · Free–CAN$11.55 Division Fees · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles/Doubles Registration Open 5 registered",
+      "officialUrl": "https://app.utrsports.net/events/406369",
+      "sourceId": "utr",
+      "sourceName": "UTR Canada Tournament Listings",
+      "startDate": "2026-10-31",
+      "endDate": "2026-10-31",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "Division Fees Calgary",
+      "province": "",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [],
+      "tags": "Oct 31 | 3:00 PM Oct 31, 2026 | 3:00 PM tennis Tournament | Verified Event ATP LAB CUP Level-Based Tournament Free–CAN$11.55 Division Fees Calgary, Canada UTR 1.0 - 16.0 Co-ed Singles/Doubles · Free–CAN$11.55 Division Fees · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Singles/Doubles Registration Open 5 registered",
+      "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "Oct 31 | 6:00 PM Oct 31, 2026 | 6:00 PM tennis Match Play Saturday Night Doubles Social Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Doubles Registration Open",
+      "officialUrl": "https://app.utrsports.net/events/407319",
+      "sourceId": "utr",
+      "sourceName": "UTR Canada Tournament Listings",
+      "startDate": "2026-10-31",
+      "endDate": "2026-10-31",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "PM tennis Match Play Saturday Night Doubles Social Free Event Calgary",
+      "province": "",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [],
+      "tags": "Oct 31 | 6:00 PM Oct 31, 2026 | 6:00 PM tennis Match Play Saturday Night Doubles Social Free Event Calgary, Canada UTR 1.0 - 16.0 Co-ed Doubles · Free Event · Calgary, Canada · UTR 1.0 - 16.0 · Co-ed · Doubles Registration Open",
+      "category": "adult",
+      "entryFee": ""
+    },
+    {
+      "title": "ÉTOILES MONTANTES 10 ANS - OCT - Carrefour Multisports",
+      "officialUrl": "https://tq.tournamentsoftware.com/sport/tournament.aspx?id=0A90C9AE-3CD9-4CA7-BA12-B9B90F551D1D",
+      "sourceId": "tennis-canada",
+      "sourceName": "Tennis Canada",
+      "startDate": "2026-10-31",
+      "endDate": "2026-11-01",
+      "entryDeadline": "",
+      "venueName": "",
+      "city": "ANS - OCT - Carrefour Multisports Laval",
+      "province": "QC",
+      "state": "",
+      "country": "Canada",
+      "ageDivisions": [
+        "RISING STARS",
+        "U10"
+      ],
+      "tags": "ÉTOILES MONTANTES 10 ANS - OCT - Carrefour Multisports Laval, QC 2026-10-31 to 2026-11-01 Singles Male Female U10 Rising Stars",
       "category": "junior",
       "entryFee": ""
     },
