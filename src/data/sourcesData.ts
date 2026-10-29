@@ -137,9 +137,9 @@ export const OFFICIAL_DATA_SOURCES: DataSource[] = [
     distanceInfo: 'Worldwide Tour Stops',
     purpose: 'ITF World Tennis Juniors (J30 to J500), World Tennis Tour (M15/M25/W15/W35+), Masters Tour',
     url: 'https://www.itftennis.com/',
-    status: 'Planned',
-    isFutureExpansion: true,
-    description: 'Global world governing body managing junior grand slams, global junior circuit grades, and professional transition events.'
+    status: 'Link Only',
+    isFutureExpansion: false,
+    description: 'Required official global source for junior, professional transition, and Masters tournament calendars. The app must distinguish official links from verified automated data imports.'
   },
   {
     id: 'utr-sports',
@@ -149,8 +149,8 @@ export const OFFICIAL_DATA_SOURCES: DataSource[] = [
     distanceInfo: 'Local Clubs & International Showcases',
     purpose: 'Universal Tennis Rating Tournaments, Verified Prize Money Circuits, College Showcases & Flex Leagues',
     url: 'https://www.utrsports.net/',
-    status: 'Planned',
-    isFutureExpansion: true,
-    description: 'Level-based universal rating system and global tournament network hosting verified events for all ages and skill levels.'
+    status: 'Link Only',
+    isFutureExpansion: false,
+    description: 'Required source for UTR-rated events, tournaments, and level-based competition. The app must distinguish official links from verified automated data imports.'
   }
 ];
