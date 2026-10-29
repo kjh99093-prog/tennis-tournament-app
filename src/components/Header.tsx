@@ -2,7 +2,7 @@
 import React from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
-import { Trophy, Sun, Moon } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -15,9 +15,7 @@ export const Header: React.FC = () => {
         {/* Brand Logo & Title */}
         <div className="flex items-center justify-between gap-2 min-w-0 w-full sm:w-auto">
           <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#20352F] border border-[#354740] flex items-center justify-center text-[#D5FA63] shadow-xs shrink-0">
-              <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            </div>
+            <img src="/icons/atoni-symbol.svg" alt="ATONI symbol" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg shrink-0" />
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 min-w-0">
