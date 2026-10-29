@@ -170,7 +170,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               fitFactors: { distanceFit: 0, surfaceFit: 0, ratingFit: 0, categoryFit: 0 },
             };
           })
-          .filter((event): event is Tournament => event !== null);
+          .filter((event: Tournament | null): event is Tournament => event !== null);
         if (!cancelled && mapped.length > 0) {
           setTournaments(mapped);
           console.log('AURA real tournament data loaded:', mapped.length);
