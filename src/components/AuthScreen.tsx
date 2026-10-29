@@ -94,7 +94,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
       <form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-3xl border border-[#354740] bg-[#20352F] p-6 sm:p-8">
         <div className="text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-[#354740] bg-[#151F24] text-2xl">🎾</div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D5FA63]">AURA Tennis</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#D5FA63]">ATONI</p>
           <h1 className="mt-2 text-2xl font-extrabold">{heading}</h1>
           <p className="mt-2 text-sm text-[#AAB9B3]">
             {mode === 'signup' ? 'Create an account to keep your tennis profile connected.'
