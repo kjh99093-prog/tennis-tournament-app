@@ -25,6 +25,7 @@ HEADERS = {
 }
 TIMEOUT = 25
 CANADA_URL = "https://www.tenniscanada.com/tournaments/"
+TENNIS_BC_URL = "https://new.tennisbc.org/tournaments/tournament-calendar/"
 TC_SOFTWARE_URL = "https://tc.tournamentsoftware.com/find"
 UTR_URLS = ["https://app.utrsports.net/rankings/tennis-tournaments/usa", "https://app.utrsports.net/rankings/tennis-tournaments/canada"]
 USTA_URLS = [
@@ -442,6 +443,7 @@ def main():
     events, source_results = [], []
     sources = [
         (CANADA_URL, "Tennis Canada", "tennis-canada", "Canada"),
+        (TENNIS_BC_URL, "Tennis BC", "tennis-bc", "Canada"),
         (TC_SOFTWARE_URL, "Tennis Canada Tournament Software", "tennis-canada-tournamentsoftware", "Canada"),
         *[(url, "USTA Tournaments", "usta", "United States") for url in USTA_URLS],
         *[(url, "ITF Tournament Calendar", "itf", "International") for url in ITF_URLS],
