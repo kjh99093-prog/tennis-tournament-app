@@ -389,7 +389,7 @@ export const translations = {
   },
   'zh-CN': {
     // Brand & Navigation
-    app_title: "AuraTennis",
+    app_title: "ATONI",
     app_subtitle: "网球赛事导航",
     nav_dashboard: "赛事看板",
     nav_my_events: "我的赛事",
