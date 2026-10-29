@@ -64,9 +64,7 @@ const EmailConfirmationReturn: React.FC = () => {
 
   return <main className="min-h-screen bg-white flex items-center justify-center p-2 sm:p-6">
     <section className="w-full max-w-7xl rounded-[28px] sm:rounded-[40px] border border-[#354740] bg-gradient-to-br from-[#203A32] to-[#1B332C] px-5 py-8 sm:px-10 sm:py-10 md:px-12 md:py-12 text-center text-[#F3F5F0] shadow-sm">
-      <div className="mx-auto flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-full bg-[#D5FA63] text-4xl sm:text-5xl font-medium text-[#151F24]">
-        {confirmed ? '✓' : checking ? '…' : '✉'}
-      </div>
+      <img src="/icons/atoni-symbol.svg" alt="ATONI symbol" className="mx-auto h-20 w-20 sm:h-28 sm:w-28 rounded-3xl" />
       <p className="mt-5 sm:mt-7 text-sm sm:text-lg font-bold uppercase tracking-[0.12em] text-[#D5FA63]">ATONI / TOURNAMENT TRACKER</p>
       <h1 className="mt-4 text-2xl sm:text-3xl md:text-[40px] leading-tight font-extrabold tracking-tight">
         {confirmed ? 'Email verified successfully!' : checking ? 'Verifying your email…' : 'We couldn’t verify your email'}
@@ -76,7 +74,7 @@ const EmailConfirmationReturn: React.FC = () => {
           ? 'Your email has been verified. Please return to the app and log in.'
           : checking
             ? 'Please wait while we confirm your email address.'
-            : 'This confirmation link may have expired or already been used. Return to AURA Tennis and request a new confirmation email.'}
+            : 'This confirmation link may have expired or already been used. Return to ATONI and request a new confirmation email.'}
       </p>
     </section>
   </main>;
