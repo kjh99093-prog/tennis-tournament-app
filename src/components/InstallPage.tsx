@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Download, Share, Smartphone, Trophy, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { Download, Share, Smartphone, Trophy, CheckCircle2 } from 'lucide-react';
 
 type InstallPromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }> };
 
@@ -53,7 +53,7 @@ export const InstallPage: React.FC = () => {
           <div className="mt-7 rounded-2xl border border-[#53665D] bg-[#151F24] p-4 text-left">
             <h2 className="font-bold text-[#D5FA63]">Add ATONI to your Home Screen</h2>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-[#F3F5F0]">
-              <li>Open this page in <strong>Safari</strong>.</li>
+              <li>Make sure this page is open in <strong>Safari</strong>. If it opened inside another app, use that app’s Share menu and choose Open in Safari.</li>
               <li>Tap the <strong>Share</strong> icon <Share className="inline h-4 w-4 align-text-bottom" />.</li>
               <li>Choose <strong>Add to Home Screen</strong>.</li>
               <li>Tap <strong>Add</strong>.</li>
@@ -71,9 +71,7 @@ export const InstallPage: React.FC = () => {
           </div>
         )}
 
-        <button onClick={openApp} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-[#53665D] px-5 py-3 font-semibold text-[#F3F5F0] hover:bg-[#293B35]">
-          <ArrowUpRight className="h-4 w-4" /> Continue to ATONI
-        </button>
+        <p className="mt-5 text-xs leading-5 text-[#8FA198]">This page is for installation. Open ATONI after adding it to your Home Screen.</p>
         <p className="mt-5 flex items-center justify-center gap-2 text-xs text-[#8FA198]"><Smartphone className="h-4 w-4" /> No app store required</p>
       </section>
     </main>
