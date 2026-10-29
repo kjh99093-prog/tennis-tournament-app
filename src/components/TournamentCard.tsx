@@ -121,6 +121,11 @@ export const TournamentCard: React.FC<TournamentCardProps> = ({ tournament }) =>
             }`}>
               {tournament.country === 'Canada' ? '🇨🇦 Canada' : '🇺🇸 USA'}
             </span>
+            {tournament.isNew && (
+              <span className="px-2 py-0.5 rounded text-[10px] font-extrabold tracking-wide bg-[#D5FA63] text-[#151F24] border border-[#D5FA63]">
+                NEW
+              </span>
+            )}
             <span className={`px-2 py-0.5 rounded text-[10px] font-medium shrink-0 ${
               isCompleted ? 'bg-slate-800 text-slate-400' : 'bg-[#293B35] text-[#A78BFA] border border-[#354740]'
             }`}>
