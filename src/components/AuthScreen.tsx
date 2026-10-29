@@ -17,6 +17,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
@@ -33,6 +34,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
     setMode(nextMode);
     setError('');
     setMessage('');
+    setNeedsConfirmation(false);
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -53,11 +55,15 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
         });
         if (error) throw error;
         if (data.session) {
+          setNeedsConfirmation(false);
           onAuthenticated?.();
-          setMessage('Account created successfully. You are now signed in.');
-        } else {
+          setMessage('Your account has been created successfully, and you are now signed in.');
+        } else if (data.user) {
           setMode('login');
-          setMessage('Account request received. If email confirmation is enabled, check your inbox to finish signing up.');
+          setNeedsConfirmation(true);
+          setMessage('Your account has been created! Email verification is still pending. Check your inbox and spam folder. If the email does not arrive, you can request another one below.');
+        } else {
+          throw new Error('We could not confirm that your account was created. Please try again.');
         }
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
@@ -79,6 +85,25 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to complete this request. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const resendConfirmation = async () => {
+    setError('');
+    setMessage('');
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim(),
+        options: { emailRedirectTo: `${APP_BASE_URL}/auth/callback` },
+      });
+      if (error) throw error;
+      setMessage('A new confirmation email was requested. If it still does not arrive, check spam or the email delivery settings for this app.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not request another confirmation email. Please try again later.');
     } finally {
       setBusy(false);
     }
@@ -129,6 +154,12 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
 
         {error && <p role="alert" className="rounded-xl border border-red-800 bg-red-950/40 p-3 text-sm text-red-200">{error}</p>}
         {message && <p role="status" className="rounded-xl border border-[#536642] bg-[#151F24] p-3 text-sm text-[#D5FA63]">{message}</p>}
+        {needsConfirmation && mode === 'login' && (
+          <button type="button" disabled={busy || !email.trim()} onClick={resendConfirmation}
+            className="w-full rounded-xl border border-[#D5FA63] px-4 py-3 text-sm font-bold text-[#D5FA63] disabled:opacity-50">
+            {busy ? 'Please wait…' : 'Resend confirmation email'}
+          </button>
+        )}
 
         <button disabled={busy} className="w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24] disabled:opacity-50">
           {busy ? 'Please wait…'
