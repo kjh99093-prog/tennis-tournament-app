@@ -130,7 +130,6 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
 
         {error && <p role="alert" className="rounded-xl border border-red-800 bg-red-950/40 p-3 text-sm text-red-200">{error}</p>}
         {message && <p role="status" className="rounded-xl border border-[#536642] bg-[#151F24] p-3 text-sm text-[#D5FA63]">{message}</p>}
-}
 
         <button disabled={busy} className="w-full rounded-xl bg-[#D5FA63] px-4 py-3 font-extrabold text-[#151F24] disabled:opacity-50">
           {busy ? 'Please wait…'
