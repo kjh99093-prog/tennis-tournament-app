@@ -166,6 +166,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               endDate: event.endDate || '',
               entryDeadline: event.entryDeadline || '',
               entryFee: event.entryFee || '',
+              matchFormat: event.matchFormat || '',
               fitScore: 0,
               fitFactors: { distanceFit: 0, surfaceFit: 0, ratingFit: 0, categoryFit: 0 },
             };
