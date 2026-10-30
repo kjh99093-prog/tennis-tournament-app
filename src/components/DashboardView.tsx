@@ -157,29 +157,53 @@ export const DashboardView: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState('All');
   const regionOptions = [
     { value: 'BC', label: 'British Columbia (BC)', country: 'Canada' },
+    { value: 'AB', label: 'Alberta (AB)', country: 'Canada' },
+    { value: 'SK', label: 'Saskatchewan (SK)', country: 'Canada' },
+    { value: 'MB', label: 'Manitoba (MB)', country: 'Canada' },
     { value: 'ON', label: 'Ontario (ON)', country: 'Canada' },
     { value: 'QC', label: 'Québec (QC)', country: 'Canada' },
-    { value: 'AB', label: 'Alberta (AB)', country: 'Canada' },
+    { value: 'NB', label: 'New Brunswick (NB)', country: 'Canada' },
+    { value: 'NS', label: 'Nova Scotia (NS)', country: 'Canada' },
+    { value: 'PE', label: 'Prince Edward Island (PE)', country: 'Canada' },
+    { value: 'NL', label: 'Newfoundland and Labrador (NL)', country: 'Canada' },
+    { value: 'YT', label: 'Yukon (YT)', country: 'Canada' },
+    { value: 'NT', label: 'Northwest Territories (NT)', country: 'Canada' },
+    { value: 'NU', label: 'Nunavut (NU)', country: 'Canada' },
     { value: 'WA', label: 'Washington (WA)', country: 'United States' },
     { value: 'OR', label: 'Oregon (OR)', country: 'United States' },
     { value: 'CA', label: 'California (CA)', country: 'United States' },
     { value: 'NY', label: 'New York (NY)', country: 'United States' }
   ];
   const cityOptionsByRegion: Record<string, string[]> = {
-    BC: ['Vancouver', 'Richmond', 'Burnaby', 'Surrey', 'North Vancouver', 'West Vancouver', 'Victoria', 'Kelowna'],
-    ON: ['Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Markham', 'Waterloo', 'Hamilton', 'London'],
-    QC: ['Montréal', 'Québec City', 'Laval', 'Gatineau', 'Longueuil'],
-    AB: ['Calgary', 'Edmonton', 'Red Deer'],
+    BC: ['Vancouver', 'Richmond', 'Burnaby', 'Surrey', 'North Vancouver', 'West Vancouver', 'Victoria', 'Kelowna', 'Kamloops', 'Nanaimo', 'Abbotsford', 'Coquitlam', 'Langley', 'Prince George'],
+    AB: ['Calgary', 'Edmonton', 'Red Deer', 'Lethbridge', 'Medicine Hat', 'St. Albert', 'Grande Prairie', 'Airdrie'],
+    SK: ['Saskatoon', 'Regina', 'Prince Albert', 'Moose Jaw', 'Swift Current', 'Yorkton'],
+    MB: ['Winnipeg', 'Brandon', 'Steinbach', 'Thompson', 'Portage la Prairie'],
+    ON: ['Toronto', 'Ottawa', 'Mississauga', 'Brampton', 'Markham', 'Waterloo', 'Hamilton', 'London', 'Windsor', 'Kingston', 'Barrie', 'Guelph', 'Kitchener', 'Oshawa', 'Thunder Bay', 'Sudbury'],
+    QC: ['Montréal', 'Québec City', 'Laval', 'Gatineau', 'Longueuil', 'Sherbrooke', 'Trois-Rivières', 'Saguenay', 'Lévis'],
+    NB: ['Moncton', 'Saint John', 'Fredericton', 'Dieppe', 'Miramichi'],
+    NS: ['Halifax', 'Dartmouth', 'Sydney', 'Truro', 'New Glasgow'],
+    PE: ['Charlottetown', 'Summerside', 'Stratford', 'Cornwall'],
+    NL: ["St. John's", 'Mount Pearl', 'Corner Brook', 'Conception Bay South', 'Grand Falls-Windsor'],
+    YT: ['Whitehorse', 'Dawson City', 'Watson Lake'],
+    NT: ['Yellowknife', 'Hay River', 'Inuvik', 'Fort Smith'],
+    NU: ['Iqaluit', 'Rankin Inlet', 'Arviat', 'Cambridge Bay'],
     WA: ['Seattle', 'Bellevue', 'Tacoma', 'Bellingham', 'Spokane'],
     OR: ['Portland', 'Eugene', 'Salem'],
     CA: ['Los Angeles', 'San Diego', 'San Francisco', 'San Jose', 'Sacramento', 'Irvine'],
     NY: ['New York City', 'Albany', 'Buffalo', 'Rochester']
   };
   const normalizeRegion = (value: string) => {
-    const v = String(value || '').trim().toLowerCase();
+    const v = String(value || '').trim().toLowerCase().replace(/\\./g, '');
     const aliases: Record<string, string> = {
-      'british columbia': 'bc', bc: 'bc', ontario: 'on', on: 'on',
-      'québec': 'qc', quebec: 'qc', qc: 'qc', alberta: 'ab', ab: 'ab',
+      'british columbia': 'bc', bc: 'bc', alberta: 'ab', ab: 'ab',
+      saskatchewan: 'sk', sk: 'sk', manitoba: 'mb', mb: 'mb',
+      ontario: 'on', on: 'on', 'québec': 'qc', quebec: 'qc', qc: 'qc',
+      'new brunswick': 'nb', nb: 'nb', 'nova scotia': 'ns', ns: 'ns',
+      'prince edward island': 'pe', pei: 'pe', pe: 'pe',
+      'newfoundland and labrador': 'nl', newfoundland: 'nl', labrador: 'nl', nl: 'nl',
+      yukon: 'yt', yt: 'yt', 'northwest territories': 'nt', nwt: 'nt', nt: 'nt',
+      nunavut: 'nu', nu: 'nu',
       washington: 'wa', wa: 'wa', oregon: 'or', or: 'or',
       california: 'ca', ca: 'ca', 'new york': 'ny', ny: 'ny'
     };
