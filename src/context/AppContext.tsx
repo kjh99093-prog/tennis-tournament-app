@@ -17,7 +17,7 @@ interface AppContextType {
   updatePlayerProfile: (updates: Partial<PlayerProfile>) => void;
   savedTournaments: SavedTournamentRecord[];
   toggleSaveTournament: (tournamentId: string) => void;
-  updateTournamentStatus: (tournamentId: string, status: RegistrationStatus) => void;
+  updateTournamentStatus: (tournamentId: string, status: RegistrationStatus | null) => void;
   isTournamentSaved: (tournamentId: string) => boolean;
   getTournamentStatus: (tournamentId: string) => RegistrationStatus | null;
   notes: MatchNote[];
@@ -305,12 +305,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  const updateTournamentStatus = (tournamentId: string, status: RegistrationStatus) => {
+  const updateTournamentStatus = (tournamentId: string, status: RegistrationStatus | null) => {
     setSavedTournaments((prev) => {
       const existing = prev.find((item) => item.tournamentId === tournamentId);
 
-      // Tapping the currently selected status again clears the saved status.
-      if (existing?.status === status) {
+      // Explicitly clear the tournament when the selected status is tapped again.
+      if (status === null || existing?.status === status) {
         return prev.filter((item) => item.tournamentId !== tournamentId);
       }
 
