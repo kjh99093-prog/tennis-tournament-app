@@ -492,6 +492,91 @@ def parse_cards(soup, source_id, source_name, country, base_url):
                 event[field] = value
     return found
 
+def enrich_event_from_official_page(event):
+    """Fill missing fields from each event's own official detail page."""
+    url = event.get("officialUrl", "")
+    if not url.startswith("https://"):
+        return event
+    missing = [key for key in ("entryFee", "entryDeadline", "venueName", "matchFormat") if not event.get(key)]
+    if not missing:
+        return event
+    soup, error = fetch_html(url)
+    if not soup:
+        print(f"[DETAIL] Could not fetch {url}: {error}")
+        return event
+
+    page_text = clean(soup.get_text(" ", strip=True))
+    details = extract_labeled_details(page_text)
+    for field, value in details.items():
+        if value and not event.get(field):
+            event[field] = value
+
+    # Detail pages often expose the venue as a heading/value pair rather than
+    # the exact "Venue:" syntax handled by the generic label parser.
+    if not event.get("venueName"):
+        for label in ("Venue Name", "Tournament Venue", "Host Club", "Location"):
+            match = re.search(rf"\\b{re.escape(label)}\\s*:?\\s*(.{{3,120}}?)(?=\\s+(?:Venue Address|Address|Entry Deadline|Entry Fee|Draw Size|Tournament Director)\\b|$)", page_text, re.I)
+            if match:
+                candidate = clean(match.group(1)).strip(" ,.-")
+                if candidate and not re.search(r"^(view in google maps|tbd|to be determined)$", candidate, re.I):
+                    event["venueName"] = candidate
+                    break
+
+    # Accept only explicit singles/doubles event labels from the official page.
+    if not event.get("matchFormat"):
+        formats = []
+        if re.search(r"\\bMixed Doubles\\b", page_text, re.I):
+            formats.append("Mixed Doubles")
+        else:
+            if re.search(r"\\bSingles\\b", page_text, re.I):
+                formats.append("Singles")
+            if re.search(r"\\bDoubles\\b", page_text, re.I):
+                formats.append("Doubles")
+        event["matchFormat"] = ", ".join(formats)
+
+    # Some official pages expose city/region/address in structured metadata.
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            payload = json.loads(script.string or script.get_text())
+        except (json.JSONDecodeError, TypeError):
+            continue
+        items = payload if isinstance(payload, list) else [payload]
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            location = item.get("location", {})
+            if isinstance(location, list):
+                location = location[0] if location else {}
+            if not isinstance(location, dict):
+                continue
+            address = location.get("address", {})
+            if not isinstance(address, dict):
+                continue
+            if not event.get("city"):
+                event["city"] = clean(address.get("addressLocality", ""))
+            region = clean(address.get("addressRegion", ""))
+            if region and event.get("country") == "Canada" and not event.get("province"):
+                event["province"] = region
+            if region and event.get("country") == "United States" and not event.get("state"):
+                event["state"] = region
+            if not event.get("venueName") and location.get("name"):
+                event["venueName"] = clean(location["name"])
+    return event
+
+
+def merge_known_details(new_event, old_event):
+    """Do not throw away previously verified values when a source omits them."""
+    if not old_event:
+        return new_event
+    for field in ("entryFee", "entryDeadline", "venueName", "city", "province", "state", "matchFormat", "address"):
+        if not new_event.get(field) and old_event.get(field):
+            new_event[field] = old_event[field]
+    for field in ("ageDivisions", "tags"):
+        if not new_event.get(field) and old_event.get(field):
+            new_event[field] = old_event[field]
+    return new_event
+
+
 def dedupe(events):
     result, seen = [], set()
     for e in events:
@@ -570,6 +655,28 @@ def main():
         if sid not in successful_ids and sid not in present_ids:
             events.append(event)
     events = dedupe(events)
+    # Merge previously captured facts before enrichment so a sparse listing refresh
+    # cannot erase details collected from an earlier official detail page.
+    old_by_key = {
+        (clean(e.get("title")).lower(), e.get("startDate", ""), e.get("officialUrl", "")): e
+        for e in old_events
+    }
+    events = [
+        merge_known_details(event, old_by_key.get((clean(event.get("title")).lower(), event.get("startDate", ""), event.get("officialUrl", ""))))
+        for event in events
+    ]
+
+    # Follow official event links to fill fields absent from calendar cards.
+    # Limit each run to 60 pages to keep scheduled scraping bounded.
+    detail_checked = 0
+    for event in events:
+        if detail_checked >= 60:
+            break
+        if any(not event.get(field) for field in ("entryFee", "entryDeadline", "venueName", "matchFormat")):
+            enrich_event_from_official_page(event)
+            detail_checked += 1
+    print(f"[DETAIL] Checked {detail_checked} official event pages")
+
     # Highlight tournaments first discovered in this refresh; the badge clears on the next scheduled run.
     previous_ids = {str(e.get("id", "")) for e in old_events}
     for event in events:
