@@ -515,7 +515,7 @@ def enrich_event_from_official_page(event):
     # the exact "Venue:" syntax handled by the generic label parser.
     if not event.get("venueName"):
         for label in ("Venue Name", "Tournament Venue", "Host Club", "Location"):
-            match = re.search(rf"\\b{re.escape(label)}\\s*:?\\s*(.{{3,120}}?)(?=\\s+(?:Venue Address|Address|Entry Deadline|Entry Fee|Draw Size|Tournament Director)\\b|$)", page_text, re.I)
+            match = re.search(rf"\b{re.escape(label)}\s*:?\s*(.{{3,120}}?)(?=\s+(?:Venue Address|Address|Entry Deadline|Entry Fee|Draw Size|Tournament Director)\b|$)", page_text, re.I)
             if match:
                 candidate = clean(match.group(1)).strip(" ,.-")
                 if candidate and not re.search(r"^(view in google maps|tbd|to be determined)$", candidate, re.I):
@@ -525,12 +525,12 @@ def enrich_event_from_official_page(event):
     # Accept only explicit singles/doubles event labels from the official page.
     if not event.get("matchFormat"):
         formats = []
-        if re.search(r"\\bMixed Doubles\\b", page_text, re.I):
+        if re.search(r"\bMixed Doubles\b", page_text, re.I):
             formats.append("Mixed Doubles")
         else:
-            if re.search(r"\\bSingles\\b", page_text, re.I):
+            if re.search(r"\bSingles\b", page_text, re.I):
                 formats.append("Singles")
-            if re.search(r"\\bDoubles\\b", page_text, re.I):
+            if re.search(r"\bDoubles\b", page_text, re.I):
                 formats.append("Doubles")
         event["matchFormat"] = ", ".join(formats)
 
