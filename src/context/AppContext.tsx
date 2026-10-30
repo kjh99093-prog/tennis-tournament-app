@@ -307,21 +307,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateTournamentStatus = (tournamentId: string, status: RegistrationStatus) => {
     setSavedTournaments((prev) => {
-      const index = prev.findIndex((item) => item.tournamentId === tournamentId);
-      if (index >= 0) {
-        const updated = [...prev];
-        updated[index] = { ...updated[index], status };
-        return updated;
-      } else {
-        return [
-          ...prev,
-          {
-            tournamentId,
-            status,
-            savedAt: new Date().toISOString()
-          }
-        ];
+      const existing = prev.find((item) => item.tournamentId === tournamentId);
+
+      // Tapping the currently selected status again clears the saved status.
+      if (existing?.status === status) {
+        return prev.filter((item) => item.tournamentId !== tournamentId);
       }
+
+      if (existing) {
+        return prev.map((item) =>
+          item.tournamentId === tournamentId ? { ...item, status } : item
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          tournamentId,
+          status,
+          savedAt: new Date().toISOString()
+        }
+      ];
     });
   };
 
