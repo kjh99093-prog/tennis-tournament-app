@@ -15,54 +15,105 @@ import {
   X
 } from 'lucide-react';
 
+const extractRange = (value: string, label: 'UTR' | 'NTRP'): [number, number] | null => {
+  const match = value.match(new RegExp(label + String.raw`\\s*(\\d+(?:\\.\\d+)?)(?:\\s*[-–]\\s*(\\d+(?:\\.\\d+)?))?`, 'i'));
+  if (!match) return null;
+  const first = Number(match[1]);
+  const second = match[2] ? Number(match[2]) : first;
+  return [Math.min(first, second), Math.max(first, second)];
+};
+
+const scoreAgainstRange = (rating: number, range: [number, number]): number => {
+  if (rating >= range[0] && rating <= range[1]) return 100;
+  const gap = rating < range[0] ? range[0] - rating : rating - range[1];
+  return Math.max(0, Math.round(100 - gap * 25));
+};
+
 const calculateProfileFit = (tournament: any, profile: any, category: string) => {
   const factors: { distanceFit: number; surfaceFit: number; ratingFit: number; categoryFit: number } = {
     distanceFit: 0, surfaceFit: 0, ratingFit: 0, categoryFit: 0
   };
   const weights = { distanceFit: 20, surfaceFit: 15, ratingFit: 25, categoryFit: 40 };
   const available: Array<keyof typeof factors> = [];
+  const eventCategory = String(tournament.category || 'both').toLowerCase();
+  const categoryEligible = eventCategory === 'both' || eventCategory === category;
+  let ageEligible = true;
 
-  if (tournament.category === 'both' || tournament.category === category) {
+  if (categoryEligible) {
     factors.categoryFit = 100;
     available.push('categoryFit');
-  } else if (tournament.category) {
-    factors.categoryFit = 0;
-    available.push('categoryFit');
   }
-  const age = String(profile.ageGroup || '').toUpperCase().match(/U\d{1,2}|18\+|30\+|35\+|40\+|45\+|50\+|OPEN/);
-  const divisions = Array.isArray(tournament.ageDivisions) ? tournament.ageDivisions.map((v: string) => String(v).toUpperCase()) : [];
-  if (divisions.length && age) {
-    factors.categoryFit = Math.round((factors.categoryFit + (divisions.some((v: string) => v.includes(age[0])) ? 100 : 0)) / 2);
+
+  const profileAge = String(profile.ageGroup || '').toUpperCase().trim();
+  const divisions = Array.isArray(tournament.ageDivisions)
+    ? tournament.ageDivisions.map((value: string) => String(value).toUpperCase().trim())
+    : [];
+  if (profileAge && divisions.length) {
+    const juniorAge = profileAge.match(/\\bU\\s*(\\d{1,2})\\b/);
+    const eventJuniorAges = divisions.map((value: string) => value.match(/\\bU\\s*(\\d{1,2})\\b/)).filter(Boolean);
+    const adultAge = profileAge.match(/\\b(18|30|35|40|45|50|55|60|65|70|75|80)\\s*\\+/);
+    const eventAdultAges = divisions.map((value: string) => value.match(/\\b(18|30|35|40|45|50|55|60|65|70|75|80)\\s*\\+/)).filter(Boolean);
+    const isOpen = /\\bOPEN\\b/.test(profileAge) || divisions.some((value: string) => /\\bOPEN\\b/.test(value));
+
+    if (juniorAge && eventJuniorAges.length) {
+      const playerLimit = Number(juniorAge[1]);
+      ageEligible = eventJuniorAges.some((match: RegExpMatchArray | null) => match !== null && playerLimit <= Number(match[1]));
+      factors.categoryFit = ageEligible ? 100 : 0;
+      available.push('categoryFit');
+    } else if (adultAge && eventAdultAges.length) {
+      const playerAge = Number(adultAge[1]);
+      ageEligible = eventAdultAges.some((match: RegExpMatchArray | null) => match !== null && playerAge >= Number(match[1]));
+      factors.categoryFit = ageEligible ? 100 : 0;
+      available.push('categoryFit');
+    } else if (!isOpen && (juniorAge || adultAge) && (eventJuniorAges.length || eventAdultAges.length)) {
+      ageEligible = false;
+      factors.categoryFit = 0;
+      available.push('categoryFit');
+    }
   }
 
   const homeCity = String(profile.homeCity || '').trim().toLowerCase();
   const homeRegion = String(profile.homeProvinceState || '').trim().toLowerCase();
   const city = String(tournament.city || '').trim().toLowerCase();
-  const region = String(tournament.stateProvince || '').trim().toLowerCase();
-  if (city || region) {
-    factors.distanceFit = city && homeCity && city === homeCity ? 100
-      : region && homeRegion && region === homeRegion ? 80
-      : tournament.country === profile.homeCountry ? 55 : 20;
+  const region = String(tournament.stateProvince || tournament.province || tournament.state || '').trim().toLowerCase();
+  const sameCountry = String(tournament.country || '').toLowerCase() === String(profile.homeCountry || '').toLowerCase();
+
+  if (homeCity && city) {
+    factors.distanceFit = city === homeCity ? 100
+      : homeRegion && region && region === homeRegion ? 75
+      : sameCountry ? 45 : 15;
+    available.push('distanceFit');
+  } else if (homeRegion && region) {
+    factors.distanceFit = region === homeRegion ? 80 : sameCountry ? 45 : 15;
+    available.push('distanceFit');
+  } else if (sameCountry && profile.homeCountry) {
+    factors.distanceFit = 55;
     available.push('distanceFit');
   }
 
   const preferredSurfaces = Array.isArray(profile.preferredSurfaces) ? profile.preferredSurfaces : [];
-  if (tournament.surface) {
+  if (tournament.surface && preferredSurfaces.length) {
     factors.surfaceFit = preferredSurfaces.some((surface: string) =>
       String(surface).toLowerCase() === String(tournament.surface).toLowerCase()
     ) ? 100 : 30;
     available.push('surfaceFit');
   }
 
-  const eventLevel = String(tournament.levelCategory || '');
-  const profileLevel = String(profile.utrRating || '') + ' ' + String(profile.nationalRating || '');
-  if (eventLevel && profileLevel.trim()) {
-    const numbers = (value: string): string[] => Array.from(value.match(/\d+(?:\.\d+)?/g) || []);
-    const eventNumbers = numbers(eventLevel);
-    const profileNumbers = numbers(profileLevel);
-    factors.ratingFit = eventNumbers.length && profileNumbers.length
-      ? (eventNumbers.some((n: string) => profileNumbers.includes(n)) ? 100 : 45)
-      : 60;
+  const eventText = [
+    String(tournament.levelCategory || ''),
+    String(tournament.tags || ''),
+    String(tournament.title || '')
+  ].join(' ');
+  const profileUtr = Number.parseFloat(String(profile.utrRating || '').match(/\\d+(?:\\.\\d+)?/)?.[0] || '');
+  const profileNtrp = extractRange(String(profile.nationalRating || ''), 'NTRP');
+  const eventUtr = extractRange(eventText, 'UTR');
+  const eventNtrp = extractRange(eventText, 'NTRP');
+
+  if (Number.isFinite(profileUtr) && eventUtr) {
+    factors.ratingFit = scoreAgainstRange(profileUtr, eventUtr);
+    available.push('ratingFit');
+  } else if (profileNtrp && eventNtrp) {
+    factors.ratingFit = scoreAgainstRange(profileNtrp[0], eventNtrp);
     available.push('ratingFit');
   }
 
@@ -70,7 +121,14 @@ const calculateProfileFit = (tournament: any, profile: any, category: string) =>
   const fitScore = totalWeight
     ? Math.round(available.reduce((sum, key) => sum + factors[key] * weights[key], 0) / totalWeight)
     : 0;
-  return { ...tournament, fitScore, fitFactors: factors, fitScoreAvailable: available.length > 0 };
+
+  return {
+    ...tournament,
+    fitScore,
+    fitFactors: factors,
+    fitScoreAvailable: available.length > 0,
+    profileEligible: categoryEligible && ageEligible
+  };
 };
 
 export const DashboardView: React.FC = () => {
@@ -227,7 +285,7 @@ export const DashboardView: React.FC = () => {
   const recommendedTournament = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     return scoredTournaments
-      .filter((t: any) => t.fitScoreAvailable && (!t.startDate || t.startDate >= today))
+      .filter((t: any) => t.profileEligible && t.fitScoreAvailable && (!t.startDate || t.endDate >= today))
       .filter((t: any) => category === 'junior' ? t.category !== 'adult' : t.category !== 'junior')
       .sort((a: any, b: any) => b.fitScore - a.fitScore || String(a.startDate || '9999').localeCompare(String(b.startDate || '9999')))[0];
   }, [scoredTournaments, category]);
