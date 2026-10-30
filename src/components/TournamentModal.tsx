@@ -254,7 +254,7 @@ export const TournamentModal: React.FC = () => {
                   <button
                     key={opt.value}
                     type="button"
-                    onClick={() => updateTournamentStatus(activeModalTournament.id, opt.value)}
+                    onClick={() => updateTournamentStatus(activeModalTournament.id, isSelected ? null : opt.value)}
                     className={`py-2 px-2 rounded-lg text-xs font-bold transition-all border ${
                       isSelected
                         ? isComp
