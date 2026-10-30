@@ -672,7 +672,7 @@ def main():
     for event in events:
         if detail_checked >= 60:
             break
-        if any(not event.get(field) for field in ("entryFee", "entryDeadline", "venueName", "matchFormat")):
+        if any(not event.get(field) for field in ("entryFee", "entryDeadline", "venueName", "matchFormat", "city", "province", "state")):
             enrich_event_from_official_page(event)
             detail_checked += 1
     print(f"[DETAIL] Checked {detail_checked} official event pages")
