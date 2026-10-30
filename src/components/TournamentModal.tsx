@@ -163,77 +163,90 @@ export const TournamentModal: React.FC = () => {
             </div>
           </div>
 
-          {/* Tournament Specifications Grid */}
+          {/* Tournament Specifications: render only fields with verified values */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-[#D5FA63]" /> {t('venue')}
-              </span>
-              <p className="font-semibold text-[#F3F5F0]">{activeModalTournament.venueName || 'Check official listing'}</p>
-              <p className="text-[#AAB9B3] text-[11px]">{activeModalTournament.address}</p>
-              <p className="text-[#6677FF] font-medium text-[11px]">
-                {t('distance_from_base', { distance: activeModalTournament.distanceKm })}
-              </p>
-            </div>
-
-            <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-[#D5FA63]" /> {t('dates')} & {t('deadline')}
-              </span>
-              <p className="text-[#F3F5F0]">
-                <strong className="text-[#AAB9B3] font-normal">{t('dates')}: </strong>
-                {activeModalTournament.startDate} to {activeModalTournament.endDate}
-              </p>
-              <p className="text-[#FF5D64] font-semibold">
-                <strong className="text-[#AAB9B3] font-normal">{t('deadline')}: </strong>
-                {activeModalTournament.entryDeadline || 'Check official listing'}
-              </p>
-            </div>
-
-            <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
-                <DollarSign className="w-3 h-3 text-[#D5FA63]" /> {t('entry_fee')}
-              </span>
-              <p className={`font-bold text-sm ${activeModalTournament.entryFee ? 'text-[#D5FA63]' : 'text-[#AAB9B3]'}`}>{activeModalTournament.entryFee || 'Check official listing'}</p>
-              {activeModalTournament.drawSize && (
-                <p className="text-[#AAB9B3] text-[11px]">{activeModalTournament.drawSize}</p>
-              )}
-            </div>
-
-            <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
-                <Layers className="w-3 h-3 text-[#D5FA63]" /> {t('format')}
-              </span>
-              <p className="text-[#F3F5F0] text-[11px] leading-relaxed">{activeModalTournament.matchFormat || 'Check official listing'}</p>
-            </div>
+            {(activeModalTournament.venueName || activeModalTournament.address || activeModalTournament.city) && (
+              <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-[#D5FA63]" /> {t('venue')}
+                </span>
+                {activeModalTournament.venueName && <p className="font-semibold text-[#F3F5F0]">{activeModalTournament.venueName}</p>}
+                {activeModalTournament.address && <p className="text-[#AAB9B3] text-[11px]">{activeModalTournament.address}</p>}
+                {activeModalTournament.city && (
+                  <p className="text-[#AAB9B3] text-[11px]">
+                    {[activeModalTournament.city, activeModalTournament.stateProvince, activeModalTournament.country].filter(Boolean).join(', ')}
+                  </p>
+                )}
+                {activeModalTournament.venueName && activeModalTournament.distanceKm > 0 && (
+                  <p className="text-[#6677FF] font-medium text-[11px]">
+                    {t('distance_from_base', { distance: activeModalTournament.distanceKm })}
+                  </p>
+                )}
+              </div>
+            )}
+            {(activeModalTournament.startDate || activeModalTournament.endDate || activeModalTournament.entryDeadline) && (
+              <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-[#D5FA63]" /> {t('dates')}{activeModalTournament.entryDeadline ? ` & ${t('deadline')}` : ''}
+                </span>
+                {(activeModalTournament.startDate || activeModalTournament.endDate) && (
+                  <p className="text-[#F3F5F0]">
+                    <strong className="text-[#AAB9B3] font-normal">{t('dates')}: </strong>
+                    {[activeModalTournament.startDate, activeModalTournament.endDate].filter(Boolean).join(' to ')}
+                  </p>
+                )}
+                {activeModalTournament.entryDeadline && (
+                  <p className="text-[#FF5D64] font-semibold">
+                    <strong className="text-[#AAB9B3] font-normal">{t('deadline')}: </strong>
+                    {activeModalTournament.entryDeadline}
+                  </p>
+                )}
+              </div>
+            )}
+            {(activeModalTournament.entryFee || activeModalTournament.drawSize) && (
+              <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
+                  <DollarSign className="w-3 h-3 text-[#D5FA63]" /> {t('entry_fee')}
+                </span>
+                {activeModalTournament.entryFee && <p className="font-bold text-sm text-[#D5FA63]">{activeModalTournament.entryFee}</p>}
+                {activeModalTournament.drawSize && <p className="text-[#AAB9B3] text-[11px]">{activeModalTournament.drawSize}</p>}
+              </div>
+            )}
+            {activeModalTournament.matchFormat && (
+              <div className="p-3 rounded-xl bg-[#293B35] border border-[#354740] space-y-1">
+                <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
+                  <Layers className="w-3 h-3 text-[#D5FA63]" /> {t('format')}
+                </span>
+                <p className="text-[#F3F5F0] text-[11px] leading-relaxed">{activeModalTournament.matchFormat}</p>
+              </div>
+            )}
           </div>
 
-          {/* Category: Age, Level & Divisions */}
-          <div className="space-y-2">
-            <span className="text-xs font-bold text-[#AAB9B3] uppercase tracking-wider block">
-              {t('divisions')} & {t('filter_level')}
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {activeModalTournament.ageCategory && (
-                <span className="px-2.5 py-1 rounded-lg bg-[#293B35] text-xs font-bold text-[#D5FA63] border border-[#354740]">
-                  {t('badge_age')}: {activeModalTournament.ageCategory}
-                </span>
-              )}
-              {activeModalTournament.levelCategory && (
-                <span className="px-2.5 py-1 rounded-lg bg-[#293B35] text-xs font-bold text-[#6677FF] border border-[#354740]">
-                  {t('badge_level')}: {activeModalTournament.levelCategory}
-                </span>
-              )}
-              {activeModalTournament.ageDivisions.map((div) => (
-                <span
-                  key={div}
-                  className="px-2.5 py-1 rounded-lg bg-[#151F24] text-xs font-semibold text-[#F3F5F0] border border-[#354740]"
-                >
-                  {div}
-                </span>
-              ))}
+          {/* Category: render only when age or level data is available */}
+          {(activeModalTournament.ageCategory || activeModalTournament.levelCategory || activeModalTournament.ageDivisions.length > 0) && (
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-[#AAB9B3] uppercase tracking-wider block">
+                {t('divisions')} & {t('filter_level')}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {activeModalTournament.ageCategory && (
+                  <span className="px-2.5 py-1 rounded-lg bg-[#293B35] text-xs font-bold text-[#D5FA63] border border-[#354740]">
+                    {t('badge_age')}: {activeModalTournament.ageCategory}
+                  </span>
+                )}
+                {activeModalTournament.levelCategory && (
+                  <span className="px-2.5 py-1 rounded-lg bg-[#293B35] text-xs font-bold text-[#6677FF] border border-[#354740]">
+                    {t('badge_level')}: {activeModalTournament.levelCategory}
+                  </span>
+                )}
+                {activeModalTournament.ageDivisions.map((div) => (
+                  <span key={div} className="px-2.5 py-1 rounded-lg bg-[#151F24] text-xs font-semibold text-[#F3F5F0] border border-[#354740]">
+                    {div}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Notes or Sanction remarks */}
           {activeModalTournament.notes && (
