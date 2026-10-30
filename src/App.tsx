@@ -14,6 +14,7 @@ import { NotesView } from './components/NotesView';
 import { TournamentModal } from './components/TournamentModal';
 import { Onboarding } from './components/Onboarding';
 import { InstallPage } from './components/InstallPage';
+import { InstallPromptBanner } from './components/InstallPromptBanner';
 
 
 const EmailConfirmationReturn: React.FC = () => {
@@ -187,6 +188,7 @@ const AppContent: React.FC = () => {
 
   return <div className="min-h-screen bg-[#151F24] text-[#F3F5F0] flex flex-col font-sans transition-colors duration-200">
     <Header />
+    <InstallPromptBanner />
     <main className="flex-1 max-w-5xl w-full mx-auto p-3.5 sm:p-5 md:p-6">
       {activeTab === 'dashboard' && <DashboardView />}
       {activeTab === 'events' && <MyEventsView />}
