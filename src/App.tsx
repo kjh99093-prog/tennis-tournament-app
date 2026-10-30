@@ -82,10 +82,33 @@ const EmailConfirmationReturn: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
-  const { activeTab, setCategory, updatePlayerProfile, playerProfile } = useApp();
+  const { activeTab, activeModalTournament, closeTournamentModal, setCategory, updatePlayerProfile, playerProfile } = useApp();
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [setupComplete, setSetupComplete] = useState(false);
+
+  // Treat an open tournament detail as an in-app navigation layer.
+  // The device/browser Back action closes the modal instead of leaving ATONI.
+  useEffect(() => {
+    if (!activeModalTournament) return;
+
+    const marker = { ...(window.history.state || {}), atoniTournamentModal: true };
+    window.history.pushState(marker, '', window.location.pathname + window.location.search);
+
+    const handlePopState = () => {
+      closeTournamentModal();
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      // If the modal was closed using its own UI, remove the temporary
+      // history entry so the next Back press does not get stuck on a stale layer.
+      if (window.history.state?.atoniTournamentModal) {
+        window.history.back();
+      }
+    };
+  }, [activeModalTournament, closeTournamentModal]);
 
   useEffect(() => {
     let alive = true;
