@@ -143,7 +143,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               event.sourceId === 'itf' ? 'ITF' :
               event.sourceId === 'utr' ? 'UTR' :
               event.sourceId === 'tennis-bc' ? 'Tennis BC' : 'Tennis Canada';
-            const rawLevel = (typeof event.tags === 'string' && event.tags.match(/\b(?:\d+(?:\.\d+)?\s*Star|\d+\s*Star|NTRP\s*[\d.]+|Level\s*\d+)\b/i)?.[0]) || '';
+            const rawLevel = (typeof event.tags === 'string' && event.tags.match(/\b(?:UTR\s*[\d.]+(?:\s*[-–]\s*[\d.]+)?|NTRP\s*[\d.]+(?:\s*[-–]\s*[\d.]+)?|\d+(?:\.\d+)?\s*Star|Level\s*\d+)\b/i)?.[0]) || '';
             return {
               id: 'real-' + (event.sourceId || 'tournament') + '-' + (event.startDate || 'undated') + '-' + index,
               title: event.title,
