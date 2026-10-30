@@ -45,17 +45,29 @@ export const TournamentModal: React.FC = () => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar */}
-        <div className="bg-[#151F24] p-4 md:p-5 border-b border-[#354740] flex items-start gap-3">
-          <button
-            type="button"
-            onClick={closeTournamentModal}
-            className="mt-0.5 w-11 h-11 rounded-xl bg-[#293B35] border border-[#6677FF]/60 text-[#F3F5F0] hover:bg-[#354740] flex items-center justify-center shrink-0 transition-colors"
-            aria-label="Back"
-            title="Back"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <div className="min-w-0 flex-1">
+        <div className="bg-[#151F24] p-4 md:p-5 border-b border-[#354740]">
+          <div className="flex items-center justify-between mb-2">
+            <button
+              type="button"
+              onClick={closeTournamentModal}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#AAB9B3] hover:text-[#F3F5F0] transition-colors"
+              aria-label="Back"
+              title="Back"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+            <button
+              type="button"
+              onClick={closeTournamentModal}
+              className="w-9 h-9 rounded-lg bg-[#D5FA63] hover:bg-[#C5EA55] text-[#151F24] border border-[#F3F5F0]/50 flex items-center justify-center shrink-0 transition-colors"
+              aria-label={t('modal_close')}
+              title={t('modal_close')}
+            >
+              <X className="w-5 h-5 stroke-[2.5]" />
+            </button>
+          </div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1.5">
               <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-[#20352F] text-[#D5FA63] border border-[#354740]">
                 {activeModalTournament.sanctioningBody}
@@ -73,16 +85,6 @@ export const TournamentModal: React.FC = () => {
               {activeModalTournament.title}
             </h2>
           </div>
-
-          <button
-            type="button"
-            onClick={closeTournamentModal}
-            className="w-11 h-11 rounded-xl bg-[#D5FA63] hover:bg-[#C5EA55] text-[#151F24] border-2 border-[#F3F5F0]/70 shadow-lg flex items-center justify-center shrink-0 transition-colors"
-            aria-label={t('modal_close')}
-            title={t('modal_close')}
-          >
-            <X className="w-6 h-6 stroke-[3]" />
-          </button>
         </div>
 
         {/* Modal Body */}
