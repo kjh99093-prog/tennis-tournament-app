@@ -947,7 +947,7 @@
       "endDate": "2026-11-15",
       "entryDeadline": "",
       "venueName": "",
-      "city": "Présenté par Tennis Giant - OCT - Boucherville Boucherville",
+      "city": "Boucherville",
       "province": "QC",
       "state": "",
       "country": "Canada",
@@ -957,7 +957,8 @@
       "tags": "1re ÉTAPE U12 (int.) Présenté par Tennis Giant - OCT - Boucherville Boucherville, QC 2026-10-30 to 2026-11-15 Singles Male Female U12 4 Star",
       "category": "junior",
       "entryFee": "",
-      "isNew": false
+      "isNew": false,
+      "matchFormat": "Singles"
     },
     {
       "title": "1re ÉTAPE U16 (int.) Présenté par Tennis Giant - OCT - Brossard",
@@ -1330,8 +1331,8 @@
       "startDate": "2026-10-31",
       "endDate": "2026-11-01",
       "entryDeadline": "",
-      "venueName": "",
-      "city": "ANS - OCT - Carrefour Multisports Laval",
+      "venueName": "Carrefour Multisports",
+      "city": "Laval",
       "province": "QC",
       "state": "",
       "country": "Canada",
@@ -1342,7 +1343,8 @@
       "tags": "ÉTOILES MONTANTES 10 ANS - OCT - Carrefour Multisports Laval, QC 2026-10-31 to 2026-11-01 Singles Male Female U10 Rising Stars",
       "category": "junior",
       "entryFee": "",
-      "isNew": false
+      "isNew": false,
+      "matchFormat": "Singles"
     },
     {
       "title": "Level 1: Orange Bowl International Tennis Championship (16 & Under)",
