@@ -48,13 +48,21 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
           password,
           options: {
             data: { full_name: name.trim() },
-            emailRedirectTo: `${APP_BASE_URL}/auth/callback`,
           },
         });
         if (error) throw error;
         if (data.session) {
+          // Send a separate informational welcome email; signup itself must not wait on email delivery.
+          const { error: welcomeEmailError } = await supabase.functions.invoke('send-welcome-email');
+          if (welcomeEmailError) {
+            console.warn('ATONI welcome email could not be sent:', welcomeEmailError.message);
+          }
           onAuthenticated?.();
-          setMessage('Your ATONI account has been created successfully. You are now signed in!');
+          setMessage(
+            welcomeEmailError
+              ? 'Your ATONI account has been created and you are now signed in. Your welcome email could not be sent just yet.'
+              : 'Your ATONI account has been created successfully. You are now signed in! A welcome email is on its way.'
+          );
         } else if (data.user) {
           setMode('login');
           setMessage('Your account was created, but automatic sign-in is not enabled yet. Please try logging in. If that does not work, contact the app administrator.');
