@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 const extractRange = (value: string, label: 'UTR' | 'NTRP'): [number, number] | null => {
-  const match = value.match(new RegExp(label + String.raw`\\s*(\\d+(?:\\.\\d+)?)(?:\\s*[-–]\\s*(\\d+(?:\\.\\d+)?))?`, 'i'));
+  const match = value.match(new RegExp(label + String.raw`\s*(\d+(?:\.\d+)?)(?:\s*[-–]\s*(\d+(?:\.\d+)?))?`, 'i'));
   if (!match) return null;
   const first = Number(match[1]);
   const second = match[2] ? Number(match[2]) : first;
@@ -49,11 +49,11 @@ const calculateProfileFit = (tournament: any, profile: any, category: string) =>
     ? tournament.ageDivisions.map((value: string) => String(value).toUpperCase().trim())
     : [];
   if (profileAge && divisions.length) {
-    const juniorAge = profileAge.match(/\\bU\\s*(\\d{1,2})\\b/);
-    const eventJuniorAges = divisions.map((value: string) => value.match(/\\bU\\s*(\\d{1,2})\\b/)).filter(Boolean);
-    const adultAge = profileAge.match(/\\b(18|30|35|40|45|50|55|60|65|70|75|80)\\s*\\+/);
-    const eventAdultAges = divisions.map((value: string) => value.match(/\\b(18|30|35|40|45|50|55|60|65|70|75|80)\\s*\\+/)).filter(Boolean);
-    const isOpen = /\\bOPEN\\b/.test(profileAge) || divisions.some((value: string) => /\\bOPEN\\b/.test(value));
+    const juniorAge = profileAge.match(/\bU\s*(\d{1,2})\b/);
+    const eventJuniorAges = divisions.map((value: string) => value.match(/\bU\s*(\d{1,2})\b/)).filter(Boolean);
+    const adultAge = profileAge.match(/\b(18|30|35|40|45|50|55|60|65|70|75|80)\s*\+/);
+    const eventAdultAges = divisions.map((value: string) => value.match(/\b(18|30|35|40|45|50|55|60|65|70|75|80)\s*\+/)).filter(Boolean);
+    const isOpen = /\bOPEN\b/.test(profileAge) || divisions.some((value: string) => /\bOPEN\b/.test(value));
 
     if (juniorAge && eventJuniorAges.length) {
       const playerLimit = Number(juniorAge[1]);
@@ -104,7 +104,7 @@ const calculateProfileFit = (tournament: any, profile: any, category: string) =>
     String(tournament.tags || ''),
     String(tournament.title || '')
   ].join(' ');
-  const profileUtr = Number.parseFloat(String(profile.utrRating || '').match(/\\d+(?:\\.\\d+)?/)?.[0] || '');
+  const profileUtr = Number.parseFloat(String(profile.utrRating || '').match(/\d+(?:\.\d+)?/)?.[0] || '');
   const profileNtrp = extractRange(String(profile.nationalRating || ''), 'NTRP');
   const eventUtr = extractRange(eventText, 'UTR');
   const eventNtrp = extractRange(eventText, 'NTRP');
