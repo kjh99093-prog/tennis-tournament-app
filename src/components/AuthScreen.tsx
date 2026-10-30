@@ -48,6 +48,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
           password,
           options: {
             data: { full_name: name.trim() },
+            emailRedirectTo: `${APP_BASE_URL}/auth/callback`,
           },
         });
         if (error) throw error;
