@@ -52,17 +52,8 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
         });
         if (error) throw error;
         if (data.session) {
-          // Send a separate informational welcome email; signup itself must not wait on email delivery.
-          const { error: welcomeEmailError } = await supabase.functions.invoke('send-welcome-email');
-          if (welcomeEmailError) {
-            console.warn('ATONI welcome email could not be sent:', welcomeEmailError.message);
-          }
           onAuthenticated?.();
-          setMessage(
-            welcomeEmailError
-              ? 'Your ATONI account has been created and you are now signed in. Your welcome email could not be sent just yet.'
-              : 'Your ATONI account has been created successfully. You are now signed in! A welcome email is on its way.'
-          );
+          setMessage('Welcome to ATONI! Your account has been created successfully. You are now signed in.');
         } else if (data.user) {
           setMode('login');
           setMessage('Your account was created, but automatic sign-in is not enabled yet. Please try logging in. If that does not work, contact the app administrator.');
@@ -74,7 +65,7 @@ export const AuthScreen: React.FC<Props> = ({ onAuthenticated }) => {
           redirectTo: `${APP_BASE_URL}/auth/reset-password`,
         });
         if (error) throw error;
-        setMessage('If an account exists for this email, a password reset link will be sent when email delivery is available.');
+        setMessage('If an account exists for this email, you will receive a password reset link.');
       } else if (mode === 'reset') {
         if (password.length < 6) throw new Error('Password must be at least 6 characters.');
         const { error } = await supabase.auth.updateUser({ password });
