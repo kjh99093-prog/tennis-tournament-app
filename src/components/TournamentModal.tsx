@@ -169,7 +169,7 @@ export const TournamentModal: React.FC = () => {
               <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
                 <MapPin className="w-3 h-3 text-[#D5FA63]" /> {t('venue')}
               </span>
-              <p className="font-semibold text-[#F3F5F0]">{activeModalTournament.venueName}</p>
+              <p className="font-semibold text-[#F3F5F0]">{activeModalTournament.venueName || 'Check official listing'}</p>
               <p className="text-[#AAB9B3] text-[11px]">{activeModalTournament.address}</p>
               <p className="text-[#6677FF] font-medium text-[11px]">
                 {t('distance_from_base', { distance: activeModalTournament.distanceKm })}
@@ -186,7 +186,7 @@ export const TournamentModal: React.FC = () => {
               </p>
               <p className="text-[#FF5D64] font-semibold">
                 <strong className="text-[#AAB9B3] font-normal">{t('deadline')}: </strong>
-                {activeModalTournament.entryDeadline}
+                {activeModalTournament.entryDeadline || 'Check official listing'}
               </p>
             </div>
 
@@ -194,7 +194,7 @@ export const TournamentModal: React.FC = () => {
               <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
                 <DollarSign className="w-3 h-3 text-[#D5FA63]" /> {t('entry_fee')}
               </span>
-              <p className="font-bold text-sm text-[#D5FA63]">{activeModalTournament.entryFee}</p>
+              <p className={`font-bold text-sm ${activeModalTournament.entryFee ? 'text-[#D5FA63]' : 'text-[#AAB9B3]'}`}>{activeModalTournament.entryFee || 'Check official listing'}</p>
               {activeModalTournament.drawSize && (
                 <p className="text-[#AAB9B3] text-[11px]">{activeModalTournament.drawSize}</p>
               )}
@@ -204,7 +204,7 @@ export const TournamentModal: React.FC = () => {
               <span className="text-[10px] uppercase font-bold text-[#AAB9B3] tracking-wider flex items-center gap-1">
                 <Layers className="w-3 h-3 text-[#D5FA63]" /> {t('format')}
               </span>
-              <p className="text-[#F3F5F0] text-[11px] leading-relaxed">{activeModalTournament.matchFormat}</p>
+              <p className="text-[#F3F5F0] text-[11px] leading-relaxed">{activeModalTournament.matchFormat || 'Check official listing'}</p>
             </div>
           </div>
 
