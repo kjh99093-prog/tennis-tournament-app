@@ -213,9 +213,33 @@ def parse_event_card(card, source_id, source_name, country, base_url):
     ages = sorted(set(x.upper() if x.lower() != "rising stars" else "RISING STARS"
                       for x in AGE_RE.findall(title + " " + whole_text)))
     city, region = "", ""
-    location_match = re.search(r"([A-Za-zÀ-ÿ .'-]+),\s*([A-Z]{2})\b", whole_text)
+    # The card starts with the tournament title, which may itself contain
+    # commas or location-like words. Parse the location only after the title.
+    remainder = whole_text[len(title):].strip() if whole_text.startswith(title) else whole_text
+    location_match = re.search(r"([A-ZÀ-Ý][A-Za-zÀ-ÿ .'-]{1,50}),\s*([A-Z]{2})\b", remainder)
     if location_match:
         city, region = clean(location_match.group(1)), location_match.group(2).upper()
+    else:
+        location_match = re.search(r"([A-ZÀ-Ý][A-Za-zÀ-ÿ .'-]{1,50}),\s*([A-Z]{2})\b", whole_text)
+        if location_match:
+            city, region = clean(location_match.group(1)), location_match.group(2).upper()
+
+    # Tournament calendar cards expose event formats as explicit labels.
+    format_labels = []
+    for label in ("Singles", "Doubles", "Mixed doubles"):
+        if re.search(rf"\b{re.escape(label)}\b", whole_text, re.I):
+            format_labels.append(label)
+    match_format = ", ".join(format_labels)
+
+    # Some Tennis Canada listings include the host club after the month marker
+    # in the event title (e.g. "... - OCT - Carrefour Multisports").
+    venue_name = ""
+    venue_match = re.search(
+        r"\s-\s(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)\s-\s(.+)$",
+        title, re.I,
+    )
+    if venue_match and re.search(r"\b(?:Multisports|Tennis|Club|Centre|Center|Sport|Sports|Racquet|Racquets)\b", venue_match.group(1), re.I):
+        venue_name = clean(venue_match.group(1))
     if country == "Canada" and not region:
         p = PROVINCE_RE.search(whole_text)
         region = p.group(1).upper() if p else ""
@@ -233,9 +257,10 @@ def parse_event_card(card, source_id, source_name, country, base_url):
     return {
         "title": title, "officialUrl": official_url, "sourceId": source_id,
         "sourceName": source_name, "startDate": start, "endDate": end,
-        "entryDeadline": "", "venueName": "", "city": city,
+        "entryDeadline": "", "venueName": venue_name, "city": city,
         "province": province, "state": state, "country": country,
-        "ageDivisions": ages, "tags": tags, "category": category, "entryFee": ""
+        "ageDivisions": ages, "tags": tags, "category": category,
+        "matchFormat": match_format, "entryFee": ""
     }
 
 def parse_usta_cards(soup, source_name, base_url):
