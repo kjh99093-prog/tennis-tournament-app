@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
 import { AuthScreen } from './components/AuthScreen';
@@ -86,6 +86,8 @@ const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [setupComplete, setSetupComplete] = useState(false);
+  const closeTournamentModalRef = useRef(closeTournamentModal);
+  closeTournamentModalRef.current = closeTournamentModal;
 
   // Treat an open tournament detail as an in-app navigation layer.
   // The device/browser Back action closes the modal instead of leaving ATONI.
@@ -96,7 +98,7 @@ const AppContent: React.FC = () => {
     window.history.pushState(marker, '', window.location.pathname + window.location.search);
 
     const handlePopState = () => {
-      closeTournamentModal();
+      closeTournamentModalRef.current();
     };
     window.addEventListener('popstate', handlePopState);
 
@@ -108,7 +110,7 @@ const AppContent: React.FC = () => {
         window.history.back();
       }
     };
-  }, [activeModalTournament, closeTournamentModal]);
+  }, [activeModalTournament]);
 
   useEffect(() => {
     let alive = true;
