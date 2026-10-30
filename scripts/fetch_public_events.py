@@ -113,6 +113,44 @@ def fetch_html(url):
         print(f"[ERROR] {url}: {exc}")
         return None, str(exc)
 
+def extract_labeled_details(text):
+    """Extract only explicitly labeled details; never infer fees or deadlines."""
+    text = clean(text)
+    details = {"entryFee": "", "entryDeadline": "", "venueName": "", "matchFormat": ""}
+
+    fee = re.search(
+        r"\b(?:entry\s+fee|tournament\s+fee|registration\s+fee|entry\s+cost)\s*[:\-]?\s*((?:CAD|USD|US\$|C\$|\$)\s?\d[\d,.]*(?:\s?(?:CAD|USD))?|\d[\d,.]*\s?(?:CAD|USD))",
+        text, re.I,
+    )
+    if fee:
+        details["entryFee"] = clean(fee.group(1))
+
+    deadline = re.search(
+        r"\b(?:entry\s+deadline|registration\s+deadline|entries\s+close|entry\s+closes|registration\s+closes)\s*[:\-]?\s*([^|;]{3,45})",
+        text, re.I,
+    )
+    if deadline:
+        start, _ = parse_dates(deadline.group(1))
+        if start:
+            details["entryDeadline"] = start
+
+    venue = re.search(
+        r"\b(?:venue|site|club|host\s+club)\s*[:\-]\s*([^|;]{3,100}?)(?=\s+(?:entry\s+fee|registration|deadline|draw|format)\b|$)",
+        text, re.I,
+    )
+    if venue:
+        details["venueName"] = clean(venue.group(1)).strip(" ,.-")
+
+    match_format = re.search(
+        r"\b(?:match\s+format|format|scoring\s+format)\s*[:\-]\s*([^|;]{3,100})",
+        text, re.I,
+    )
+    if match_format:
+        details["matchFormat"] = clean(match_format.group(1)).strip(" ,.-")
+
+    return details
+
+
 def parse_dates(text):
     text = clean(text)
     m = DATE_PATTERNS[0].search(text)
@@ -419,6 +457,14 @@ def parse_cards(soup, source_id, source_name, country, base_url):
                 key = (event["title"], event["startDate"], event["officialUrl"])
                 if key not in seen:
                     seen.add(key); found.append(event)
+    # Enrich only from explicitly labeled details visible in the official listing.
+    # Missing or ambiguous values remain empty and are shown as "Check official listing".
+    for event in found:
+        source_text = event.get("tags", "")
+        details = extract_labeled_details(source_text)
+        for field, value in details.items():
+            if value and not event.get(field):
+                event[field] = value
     return found
 
 def dedupe(events):
